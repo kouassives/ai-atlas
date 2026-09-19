@@ -1,0 +1,18 @@
+# Dependencies / tooling
+node_modules/
+.pnpm-store/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Logs
+*.log
+nohup.out
+
+# Local scratch
+/tmp/
+*.tmp

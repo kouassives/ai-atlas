@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  lint-and-evals:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Tier 1 — structural lint
+        run: node scripts/lint-skills.mjs
+      - name: Tier 2 — routing evals
+        run: node scripts/eval-routing.mjs
+      - name: SKILLS.md freshness
+        run: |
+          node scripts/gen-index.mjs
+          git diff --exit-code SKILLS.md
+        shell: bash

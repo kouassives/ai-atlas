@@ -1,0 +1,32 @@
+[
+  {
+    "id": "fnd-routing-01",
+    "prompt": "We're starting a brand new project. Walk me through the whole software development lifecycle and which of your skills apply at each stage.",
+    "expect": ["fnd-sdlc-overview"]
+  },
+  {
+    "id": "fnd-routing-02",
+    "prompt": "Review this pull request before we merge it. Is it clean?",
+    "expect": ["fnd-code-review"]
+  },
+  {
+    "id": "fnd-routing-03",
+    "prompt": "Help me write documentation that actually survives: README, API docs, changelog.",
+    "expect": ["fnd-technical-writing"]
+  },
+  {
+    "id": "fnd-routing-04",
+    "prompt": "We keep arguing about whether to over-engineer this module. Which engineering principles apply here?",
+    "expect": ["fnd-engineering-principles"]
+  },
+  {
+    "id": "fnd-routing-05",
+    "prompt": "Record the decision we just made about migrating to a modular monolith. Where do we write it down?",
+    "expect": ["fnd-adr"]
+  },
+  {
+    "id": "fnd-routing-06",
+    "prompt": "This new endpoint takes untrusted input from the internet. What's the baseline security checklist I must apply?",
+    "expect": ["fnd-security-basics"]
+  }
+]

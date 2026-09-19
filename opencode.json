@@ -1,0 +1,16 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "skills": {
+    "paths": ["./skills"]
+  },
+  "agent": {
+    "arch-specialist": { "disable": true },
+    "backend-developer": { "disable": true },
+    "frontend-developer": { "disable": true },
+    "ui-designer": { "disable": true },
+    "tester": { "disable": true },
+    "devops-engineer": { "disable": true },
+    "code-reviewer": { "disable": true },
+    "orchestrator": { "disable": true }
+  }
+}
