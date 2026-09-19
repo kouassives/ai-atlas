@@ -1,6 +1,6 @@
 ---
 name: be-database-design
-description: "Designs and evolves database schemas: modeling, normalization vs denormalization, indexing, transactions and isolation, and safe migrations. Use when touching data models or queries, when creating tables or entities, when a query is slow or a migration feels risky, or when deciding between normalized and denormalized shapes."
+description: "Design database schemas and tables: table modeling, normalization vs denormalization, the index each query needs, transactions and isolation, and safe migrations. Use when designing or altering a table or schema, when choosing an index or planning a migration to add a column, when a query is slow, or before touching a data model."
 license: MIT
 compatibility: opencode, claude-code, codex
 metadata:

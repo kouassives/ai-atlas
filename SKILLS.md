@@ -7,7 +7,7 @@
 node scripts/gen-index.mjs
 ```
 
-**23 skills published.**
+**32 skills published.**
 
 ## Foundation
 
@@ -39,11 +39,25 @@ node scripts/gen-index.mjs
 |---|---|---|
 | `be-api-design` | Designs and implements APIs: REST vs GraphQL vs gRPC selection, resource modeling, status codes, validation, pagination, | implementation |
 | `be-async-messaging` | Designs and maintains message and event flows: queues vs events, producer/consumer semantics, at-least-once reality, dea | implementation |
-| `be-database-design` | Designs and evolves database schemas: modeling, normalization vs denormalization, indexing, transactions and isolation,  | implementation |
+| `be-database-design` | Design database schemas and tables: table modeling, normalization vs denormalization, the index each query needs, transa | implementation |
 | `be-microservices-patterns` | Selects and applies distributed-system patterns for microservices: saga and outbox for data consistency, CQRS, circuit b | implementation |
 | `be-performance` | Diagnoses and fixes performance issues: profiling before optimizing, caching strategies, N+1 query detection, connection | implementation |
 | `be-refactoring` | Performs safe refactoring: finding seams, preserving behavior, moving in small verified increments, and recognizing code | operations maintenance |
 | `be-security-engineering` | Implements application security: OWASP Top 10 guidance for code, authentication and authorization flows, secrets handlin | implementation |
 | `be-solid-principles` | Applies the five SOLID principles to class and module design with before/after examples and the smells that signal each  | implementation |
 | `be-tdd` | Drives implementation and bug fixes with test-driven development: Red-Green-Refactor, the test pyramid (80/15/5), test s | testing |
+
+## DevOps
+
+| Skill | Purpose | SDLC stage |
+|---|---|---|
+| `ops-ci-cd` | Builds and improves CI/CD pipelines: stages, quality gates, artifact flow, and feedback speed | build |
+| `ops-devsecops` | Secures the delivery pipeline: SAST and SCA in CI, secrets scanning, image scanning, and supply-chain defense | build |
+| `ops-docker-containers` | Containerizes applications well: multi-stage builds, minimal images, layer caching, security scanning, and non-root runt | build |
+| `ops-gitops` | Runs deployments declaratively with GitOps: Git as the single source of truth, ArgoCD/Flux style reconciliation, and env | deployment |
+| `ops-iac-terraform` | Builds infrastructure as code with Terraform or OpenTofu: state management, modules, and drift handling | deployment |
+| `ops-kubernetes` | Deploys and operates workloads on Kubernetes: manifests, health probes, resource requests and limits, networking, rollin | deployment |
+| `ops-monitoring-alerting` | Defines SLOs and error budgets, burn-rate alerting, actionable alert rules, runbooks, and on-call escalation practice | operations maintenance |
+| `ops-observability` | Makes running systems observable: structured logging, RED/USE metrics, tracing, and dashboard layout | operations maintenance |
+| `ops-release-management` | Releases software safely: semantic versioning, feature flags, staged rollouts, and rollback procedures | deployment |
 

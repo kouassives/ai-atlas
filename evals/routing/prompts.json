@@ -108,5 +108,50 @@
     "id": "arch-routing-08",
     "prompt": "The requirement just says 'fast and reliable'. Give me quantified non-functional targets we can design and verify against.",
     "expect": ["arch-nfrs"]
+  },
+  {
+    "id": "ops-routing-01",
+    "prompt": "CI takes 40 minutes and misses failures that staging catches. Restructure the pipeline stages, gates, and artifact flow.",
+    "expect": ["ops-ci-cd"]
+  },
+  {
+    "id": "ops-routing-02",
+    "prompt": "Our Docker image is 1.5GB, contains a compiler, and runs as root. Fix the Dockerfile properly.",
+    "expect": ["ops-docker-containers"]
+  },
+  {
+    "id": "ops-routing-03",
+    "prompt": "Pods keep restarting in loops and rollouts have no rollback story. Review the deployment manifests, probes, and resources.",
+    "expect": ["ops-kubernetes"]
+  },
+  {
+    "id": "ops-routing-04",
+    "prompt": "We provision infrastructure from laptops and the state file lives on someone's machine. Set up safe infrastructure as code.",
+    "expect": ["ops-iac-terraform"]
+  },
+  {
+    "id": "ops-routing-05",
+    "prompt": "Deployments are imperative scripts and the cluster always drifts from the repo. Move us to declarative Git-driven delivery.",
+    "expect": ["ops-gitops"]
+  },
+  {
+    "id": "ops-routing-06",
+    "prompt": "Production debugging means grepping unstructured logs across services. Make our running system observable: logs, metrics, traces.",
+    "expect": ["ops-observability"]
+  },
+  {
+    "id": "ops-routing-07",
+    "prompt": "The pager is noisy and there's no SLO anywhere. Design alerting around error budgets with actionable runbooks.",
+    "expect": ["ops-monitoring-alerting"]
+  },
+  {
+    "id": "ops-routing-08",
+    "prompt": "The pipeline ships code with no static analysis, and a leaked secret is sitting in git history. Harden the delivery supply chain.",
+    "expect": ["ops-devsecops"]
+  },
+  {
+    "id": "ops-routing-09",
+    "prompt": "We deploy straight to 100% with feature work half-exposed and rollback means panic. Set up proper release management.",
+    "expect": ["ops-release-management"]
   }
 ]
