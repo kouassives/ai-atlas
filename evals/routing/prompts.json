@@ -153,5 +153,45 @@
     "id": "ops-routing-09",
     "prompt": "We deploy straight to 100% with feature work half-exposed and rollback means panic. Set up proper release management.",
     "expect": ["ops-release-management"]
+  },
+  {
+    "id": "tst-routing-01",
+    "prompt": "We need a testing plan for this release: where the test budget goes, coverage goals, and what to automate vs keep manual.",
+    "expect": ["tst-test-strategy"]
+  },
+  {
+    "id": "tst-routing-02",
+    "prompt": "This discount rule has ranges, boundaries, and condition combinations. Derive the systematic test case set from it.",
+    "expect": ["tst-test-design-techniques"]
+  },
+  {
+    "id": "tst-routing-03",
+    "prompt": "Our unit tests mock every collaborator and break on any rename. Write fast, honest, behavior-asserting unit tests.",
+    "expect": ["tst-unit-testing"]
+  },
+  {
+    "id": "tst-routing-04",
+    "prompt": "Unit tests are green but the repository breaks against the real database. Wire the integration tests at the real seams.",
+    "expect": ["tst-integration-testing"]
+  },
+  {
+    "id": "tst-routing-05",
+    "prompt": "Pick the few user journeys that prove checkout works through the real stack and make them stable against flake.",
+    "expect": ["tst-e2e-testing"]
+  },
+  {
+    "id": "tst-routing-06",
+    "prompt": "Verify this API's surface against its spec: schemas, auth flows, edge cases, and the failing shapes.",
+    "expect": ["tst-api-testing"]
+  },
+  {
+    "id": "tst-routing-07",
+    "prompt": "We need evidence our latency targets hold: build the load model, then load, stress, and soak tests against it.",
+    "expect": ["tst-performance-testing"]
+  },
+  {
+    "id": "tst-routing-08",
+    "prompt": "A regression escaped to production and the suite is full of flaky tests. Design the regression selection and fix the flakes.",
+    "expect": ["tst-regression"]
   }
 ]

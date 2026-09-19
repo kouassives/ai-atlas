@@ -2,7 +2,7 @@
 
 Production-grade **skills** and **agents** for AI coding assistants (OpenCode-first, Agent Skills standard), covering the full software development lifecycle — organized by SDLC role.
 
-> **Status: in progress.** Architecture locked. Foundation + backend + architect + devops skills published (32/54). Agents begun. Tester domain next.
+> **Status: in progress.** Architecture locked. Foundation + backend + architect + devops + tester skills published (40/54). Agents begun. Frontend domain next.
 
 ## Why this collection
 
@@ -42,9 +42,10 @@ Skills are instructions — treat downloaded skills like executable code. Review
 3. **L2** Pilot domain: developer-backend (`be-*`) — ✅ *(solid-principles, api-design, microservices-patterns, database-design, async-messaging, security-engineering, performance, tdd, refactoring)* + `backend-developer` / `code-reviewer` agents + shared `definition-of-done`
 4. **L3** architect domain (`arch-*`) — ✅ *(requirements-analysis, system-design, ddd, clean-architecture, design-patterns, microservices-architecture, api-contract-design, nfrs)* + `arch-specialist` agent
 5. **L4** devops domain (`ops-*`) — ✅ *(ci-cd, docker-containers, kubernetes, iac-terraform, gitops, observability, monitoring-alerting, devsecops, release-management)* + `devops-engineer` agent
-6. **L5** tester domain (`tst-*`) + `tester` agent
-7. **L6–L7** frontend (`fe-*`) + `frontend-developer`, ui-designer (`ui-*`) + `ui-designer` agents
-8. **L8** Hardening: `install.sh`, marketplace manifests, execution evals, docs
+6. **L5** tester domain (`tst-*`) — ✅ *(test-strategy, test-design-techniques, unit-testing, integration-testing, e2e-testing, api-testing, performance-testing, regression)* + `tester` agent
+7. **L6** frontend domain (`fe-*`) + `frontend-developer` agent
+8. **L7** ui-designer domain (`ui-*`) + `ui-designer` agent
+9. **L8** Hardening: `install.sh`, marketplace manifests, execution evals, docs
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the full design.
 

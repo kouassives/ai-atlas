@@ -7,7 +7,7 @@
 node scripts/gen-index.mjs
 ```
 
-**32 skills published.**
+**40 skills published.**
 
 ## Foundation
 
@@ -46,6 +46,19 @@ node scripts/gen-index.mjs
 | `be-security-engineering` | Implements application security: OWASP Top 10 guidance for code, authentication and authorization flows, secrets handlin | implementation |
 | `be-solid-principles` | Applies the five SOLID principles to class and module design with before/after examples and the smells that signal each  | implementation |
 | `be-tdd` | Drives implementation and bug fixes with test-driven development: Red-Green-Refactor, the test pyramid (80/15/5), test s | testing |
+
+## Tester
+
+| Skill | Purpose | SDLC stage |
+|---|---|---|
+| `tst-api-testing` | Tests API surfaces: schema validation, auth flows, edge cases, and contract verification | testing |
+| `tst-e2e-testing` | Tests critical user journeys end-to-end: Playwright/Cypress patterns, journey selection, and stability against flake | testing |
+| `tst-integration-testing` | Tests components wired together: contract testing, database and service integration, and testcontainers | testing |
+| `tst-performance-testing` | Validates performance requirements: load, stress, soak tests, benchmarks, and bottleneck analysis | testing |
+| `tst-regression` | Designs and manages regression suites: selection and prioritization, change-linked execution, and flaky-test management | operations maintenance |
+| `tst-test-design-techniques` | Designs test cases systematically from requirements: equivalence partitioning splits inputs into ranges, boundary value  | testing |
+| `tst-test-strategy` | Plans a testing approach: test pyramid and quadrants, risk-based scoping, coverage goals, and what to automate versus no | testing |
+| `tst-unit-testing` | Writes unit tests that stay fast and honest: isolation, naming conventions, mocking do's and don'ts, and coverage discip | testing |
 
 ## DevOps
 
