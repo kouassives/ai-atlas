@@ -7,18 +7,31 @@
 node scripts/gen-index.mjs
 ```
 
-**15 skills published.**
+**23 skills published.**
 
 ## Foundation
 
 | Skill | Purpose | SDLC stage |
 |---|---|---|
-| `fnd-adr` | Writes and maintains Architecture Decision Records (ADRs): when a decision must be recorded, the template to use, and th | design |
+| `fnd-adr` | Writes and maintains Architecture Decision Records (ADRs) with the record template and the status lifecycle (proposed, a | design |
 | `fnd-code-review` | Conducts multi-axis code review: correctness, readability, architecture, security, and performance, with severity labels | review |
 | `fnd-engineering-principles` | Applies the core engineering principles — SOLID, KISS, YAGNI, DRY, and composition over inheritance — to concrete design | implementation |
 | `fnd-sdlc-overview` | Maps the full software development lifecycle: which stage a request belongs to, which role owns it, which skills apply,  | analysis |
 | `fnd-security-basics` | Applies the baseline security discipline every feature needs: drawing the trust boundary, validating all untrusted input | implementation |
 | `fnd-technical-writing` | Writes technical documentation that survives: READMEs, API documentation, inline comments, and changelogs — with the rig | operations maintenance |
+
+## Architect
+
+| Skill | Purpose | SDLC stage |
+|---|---|---|
+| `arch-api-contract-design` | Defines public interfaces contract-first: OpenAPI, versioning, error semantics, backward compatibility, and Hyrum's Law | design |
+| `arch-clean-architecture` | Structures an application backbone with Clean Architecture and hexagonal (ports & adapters) style: layers, the dependenc | design |
+| `arch-ddd` | Models business domains with Domain-Driven Design: ubiquitous language, bounded contexts, aggregates, domain events, and | design |
+| `arch-design-patterns` | Chooses and applies classic GoF and architectural patterns by intent: the pattern's purpose, when to apply it, and its t | design |
+| `arch-microservices-architecture` | Decides service decomposition: how to split or consolidate services, bounded-context-aligned boundaries, data ownership, | design |
+| `arch-nfrs` | Defines measurable non-functional requirements: performance, availability, security, cost, and compliance — quantified s | design |
+| `arch-requirements-analysis` | Turns vague asks into requirements: user stories, acceptance criteria, edge cases, and explicit non-goals | analysis |
+| `arch-system-design` | Produces high-level system design before implementation: components, boundaries, data flow, non-functional requirements, | design |
 
 ## Developer Backend
 

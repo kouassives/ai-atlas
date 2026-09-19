@@ -68,5 +68,45 @@
     "id": "be-routing-08",
     "prompt": "The code works but is a 500-line god class that's painful to change. Restructure it without changing any behavior.",
     "expect": ["be-refactoring"]
+  },
+  {
+    "id": "arch-routing-01",
+    "prompt": "This ask is vague: 'make login better'. Turn it into user stories, acceptance criteria, edge cases, and explicit non-goals.",
+    "expect": ["arch-requirements-analysis"]
+  },
+  {
+    "id": "arch-routing-02",
+    "prompt": "Design the high-level shape of the new system before code: components, ownership boundaries, data flow, and the trade-offs between the options.",
+    "expect": ["arch-system-design"]
+  },
+  {
+    "id": "arch-routing-03",
+    "prompt": "Engineers and business use different words for the same concepts and we can't agree on our models. How do we align boundaries and language?",
+    "expect": ["arch-ddd"]
+  },
+  {
+    "id": "arch-routing-04",
+    "prompt": "Structure the app backbone so business logic is not tangled with the framework and the database — testable core, dependency rule, ports and adapters.",
+    "expect": ["arch-clean-architecture"]
+  },
+  {
+    "id": "arch-routing-05",
+    "prompt": "Our objects need configurable variants per environment. Which pattern fits this problem shape, and what does it cost us?",
+    "expect": ["arch-design-patterns"]
+  },
+  {
+    "id": "arch-routing-06",
+    "prompt": "The team wants to split the monolith into microservices. Work out whether the split earns its cost and where the ownership boundaries should be.",
+    "expect": ["arch-microservices-architecture"]
+  },
+  {
+    "id": "arch-routing-07",
+    "prompt": "Our public API spec drifted from the implementation and clients break silently. Set up contract-first design with versioning and compatibility policy.",
+    "expect": ["arch-api-contract-design"]
+  },
+  {
+    "id": "arch-routing-08",
+    "prompt": "The requirement just says 'fast and reliable'. Give me quantified non-functional targets we can design and verify against.",
+    "expect": ["arch-nfrs"]
   }
 ]

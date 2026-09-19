@@ -1,6 +1,6 @@
 ---
 name: fnd-adr
-description: "Writes and maintains Architecture Decision Records (ADRs): when a decision must be recorded, the template to use, and the status lifecycle (proposed, accepted, superseded). Use when making a significant structural choice, when asked why a design decision was made or why we chose a technology, when recording or documenting a decision before it is forgotten, or when revisiting or reversing an old decision the team needs an ADR to track."
+description: "Writes and maintains Architecture Decision Records (ADRs) with the record template and the status lifecycle (proposed, accepted, superseded). Use when a decision must be recorded or written down, when you need to write or record why a design choice was made, when the team must track decisions about technologies or structure, or when revisiting and recording a reversal of an old decision."
 license: MIT
 compatibility: opencode, claude-code, codex
 metadata:
