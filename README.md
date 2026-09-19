@@ -2,7 +2,7 @@
 
 Production-grade **skills** and **agents** for AI coding assistants (OpenCode-first, Agent Skills standard), covering the full software development lifecycle — organized by SDLC role.
 
-> **Status: in progress.** Architecture locked. Foundation skills published (6/54). Backend pilot domain next.
+> **Status: in progress.** Architecture locked. Foundation + backend skills published (15/54). Agents begun. Architect domain next.
 
 ## Why this collection
 
@@ -39,9 +39,10 @@ Skills are instructions — treat downloaded skills like executable code. Review
 
 1. **L0** Scaffolding (this) — ✅
 2. **L1** Foundation skills (`fnd-*`) — ✅ *(sdlc-overview, engineering-principles, code-review, adr, security-basics, technical-writing)*
-3. **L2** Pilot domain: developer-backend (`be-*`) + `backend-developer` / `code-reviewer` agents
-4. **L3–L7** architect, devops, tester, frontend, ui-designer domains + agents
-5. **L8** Hardening: `install.sh`, marketplace manifests, execution evals, docs
+3. **L2** Pilot domain: developer-backend (`be-*`) — ✅ *(solid-principles, api-design, microservices-patterns, database-design, async-messaging, security-engineering, performance, tdd, refactoring)* + `backend-developer` / `code-reviewer` agents + shared `definition-of-done`
+4. **L3** architect domain (`arch-*`) + `arch-specialist` agent
+5. **L4–L7** devops, tester, frontend, ui-designer domains + agents
+6. **L8** Hardening: `install.sh`, marketplace manifests, execution evals, docs
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the full design.
 

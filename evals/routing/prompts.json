@@ -28,5 +28,45 @@
     "id": "fnd-routing-06",
     "prompt": "This new endpoint takes untrusted input from the internet. What's the baseline security checklist I must apply?",
     "expect": ["fnd-security-basics"]
+  },
+  {
+    "id": "be-routing-01",
+    "prompt": "This OrderService class parses, validates, persists, and emails. How should I split it and fix the dependency direction?",
+    "expect": ["be-solid-principles"]
+  },
+  {
+    "id": "be-routing-02",
+    "prompt": "Design the API for a new orders resource: which style, what status codes and error shape, and how do we make retries safe?",
+    "expect": ["be-api-design"]
+  },
+  {
+    "id": "be-routing-03",
+    "prompt": "Our checkout touches three services. We need the sagas, the outbox, and to stop retry storms from cascading outages.",
+    "expect": ["be-microservices-patterns"]
+  },
+  {
+    "id": "be-routing-04",
+    "prompt": "Design the schema for these tables, tell me where to index, and plan the migration to add a column without breaking production.",
+    "expect": ["be-database-design"]
+  },
+  {
+    "id": "be-routing-05",
+    "prompt": "We're adding a topic for order_placed events. Consumers duplicate work and we can't replay history. Set this flow up correctly.",
+    "expect": ["be-async-messaging"]
+  },
+  {
+    "id": "be-routing-06",
+    "prompt": "The request is slow and there's no measurement. Someone proposed a cache, but I want to profile first. Run the performance loop.",
+    "expect": ["be-performance"]
+  },
+  {
+    "id": "be-routing-07",
+    "prompt": "This bug needs fixing: write the regression test, watch it fail, then implement — red, green, refactor.",
+    "expect": ["be-tdd"]
+  },
+  {
+    "id": "be-routing-08",
+    "prompt": "The code works but is a 500-line god class that's painful to change. Restructure it without changing any behavior.",
+    "expect": ["be-refactoring"]
   }
 ]

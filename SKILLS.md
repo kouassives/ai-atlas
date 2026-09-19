@@ -7,7 +7,7 @@
 node scripts/gen-index.mjs
 ```
 
-**6 skills published.**
+**15 skills published.**
 
 ## Foundation
 
@@ -19,4 +19,18 @@ node scripts/gen-index.mjs
 | `fnd-sdlc-overview` | Maps the full software development lifecycle: which stage a request belongs to, which role owns it, which skills apply,  | analysis |
 | `fnd-security-basics` | Applies the baseline security discipline every feature needs: drawing the trust boundary, validating all untrusted input | implementation |
 | `fnd-technical-writing` | Writes technical documentation that survives: READMEs, API documentation, inline comments, and changelogs — with the rig | operations maintenance |
+
+## Developer Backend
+
+| Skill | Purpose | SDLC stage |
+|---|---|---|
+| `be-api-design` | Designs and implements APIs: REST vs GraphQL vs gRPC selection, resource modeling, status codes, validation, pagination, | implementation |
+| `be-async-messaging` | Designs and maintains message and event flows: queues vs events, producer/consumer semantics, at-least-once reality, dea | implementation |
+| `be-database-design` | Designs and evolves database schemas: modeling, normalization vs denormalization, indexing, transactions and isolation,  | implementation |
+| `be-microservices-patterns` | Selects and applies distributed-system patterns for microservices: saga and outbox for data consistency, CQRS, circuit b | implementation |
+| `be-performance` | Diagnoses and fixes performance issues: profiling before optimizing, caching strategies, N+1 query detection, connection | implementation |
+| `be-refactoring` | Performs safe refactoring: finding seams, preserving behavior, moving in small verified increments, and recognizing code | operations maintenance |
+| `be-security-engineering` | Implements application security: OWASP Top 10 guidance for code, authentication and authorization flows, secrets handlin | implementation |
+| `be-solid-principles` | Applies the five SOLID principles to class and module design with before/after examples and the smells that signal each  | implementation |
+| `be-tdd` | Drives implementation and bug fixes with test-driven development: Red-Green-Refactor, the test pyramid (80/15/5), test s | testing |
 
