@@ -7,5 +7,16 @@
 node scripts/gen-index.mjs
 ```
 
-**0 skills published.**
+**6 skills published.**
+
+## Foundation
+
+| Skill | Purpose | SDLC stage |
+|---|---|---|
+| `fnd-adr` | Writes and maintains Architecture Decision Records (ADRs): when a decision must be recorded, the template to use, and th | design |
+| `fnd-code-review` | Conducts multi-axis code review: correctness, readability, architecture, security, and performance, with severity labels | review |
+| `fnd-engineering-principles` | Applies the core engineering principles — SOLID, KISS, YAGNI, DRY, and composition over inheritance — to concrete design | implementation |
+| `fnd-sdlc-overview` | Maps the full software development lifecycle: which stage a request belongs to, which role owns it, which skills apply,  | analysis |
+| `fnd-security-basics` | Applies the baseline security discipline every feature needs: drawing the trust boundary, validating all untrusted input | implementation |
+| `fnd-technical-writing` | Writes technical documentation that survives: READMEs, API documentation, inline comments, and changelogs — with the rig | operations maintenance |
 

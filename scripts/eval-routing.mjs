@@ -25,7 +25,8 @@ const SKILLS_DIR = join(ROOT, "skills");
 const PROMPTS_FILE = join(ROOT, "evals", "routing", "prompts.json");
 
 const STOPWORDS = new Set(
-  `a an and are as at be but by for from has have how in is it its of on or that the this to was we what when which who will with you your i me my our do does did not no yes can could should would please help want need build make create use using used code coding project app application feature change fix add implement`
+  `a an and are as at be but by for from has have how in is it its of on or that the this to was we what when which who will with you your i me my our do does did not no yes can could should would please help want need build make create use using used code coding project app application feature change fix add implement
+about above after again against all also any because before being below between both each few further here into just made more most much must off only other out own same some such than then there these they thing things through under up very where while why down onto over under until upon within without`
     .split(/\s+/)
 );
 
