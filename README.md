@@ -2,7 +2,7 @@
 
 Production-grade **skills** and **agents** for AI coding assistants (OpenCode-first, Agent Skills standard), covering the full software development lifecycle — organized by SDLC role.
 
-> **Status: in progress.** Architecture locked. All 54 skills published (foundation, backend, architect, devops, tester, frontend, ui-design). Agents begun. Hardening next.
+> **Status: released.** Architecture locked. All 54 skills + 8 agents published across foundation, architect, backend, frontend, ui-design, tester, and devops domains. Installer, marketplace manifests, and full quality suite live.
 
 ## Why this collection
 
@@ -22,14 +22,25 @@ Each skill is **one competency**, self-contained, namespaced to be installable s
 
 ## Install
 
-Documentation pending — standards-compliant `skills/<name>/SKILL.md` layout:
+Standard `skills/<name>/SKILL.md` layout — works with `npx skills add`, every tool's native skill scanner, and the included zero-dependency installer:
 
 ```bash
-# once published (owner placeholder):
+# 1. skills (ecosystem standard, once published):
 npx skills add <owner>/ai-engineer
+
+# 2. agents + skills for OpenCode (no dependencies):
+./install.sh                      # global → ~/.config/opencode/
+./install.sh --project            # project → ./.opencode/
+./install.sh --list | --dry-run   # preview
+./install.sh --force              # overwrite
+
+# 3. other tools:
+./install.sh --agent claude-code  # → ~/.claude/skills/ (+ agents)
+./install.sh --agent codex        # → ~/.codex/skills/
+./install.sh --agent cursor       # → ~/.cursor/skills/
 ```
 
-Or place a skill folder into `.opencode/skills/` (project) / `~/.config/opencode/skills/` (global) and restart OpenCode. Agents ship in `agents/` → `.opencode/agent/`.
+Or place a skill folder into `.opencode/skills/` (project) / `~/.config/opencode/skills/` (global) and restart OpenCode. Agents ship in `agents/` → `.opencode/agent/`. Per-tool details: [docs/usage.md](docs/usage.md).
 
 ## Security statement
 
@@ -45,7 +56,7 @@ Skills are instructions — treat downloaded skills like executable code. Review
 6. **L5** tester domain (`tst-*`) — ✅ *(test-strategy, test-design-techniques, unit-testing, integration-testing, e2e-testing, api-testing, performance-testing, regression)* + `tester` agent
 7. **L6** frontend domain (`fe-*`) — ✅ *(architecture, component-design, state-management, api-integration, accessibility, responsive-design, performance, security)* + `frontend-developer` agent
 8. **L7** ui-designer domain (`ui-*`) — ✅ *(ux-research, ux-flows, visual-design, design-systems, prototyping, usability-testing)* + `ui-designer` agent
-9. **L8** Hardening: `install.sh`, marketplace manifests, execution evals, docs
+9. **L8** Hardening — ✅ `install.sh` (POSIX-sh, tested) + `test-install.sh`, `orchestrator.md` primary agent, marketplace manifests (`registry.yaml`, `.claude-plugin/`, `.agents/plugins/`), execution-eval coverage check, `release.yml` (tag → SHA256SUMS), docs
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the full design.
 

@@ -18,8 +18,17 @@ jobs:
         run: node scripts/lint-skills.mjs
       - name: Tier 2 — routing evals
         run: node scripts/eval-routing.mjs
+      - name: Execution evals sweep — coverage
+        run: node scripts/check-eval-cases.mjs
       - name: SKILLS.md freshness
         run: |
           node scripts/gen-index.mjs
           git diff --exit-code SKILLS.md
         shell: bash
+      - name: Marketplace manifests freshness
+        run: |
+          node scripts/emit-marketplace.mjs
+          git diff --exit-code registry.yaml .claude-plugin/marketplace.json .agents/plugins/marketplace.json
+        shell: bash
+      - name: Install script smoke test
+        run: sh scripts/test-install.sh

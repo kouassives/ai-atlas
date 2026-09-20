@@ -1,0 +1,35 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify gates before release
+        run: |
+          node scripts/gen-index.mjs && git diff --exit-code SKILLS.md
+          node scripts/emit-marketplace.mjs && git diff --exit-code registry.yaml .claude-plugin/marketplace.json .agents/plugins/marketplace.json
+          node scripts/lint-skills.mjs
+          node scripts/eval-routing.mjs
+          node scripts/check-eval-cases.mjs
+          sh scripts/test-install.sh
+        shell: bash
+      - name: Generate SHA256SUMS
+        working-directory: ${{ github.workspace }}
+        run: sha256sum install.sh registry.yaml SKILLS.md .claude-plugin/marketplace.json .agents/plugins/marketplace.json > SHA256SUMS
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --title "ai-engineer $GITHUB_REF_NAME" \
+            --generate-notes \
+            SHA256SUMS \
+            install.sh

@@ -1,0 +1,277 @@
+{
+  "name": "ai-engineer",
+  "description": "SDLC skills for AI coding assistants (54 skills, OpenCode-first).",
+  "version": "1.0.0",
+  "plugins": [
+    {
+      "name": "arch-api-contract-design",
+      "description": "Defines public interfaces contract-first: OpenAPI, versioning, error semantics, backward compatibility, and Hyrum's Law. Use when defining public interfaces, when designing contracts before implementation, when a public API must stay backward-compatible, or when clients depend on behavior the spec never promised.",
+      "path": "skills/arch-api-contract-design"
+    },
+    {
+      "name": "arch-clean-architecture",
+      "description": "Structures an application backbone with Clean Architecture and hexagonal (ports & adapters) style: layers, the dependency rule, use cases, and entities. Use when structuring an application from scratch, when core business logic is tangled with frameworks and databases, or when the architecture needs to stay testable and replaceable at its edges.",
+      "path": "skills/arch-clean-architecture"
+    },
+    {
+      "name": "arch-ddd",
+      "description": "Models business domains with Domain-Driven Design: ubiquitous language, bounded contexts, aggregates, domain events, and anti-corruption layers. Use when modeling business domains, when the codebase language doesn't match the business vocabulary, when the team cannot agree on what an entity is, or when integrating with legacy or external systems with different models.",
+      "path": "skills/arch-ddd"
+    },
+    {
+      "name": "arch-design-patterns",
+      "description": "Chooses and applies classic GoF and architectural patterns by intent: the pattern's purpose, when to apply it, and its trade-offs. Use when facing a known problem shape — factories, strategies, observers, adapters, repositories, decorators — and when a pattern needs to be selected against a concrete context rather than applied by fashion.",
+      "path": "skills/arch-design-patterns"
+    },
+    {
+      "name": "arch-microservices-architecture",
+      "description": "Decides service decomposition: how to split or consolidate services, bounded-context-aligned boundaries, data ownership, and when NOT to use microservices at all. Use when splitting a monolith, when services have unclear ownership or shared databases, or when the team is considering microservices and needs an honest decomposition analysis.",
+      "path": "skills/arch-microservices-architecture"
+    },
+    {
+      "name": "arch-nfrs",
+      "description": "Defines measurable non-functional requirements: performance, availability, security, cost, and compliance — quantified so a system can be designed and verified against them. Use when a system or feature needs concrete NFRs, when requirements say 'fast', 'reliable', or 'secure' with no numbers, or when design decisions must be judged against explicit quality targets.",
+      "path": "skills/arch-nfrs"
+    },
+    {
+      "name": "arch-requirements-analysis",
+      "description": "Turns vague asks into requirements: user stories, acceptance criteria, edge cases, and explicit non-goals. Use when an ask is underspecified, when a feature request has no definition of done, when stakeholders disagree on scope, or before any design or implementation work begins.",
+      "path": "skills/arch-requirements-analysis"
+    },
+    {
+      "name": "arch-system-design",
+      "description": "Produces high-level system design before implementation: components, boundaries, data flow, non-functional requirements, and explicit trade-off analysis. Use when designing a system or feature, when choosing between architectures or integrations, or when a design needs to be reviewed before code is written.",
+      "path": "skills/arch-system-design"
+    },
+    {
+      "name": "be-api-design",
+      "description": "Designs and implements APIs: REST vs GraphQL vs gRPC selection, resource modeling, status codes, validation, pagination, idempotency, and versioning. Use when creating or extending an API, when choosing an API style, when endpoints lack standard status semantics, or when clients need stable contracts and retry behavior.",
+      "path": "skills/be-api-design"
+    },
+    {
+      "name": "be-async-messaging",
+      "description": "Designs and maintains message and event flows: queues vs events, producer/consumer semantics, at-least-once reality, dead-lettering, ordering constraints, and replay. Use when adding messaging or events between services, when choosing between a queue and a topic, when a consumer falls behind or loses messages, or when events need to be replayed or retro-processed.",
+      "path": "skills/be-async-messaging"
+    },
+    {
+      "name": "be-database-design",
+      "description": "Design database schemas and tables: table modeling, normalization vs denormalization, the index each query needs, transactions and isolation, and safe migrations. Use when designing or altering a table or schema, when choosing an index or planning a migration to add a column, when a query is slow, or before touching a data model.",
+      "path": "skills/be-database-design"
+    },
+    {
+      "name": "be-microservices-patterns",
+      "description": "Selects and applies distributed-system patterns for microservices: saga and outbox for data consistency, CQRS, circuit breaker, retry with backoff, idempotent consumers, and bulkhead isolation. Use when building distributed behavior, when services share data they shouldn't, when partial failures cause cascading outages, or when choosing between patterns for cross-service transactions.",
+      "path": "skills/be-microservices-patterns"
+    },
+    {
+      "name": "be-performance",
+      "description": "Diagnoses and fixes performance issues: profiling before optimizing, caching strategies, N+1 query detection, connection pooling, and latency budgets. Use when performance matters or regresses, when a request or query is slow, when load tests fail, or when someone proposes a cache or a micro-optimization without measurement.",
+      "path": "skills/be-performance"
+    },
+    {
+      "name": "be-refactoring",
+      "description": "Performs safe refactoring: finding seams, preserving behavior, moving in small verified increments, and recognizing code smells from a catalogue. Use when improving existing code without changing behavior, when a codebase is hard to change and needs structural cleanup, when preparing a system for a feature it cannot currently hold, or when reviewing code that 'works but hurts'.",
+      "path": "skills/be-refactoring"
+    },
+    {
+      "name": "be-security-engineering",
+      "description": "Implements application security: OWASP Top 10 guidance for code, authentication and authorization flows, secrets handling, and dependency auditing. Use when handling credentials or untrusted input, when building login or permission systems, when auditing dependencies or fixing vulnerabilities, or when implementing anything that faces untrusted users.",
+      "path": "skills/be-security-engineering"
+    },
+    {
+      "name": "be-solid-principles",
+      "description": "Applies the five SOLID principles to class and module design with before/after examples and the smells that signal each violation. Use when designing, extending, or reviewing classes and modules, when a class does too much, when abstractions feel wrong or leaky, or when dependency direction needs to be fixed.",
+      "path": "skills/be-solid-principles"
+    },
+    {
+      "name": "be-tdd",
+      "description": "Drives implementation and bug fixes with test-driven development: Red-Green-Refactor, the test pyramid (80/15/5), test sizes, DAMP over DRY, and what not to mock. Use when implementing logic or fixing bugs, when code has no tests, when a bug needs a regression test first, or when test suites are slow, brittle, or testing the wrong layer.",
+      "path": "skills/be-tdd"
+    },
+    {
+      "name": "fe-accessibility",
+      "description": "Builds accessible UI to WCAG 2.1 AA: semantics, keyboard navigation, ARIA, focus management, and contrast. Use when building or reviewing UI, when interactive components work with a mouse only, or when a screen-reader user cannot complete the task.",
+      "path": "skills/fe-accessibility"
+    },
+    {
+      "name": "fe-api-integration",
+      "description": "Wires UI to APIs: fetching, caching, optimistic updates, error handling, retries, and stale-while-revalidate. Use when wiring UI to APIs, when loading states are per-component chaos, when errors leave users stuck, or when refetches hammer the backend.",
+      "path": "skills/fe-api-integration"
+    },
+    {
+      "name": "fe-architecture",
+      "description": "Structures frontend codebases: feature-based modules, clean layers, module boundaries, and folder conventions. Use when structuring a frontend codebase, when components and logic sprawl across folders, when scaling adds new features chaotically, or when a frontend needs architecture review.",
+      "path": "skills/fe-architecture"
+    },
+    {
+      "name": "fe-component-design",
+      "description": "Designs UI components: composition, presentational vs container roles, prop and event contracts, and reusability without premature abstraction. Use when building UI components, when a component grows props and conditionals without bound, or when 'reusable' components are actually hard to use and change.",
+      "path": "skills/fe-component-design"
+    },
+    {
+      "name": "fe-performance",
+      "description": "Keeps the frontend fast: Core Web Vitals, bundle analysis, rendering cost, memoization, and image optimization. Use when the UI feels slow, when budgets regress, when bundles bloat, or when interaction feels janky.",
+      "path": "skills/fe-performance"
+    },
+    {
+      "name": "fe-responsive-design",
+      "description": "Builds layouts that work across viewports: mobile-first, fluid layout, breakpoints, and container queries. Use when styling across viewports, when a design works on desktop but breaks on mobile, or when breakpoint stacks grow unmanageable.",
+      "path": "skills/fe-responsive-design"
+    },
+    {
+      "name": "fe-security",
+      "description": "Secures the client side: XSS, CSRF, sanitization, secure headers, and client-side secret hygiene. Use when rendering user content, embedding third-party code, handling tokens in the browser, or when the frontend is part of the ingested untrusted-data path.",
+      "path": "skills/fe-security"
+    },
+    {
+      "name": "fe-state-management",
+      "description": "Chooses state architecture: local vs global vs server state; store, hook, and context patterns; and when each applies. Use when choosing state architecture, when state is duplicated or prop-drilled, when global stores grow without bound, or when server data and UI state are tangled.",
+      "path": "skills/fe-state-management"
+    },
+    {
+      "name": "fnd-adr",
+      "description": "Writes and maintains Architecture Decision Records (ADRs) with the record template and the status lifecycle (proposed, accepted, superseded). Use when a decision must be recorded or written down, when you need to write or record why a design choice was made, when the team must track decisions about technologies or structure, or when revisiting and recording a reversal of an old decision.",
+      "path": "skills/fnd-adr"
+    },
+    {
+      "name": "fnd-code-review",
+      "description": "Conducts multi-axis code review: correctness, readability, architecture, security, and performance, with severity labels, change-sizing guidance, and a verdict. Use before merging any pull request or change, when reviewing code written by yourself, another agent, or a human, or when assessing whether a change is ready to enter the main branch.",
+      "path": "skills/fnd-code-review"
+    },
+    {
+      "name": "fnd-engineering-principles",
+      "description": "Applies the core engineering principles — SOLID, KISS, YAGNI, DRY, and composition over inheritance — to concrete design decisions. Use when designing a module or class, when code feels over-engineered or 'clever', when choosing between abstractions, when reviewing someone else's design, or when the team debates how much structure a solution needs.",
+      "path": "skills/fnd-engineering-principles"
+    },
+    {
+      "name": "fnd-sdlc-overview",
+      "description": "Maps the full software development lifecycle: which stage a request belongs to, which role owns it, which skills apply, and the exit criteria for handing off between stages. Use when starting a new project, when a request spans multiple phases, when the team is unsure what should happen next, or when deciding which specialist agent or skill applies to a task.",
+      "path": "skills/fnd-sdlc-overview"
+    },
+    {
+      "name": "fnd-security-basics",
+      "description": "Applies the baseline security discipline every feature needs: drawing the trust boundary, validating all untrusted input, authenticating and authorizing every access, protecting secrets, and checking dependencies. Use when a feature takes untrusted input, when handling credentials or personal data, when asked 'is this secure', when hardening an endpoint or service, or before touching anything that faces the internet.",
+      "path": "skills/fnd-security-basics"
+    },
+    {
+      "name": "fnd-technical-writing",
+      "description": "Writes technical documentation that survives: READMEs, API documentation, inline comments, and changelogs — with the right structure for each and rules that keep docs from rotting. Use when writing or improving a README, documenting an API or module, reviewing documentation quality, writing a changelog, or when a teammate asks 'how do I use this?' and there is no answer written down.",
+      "path": "skills/fnd-technical-writing"
+    },
+    {
+      "name": "ops-ci-cd",
+      "description": "Builds and improves CI/CD pipelines: stages, quality gates, artifact flow, and feedback speed. Use when creating or modifying a pipeline, when CI takes too long or misses failures, or when artifacts or deploy promotion between environments feel hand-rolled.",
+      "path": "skills/ops-ci-cd"
+    },
+    {
+      "name": "ops-devsecops",
+      "description": "Secures the delivery pipeline: SAST and SCA in CI, secrets scanning, image scanning, and supply-chain defense. Use when building or hardening pipelines, when the repo has no security gates, when dependencies or images ship unchecked, or when supply-chain risks (registry, actions, packages) need bounding.",
+      "path": "skills/ops-devsecops"
+    },
+    {
+      "name": "ops-docker-containers",
+      "description": "Containerizes applications well: multi-stage builds, minimal images, layer caching, security scanning, and non-root runtime. Use when writing or reviewing a Dockerfile, when images are huge or leak secrets, when builds are slow, or when containers run as root or with unnecessary tools.",
+      "path": "skills/ops-docker-containers"
+    },
+    {
+      "name": "ops-gitops",
+      "description": "Runs deployments declaratively with GitOps: Git as the single source of truth, ArgoCD/Flux style reconciliation, and environment promotion. Use when deployments are imperative scripts, when cluster state drifts from any repo, or when promoting between environments is manual and error-prone.",
+      "path": "skills/ops-gitops"
+    },
+    {
+      "name": "ops-iac-terraform",
+      "description": "Builds infrastructure as code with Terraform or OpenTofu: state management, modules, and drift handling. Use when provisioning infrastructure, when state is shared or locked poorly, when environments drift from the code, or when infra changes are unreviewable or unrepeatable.",
+      "path": "skills/ops-iac-terraform"
+    },
+    {
+      "name": "ops-kubernetes",
+      "description": "Deploys and operates workloads on Kubernetes: manifests, health probes, resource requests and limits, networking, rolling updates, and rollbacks. Use when writing or reviewing cluster manifests, when pods restart mysteriously or get scheduled badly, when a deployment has no rollback story, or when resource usage is unconstrained.",
+      "path": "skills/ops-kubernetes"
+    },
+    {
+      "name": "ops-monitoring-alerting",
+      "description": "Defines SLOs and error budgets, burn-rate alerting, actionable alert rules, runbooks, and on-call escalation practice. Use when the pager is noisy or missed, when there is no SLO to alert against, when alert rules are blips instead of budgets, or when on-call cannot act from the alert text.",
+      "path": "skills/ops-monitoring-alerting"
+    },
+    {
+      "name": "ops-observability",
+      "description": "Makes running systems observable: structured logging, RED/USE metrics, tracing, and dashboard layout. Use when shipping anything that runs in production, when debugging needs log greps across services, when metrics lack a coherent picture, or when latency problems need correlation across hops.",
+      "path": "skills/ops-observability"
+    },
+    {
+      "name": "ops-release-management",
+      "description": "Releases software safely: semantic versioning, feature flags, staged rollouts, and rollback procedures. Use when cutting a release, when a deploy needs to reach users gradually, when features ship half-finished and hide, or when rollback means panic and prayer.",
+      "path": "skills/ops-release-management"
+    },
+    {
+      "name": "tst-api-testing",
+      "description": "Tests API surfaces: schema validation, auth flows, edge cases, and contract verification. Use when testing API surfaces, when schemas drift from specs, when auth flows need proof, or when an API's edge behavior needs systematic coverage beyond happy paths.",
+      "path": "skills/tst-api-testing"
+    },
+    {
+      "name": "tst-e2e-testing",
+      "description": "Tests critical user journeys end-to-end: Playwright/Cypress patterns, journey selection, and stability against flake. Use when proving critical paths through the real stack, when e2e suites are flaky or huge, or when a release gate needs evidence that the core journey works.",
+      "path": "skills/tst-e2e-testing"
+    },
+    {
+      "name": "tst-integration-testing",
+      "description": "Tests components wired together: contract testing, database and service integration, and testcontainers. Use when wiring components together, when unit tests are green but the system fails at seams, when SQL, messaging, or external adapters need real verification, or when contracts between services need protection.",
+      "path": "skills/tst-integration-testing"
+    },
+    {
+      "name": "tst-performance-testing",
+      "description": "Validates performance requirements: load, stress, soak tests, benchmarks, and bottleneck analysis. Use when performance requirements need evidence, when a load model must be translated into tests, or when capacity limits and degradation points need to be known before they bite in production.",
+      "path": "skills/tst-performance-testing"
+    },
+    {
+      "name": "tst-regression",
+      "description": "Designs and manages regression suites: selection and prioritization, change-linked execution, and flaky-test management. Use after changes or before releases, when a regression escapes to production, or when the suite is slow or flaky and trust is eroding.",
+      "path": "skills/tst-regression"
+    },
+    {
+      "name": "tst-test-design-techniques",
+      "description": "Designs test cases systematically from requirements: equivalence partitioning splits inputs into ranges, boundary value analysis probes boundaries, decision tables cover condition combinations, and state transitions test flows. Use when designing a test case set, when coverage of a rule or boundary is accidental, or when a feature's input space needs structured sampling.",
+      "path": "skills/tst-test-design-techniques"
+    },
+    {
+      "name": "tst-test-strategy",
+      "description": "Plans a testing approach: test pyramid and quadrants, risk-based scoping, coverage goals, and what to automate versus not. Use when planning the test approach for a feature or system, when test effort is scattered or reactive, or when coverage goals need to be backed by evidence, not vibes.",
+      "path": "skills/tst-test-strategy"
+    },
+    {
+      "name": "tst-unit-testing",
+      "description": "Writes unit tests that stay fast and honest: isolation, naming conventions, mocking do's and don'ts, and coverage discipline. Use when writing unit tests, when unit tests are slow or over-mocked, when suites assert implementation details, or when coverage is gamed instead of meaningful.",
+      "path": "skills/tst-unit-testing"
+    },
+    {
+      "name": "ui-design-systems",
+      "description": "Creates and extends design systems: design tokens, component libraries, theming, and documentation. Use when creating or extending a design system, when buttons and colors drift between screens, or when a visual language needs codification into tokens and components.",
+      "path": "skills/ui-design-systems"
+    },
+    {
+      "name": "ui-prototyping",
+      "description": "Prototypes design ideas: fidelity levels, interactive mockups, and validation with users. Use when testing design ideas cheaply, when the design is unvalidated and building the real thing is expensive, or when stakeholders need to react to something concrete.",
+      "path": "skills/ui-prototyping"
+    },
+    {
+      "name": "ui-usability-testing",
+      "description": "Validates designs with real users: test plans, moderation, finding synthesis, and iteration. Use when validating a design with real users, when a flow fails or drops users without explanation, or before shipping changes that touch core journeys.",
+      "path": "skills/ui-usability-testing"
+    },
+    {
+      "name": "ui-ux-flows",
+      "description": "Maps screens to tasks: user flows, information architecture, wireframes, and journey mapping. Use when mapping screens to tasks, when navigation structure is unclear, or when features exist without a path through them.",
+      "path": "skills/ui-ux-flows"
+    },
+    {
+      "name": "ui-ux-research",
+      "description": "Runs user research: interviews, personas, problem framing, and discovery. Use when the target user or problem is unknown, when a feature is being invented without user contact, or when decisions rest on assumptions nobody verified.",
+      "path": "skills/ui-ux-research"
+    },
+    {
+      "name": "ui-visual-design",
+      "description": "Produces deliberate visual design: typography, color, spacing, hierarchy, and composition. Use when producing visual design, when the UI looks random, or when styling decisions need a system instead of preferences.",
+      "path": "skills/ui-visual-design"
+    }
+  ]
+}
