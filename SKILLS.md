@@ -7,7 +7,7 @@
 node scripts/gen-index.mjs
 ```
 
-**48 skills published.**
+**54 skills published.**
 
 ## Foundation
 
@@ -59,6 +59,17 @@ node scripts/gen-index.mjs
 | `fe-responsive-design` | Builds layouts that work across viewports: mobile-first, fluid layout, breakpoints, and container queries | implementation |
 | `fe-security` | Secures the client side: XSS, CSRF, sanitization, secure headers, and client-side secret hygiene | implementation |
 | `fe-state-management` | Chooses state architecture: local vs global vs server state; store, hook, and context patterns; and when each applies | implementation |
+
+## UI Designer
+
+| Skill | Purpose | SDLC stage |
+|---|---|---|
+| `ui-design-systems` | Creates and extends design systems: design tokens, component libraries, theming, and documentation | design |
+| `ui-prototyping` | Prototypes design ideas: fidelity levels, interactive mockups, and validation with users | design |
+| `ui-usability-testing` | Validates designs with real users: test plans, moderation, finding synthesis, and iteration | testing |
+| `ui-ux-flows` | Maps screens to tasks: user flows, information architecture, wireframes, and journey mapping | design |
+| `ui-ux-research` | Runs user research: interviews, personas, problem framing, and discovery | discovery |
+| `ui-visual-design` | Produces deliberate visual design: typography, color, spacing, hierarchy, and composition | design |
 
 ## Tester
 

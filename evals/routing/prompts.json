@@ -233,5 +233,35 @@
     "id": "fe-routing-08",
     "prompt": "The app renders user content and embeds a third-party widget. Audit the frontend security: XSS, CSRF, sanitization, secure headers, and client-side secret hygiene.",
     "expect": ["fe-security"]
+  },
+  {
+    "id": "ui-routing-01",
+    "prompt": "We're building for users we've never met. Frame the problem with user research: run interviews, build personas from the evidence, and list what we don't know.",
+    "expect": ["ui-ux-research"]
+  },
+  {
+    "id": "ui-routing-02",
+    "prompt": "Sketch the user flows and information architecture for the checkout task, then produce wireframes for each screen and mark the pain points on the journey mapping.",
+    "expect": ["ui-ux-flows"]
+  },
+  {
+    "id": "ui-routing-03",
+    "prompt": "The UI looks random: typography, color, spacing, and hierarchy are chosen per screen. Produce a deliberate visual design with a coherent composition.",
+    "expect": ["ui-visual-design"]
+  },
+  {
+    "id": "ui-routing-04",
+    "prompt": "Buttons, colors, and spacing drift between screens. Create a design system: design tokens, a component library, theming for our white-label brands, and docs.",
+    "expect": ["ui-design-systems"]
+  },
+  {
+    "id": "ui-routing-05",
+    "prompt": "Before building the full app, we want to test the idea cheaply. Pick the right fidelity level, build interactive mockups, and validate them with users.",
+    "expect": ["ui-prototyping"]
+  },
+  {
+    "id": "ui-routing-06",
+    "prompt": "The design shipped without testing: write the usability test plan, moderate sessions with real users, synthesize the findings, and plan the iteration.",
+    "expect": ["ui-usability-testing"]
   }
 ]
