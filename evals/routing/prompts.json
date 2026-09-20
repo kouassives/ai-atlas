@@ -193,5 +193,45 @@
     "id": "tst-routing-08",
     "prompt": "A regression escaped to production and the suite is full of flaky tests. Design the regression selection and fix the flakes.",
     "expect": ["tst-regression"]
+  },
+  {
+    "id": "fe-routing-01",
+    "prompt": "The frontend is one big components folder plus a hooks folder and every feature is tangled in both. Restructure the frontend codebase into feature-based modules with clean layers and folder conventions for module boundaries.",
+    "expect": ["fe-architecture"]
+  },
+  {
+    "id": "fe-routing-02",
+    "prompt": "This Card component has twenty props and growing conditionals. Redesign it using composition, with explicit prop and event contracts and a presentational versus container split.",
+    "expect": ["fe-component-design"]
+  },
+  {
+    "id": "fe-routing-03",
+    "prompt": "We're choosing how to manage state for the new checkout: where does local state live, when does state become global, and how is server state cached separately from a store?",
+    "expect": ["fe-state-management"]
+  },
+  {
+    "id": "fe-routing-04",
+    "prompt": "Set up the API integration for the settings screen: fetching and caching server data, loading and error handling with retries, and optimistic updates for the toggle.",
+    "expect": ["fe-api-integration"]
+  },
+  {
+    "id": "fe-routing-05",
+    "prompt": "The dialog only works with a mouse and fails WCAG. Fix the semantics, keyboard navigation, ARIA, focus management, and contrast for AA.",
+    "expect": ["fe-accessibility"]
+  },
+  {
+    "id": "fe-routing-06",
+    "prompt": "This layout breaks on small screens and the breakpoint list is out of control. Make it responsive with a mobile-first base, a fluid layout, and container queries for the sidebar components.",
+    "expect": ["fe-responsive-design"]
+  },
+  {
+    "id": "fe-routing-07",
+    "prompt": "The homepage feels slow: LCP regressed and the bundle keeps growing. Analyze it against the Core Web Vitals: bundle analysis, rendering cost, memoization, and image optimization.",
+    "expect": ["fe-performance"]
+  },
+  {
+    "id": "fe-routing-08",
+    "prompt": "The app renders user content and embeds a third-party widget. Audit the frontend security: XSS, CSRF, sanitization, secure headers, and client-side secret hygiene.",
+    "expect": ["fe-security"]
   }
 ]

@@ -2,7 +2,7 @@
 
 Production-grade **skills** and **agents** for AI coding assistants (OpenCode-first, Agent Skills standard), covering the full software development lifecycle — organized by SDLC role.
 
-> **Status: in progress.** Architecture locked. Foundation + backend + architect + devops + tester skills published (40/54). Agents begun. Frontend domain next.
+> **Status: in progress.** Architecture locked. Foundation + backend + architect + devops + tester + frontend skills published (48/54). Agents begun. UI-design domain next.
 
 ## Why this collection
 
@@ -43,7 +43,7 @@ Skills are instructions — treat downloaded skills like executable code. Review
 4. **L3** architect domain (`arch-*`) — ✅ *(requirements-analysis, system-design, ddd, clean-architecture, design-patterns, microservices-architecture, api-contract-design, nfrs)* + `arch-specialist` agent
 5. **L4** devops domain (`ops-*`) — ✅ *(ci-cd, docker-containers, kubernetes, iac-terraform, gitops, observability, monitoring-alerting, devsecops, release-management)* + `devops-engineer` agent
 6. **L5** tester domain (`tst-*`) — ✅ *(test-strategy, test-design-techniques, unit-testing, integration-testing, e2e-testing, api-testing, performance-testing, regression)* + `tester` agent
-7. **L6** frontend domain (`fe-*`) + `frontend-developer` agent
+7. **L6** frontend domain (`fe-*`) — ✅ *(architecture, component-design, state-management, api-integration, accessibility, responsive-design, performance, security)* + `frontend-developer` agent
 8. **L7** ui-designer domain (`ui-*`) + `ui-designer` agent
 9. **L8** Hardening: `install.sh`, marketplace manifests, execution evals, docs
 

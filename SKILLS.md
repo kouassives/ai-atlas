@@ -7,7 +7,7 @@
 node scripts/gen-index.mjs
 ```
 
-**40 skills published.**
+**48 skills published.**
 
 ## Foundation
 
@@ -46,6 +46,19 @@ node scripts/gen-index.mjs
 | `be-security-engineering` | Implements application security: OWASP Top 10 guidance for code, authentication and authorization flows, secrets handlin | implementation |
 | `be-solid-principles` | Applies the five SOLID principles to class and module design with before/after examples and the smells that signal each  | implementation |
 | `be-tdd` | Drives implementation and bug fixes with test-driven development: Red-Green-Refactor, the test pyramid (80/15/5), test s | testing |
+
+## Developer Frontend
+
+| Skill | Purpose | SDLC stage |
+|---|---|---|
+| `fe-accessibility` | Builds accessible UI to WCAG 2.1 AA: semantics, keyboard navigation, ARIA, focus management, and contrast | implementation |
+| `fe-api-integration` | Wires UI to APIs: fetching, caching, optimistic updates, error handling, retries, and stale-while-revalidate | implementation |
+| `fe-architecture` | Structures frontend codebases: feature-based modules, clean layers, module boundaries, and folder conventions | design |
+| `fe-component-design` | Designs UI components: composition, presentational vs container roles, prop and event contracts, and reusability without | implementation |
+| `fe-performance` | Keeps the frontend fast: Core Web Vitals, bundle analysis, rendering cost, memoization, and image optimization | implementation |
+| `fe-responsive-design` | Builds layouts that work across viewports: mobile-first, fluid layout, breakpoints, and container queries | implementation |
+| `fe-security` | Secures the client side: XSS, CSRF, sanitization, secure headers, and client-side secret hygiene | implementation |
+| `fe-state-management` | Chooses state architecture: local vs global vs server state; store, hook, and context patterns; and when each applies | implementation |
 
 ## Tester
 
