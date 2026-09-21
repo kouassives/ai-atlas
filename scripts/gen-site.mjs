@@ -390,7 +390,7 @@ function landingPage() {
   <section class="sdd-panel">
     <p class="kicker">Spec-Driven Development</p>
     <h2>Every change starts as a proposal — driven by the Openspec workflow</h2>
-    <p>The <a href="agent/orchestration-engineer.html"><code>orchestration-engineer</code></a> agent loads the Openspec skills by name and follows their workflow as the source of truth: <code>openspec-context-loading</code>, <code>openspec-proposal-creation</code>, <code>openspec-implementation</code>, <code>openspec-archiving</code>. It then delegates technical work to the specialist agents under handoff contracts. See <a href="docs/spec-driven-development.html">what ai-atlas adds around Openspec</a> — it never redefines it.</p>
+    <p>The <a href="agent/orchestration-engineer.html"><code>orchestration-engineer</code></a> agent loads the Openspec skills installed by the <code>@fission-ai/openspec</code> CLI (<code>openspec-explore</code>, <code>openspec-propose</code>, <code>openspec-apply-change</code>, <code>openspec-archive-change</code>) and follows their workflow as the source of truth. It then delegates technical work to the specialist agents under handoff contracts. See <a href="docs/spec-driven-development.html">what ai-atlas adds around Openspec</a> — it never redefines it.</p>
   </section>`;
   const body = readme.replace(/^#\s+.*\n/m, ""); // drop the README h1 (hero has it)
   const content = `${stats}\n<section class="readme">${mdToHtml(body)}</section>`;

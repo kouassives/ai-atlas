@@ -181,7 +181,7 @@ agents:
     description: "Senior frontend developer: builds features and UI per the fe-* skills and the ui-* design language — accessible, responsive, performant components with clean state and API integration. Verifies in the browser before handing off."
   - id: orchestration-engineer
     mode: primary
-    description: "Primary agent for Spec-Driven Development: processes one feature end-to-end from specification to archive by loading the Openspec skills (openspec-context-loading, openspec-proposal-creation, openspec-implementation, openspec-archiving) and following their workflow, then delegates technical work to the ai-atlas specialist agents with handoff contracts and quality gates. Use as the entry agent for any feature, change, or bugfix that should start as a specification."
+    description: "Primary agent for Spec-Driven Development: processes one feature end-to-end from specification to archive by loading the Openspec skills installed by the Openspec CLI (openspec-explore, openspec-propose, openspec-apply-change, openspec-archive-change) and following their workflow, then delegates technical work to the ai-atlas specialist agents with handoff contracts and quality gates. Use as the entry agent for any feature, change, or bugfix that should start as a specification."
   - id: orchestrator
     mode: primary
     description: "Primary agent: routes work by SDLC stage, spawns the specialist subagents, and enforces quality gates before delivering. Use as the entry agent for any feature, fix, or architecture task on a codebase."

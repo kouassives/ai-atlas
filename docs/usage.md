@@ -29,12 +29,12 @@ or manually: copy `agents/*.md` → `.opencode/agent/`.
 Two primary agents ship in `agents/`:
 
 - **`orchestration-engineer`** — the Spec-Driven Development entry point: processes
-  one feature end-to-end by loading the Openspec skills by name
-  (`openspec-context-loading`, `openspec-proposal-creation`,
-  `openspec-implementation`, `openspec-archiving`) and following their workflow,
-  then delegates technical work to the specialist subagents with handoff
-  contracts. Start here for any feature, change, or bugfix that should begin as
-  a specification. Workflow doc: [spec-driven-development.md](spec-driven-development.md).
+  one feature end-to-end by loading the Openspec skills installed by the
+  `@fission-ai/openspec` CLI (`openspec-explore`, `openspec-propose`,
+  `openspec-apply-change`, `openspec-archive-change`) and following their
+  workflow, then delegates technical work to the specialist subagents with
+  handoff contracts. Start here for any feature, change, or bugfix that should
+  begin as a specification. Workflow doc: [spec-driven-development.md](spec-driven-development.md).
 - **`orchestrator`** — routes work by SDLC stage and enforces quality gates.
 
 Both are primary agents; pick one as your session entry point per task type.

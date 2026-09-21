@@ -6,28 +6,35 @@ skills — referenced by name, never copied, never restated.**
 
 ## Prerequisites
 
-The four Openspec skills must be installed on the machine running the agent:
+The Openspec **CLI** and its skills must be installed on the machine running
+the agent:
 
-- `openspec-context-loading`
-- `openspec-proposal-creation`
-- `openspec-implementation`
-- `openspec-archiving`
+```bash
+npm i -g @fission-ai/openspec@latest   # CLI (commandes /opsx:*)
+# puis, dans chaque projet :
+# openspec init    # écrit les skills openspec-* et le dossier openspec/
+# openspec update  # régénère les instructions après mise à jour du CLI
+```
 
-They live outside this repository (`~/.config/opencode/skills/openspec-*`).
-The agent references them by name; ai-atlas does not vendor them and does not
-redefine their content.
+Les skills installés portent des noms comme `openspec-explore`,
+`openspec-propose`, `openspec-apply-change`, `openspec-archive-change` (et
+d'autres selon le profil configuré via `openspec config profile`). L'agent
+les référence par nom ; ai-atlas ne les vendorise pas et ne redéfinit pas
+leur contenu. Au fil des versions d'Openspec, les noms peuvent évoluer —
+c'est le CLI qui fait foi (`openspec update` réécrit les skills locaux).
 
 ## Division of ownership
 
 | What | Owned by |
 |---|---|
-| SDD workflow (phases, artifacts, exit criteria) | the Openspec skills — follow them as the source of truth |
+| SDD workflow (phases, artifacts, exit criteria) | the Openspec CLI + its skills — follow them as the source of truth |
 | Persona, routing, gates | the `orchestration-engineer` agent |
 | Technical depth | the catalog skills (`arch-*`, `be-*`, `fe-*`, `ui-*`, `tst-*`, `ops-*`, `fnd-*`) |
 
 ai-atlas therefore never describes the Openspec phases. If the Openspec
-workflow changes, this document stays valid — the agents keep loading the
-skills by name and the skills carry the update.
+workflow changes (the CLI evolved from a skill-per-phase model to the
+`/opsx:*` artifact-guided model), this document stays valid — the agents keep
+loading the skills by name and the CLI carries the update.
 
 > **Rule:** the agent states *which* Openspec skill it is following and *who*
 > receives the handoff. It never restates what the skill says.

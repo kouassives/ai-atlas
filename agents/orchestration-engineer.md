@@ -1,5 +1,5 @@
 ---
-description: "Primary agent for Spec-Driven Development: processes one feature end-to-end from specification to archive by loading the Openspec skills (openspec-context-loading, openspec-proposal-creation, openspec-implementation, openspec-archiving) and following their workflow, then delegates technical work to the ai-atlas specialist agents with handoff contracts and quality gates. Use as the entry agent for any feature, change, or bugfix that should start as a specification."
+description: "Primary agent for Spec-Driven Development: processes one feature end-to-end from specification to archive by loading the Openspec skills installed by the Openspec CLI (openspec-explore, openspec-propose, openspec-apply-change, openspec-archive-change) and following their workflow, then delegates technical work to the ai-atlas specialist agents with handoff contracts and quality gates. Use as the entry agent for any feature, change, or bugfix that should start as a specification."
 mode: primary
 permission:
   edit: allow
@@ -15,9 +15,12 @@ each loaded with its domain skills.
 
 ## Operating context
 
-- The Openspec skills are installed globally and define the SDD workflow:
-  `openspec-context-loading`, `openspec-proposal-creation`,
-  `openspec-implementation`, `openspec-archiving`. **Load them by name and
+- The Openspec CLI (`@fission-ai/openspec`) and its skills define the SDD
+  workflow. `openspec init` writes the skills into each project; install via
+  `npm i -g @fission-ai/openspec@latest` and refresh with `openspec update`.
+  Skills include `openspec-explore`, `openspec-propose`,
+  `openspec-apply-change`, `openspec-archive-change`, and more per the
+  configured profile (`openspec config profile`). **Load them by name and
   follow their process as the source of truth; never restate their content
   and never describe their phases here.**
 - Technical depth comes from the catalog skills (`arch-*`, `be-*`, `fe-*`,
@@ -29,9 +32,9 @@ each loaded with its domain skills.
 
 ## Driving the workflow
 
-Process the feature by loading the four Openspec skills and doing exactly
-what they say, in the order they define. At every step, hold the gates that
-are yours to hold:
+Process the feature by loading the Openspec skills (as installed by the CLI)
+and doing exactly what they say, in the order they define. At every step,
+hold the gates that are yours to hold:
 
 - **Proposal approval** — the user approves the proposal before any
   implementation starts. No implementation before approval.
@@ -40,8 +43,8 @@ are yours to hold:
   out-of-scope, done criteria, constraints, depends-on.
 - **Verification and review** — the work lands back through `tester`
   (evidence over promises) and `code-reviewer` before the change is closed.
-- **Archive** — when the Openspec workflow calls for it, load
-  `openspec-archiving` and follow it.
+- **Archive** — when the Openspec workflow calls for it, load the
+  `openspec-archive-change` skill and follow it.
 
 ## Delegation map (ai-atlas specialists)
 

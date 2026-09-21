@@ -14,12 +14,15 @@
     <section class="readme"><h2 id="spec-driven-development-in-ai-atlas">Spec-Driven Development in ai-atlas</h2>
 <p>This document describes what the <code>orchestration-engineer</code> primary agent adds around the Openspec workflow. <strong>The workflow itself is owned by the Openspec skills — referenced by name, never copied, never restated.</strong></p>
 <h3 id="prerequisites">Prerequisites</h3>
-<p>The four Openspec skills must be installed on the machine running the agent:</p>
-<ul><li><code>openspec-context-loading</code></li><li><code>openspec-proposal-creation</code></li><li><code>openspec-implementation</code></li><li><code>openspec-archiving</code></li></ul>
-<p>They live outside this repository (<code>~/.config/opencode/skills/openspec-*</code>). The agent references them by name; ai-atlas does not vendor them and does not redefine their content.</p>
+<p>The Openspec <strong>CLI</strong> and its skills must be installed on the machine running the agent:</p>
+<pre><code class="language-bash">npm i -g @fission-ai/openspec@latest   # CLI (commandes /opsx:*)
+# puis, dans chaque projet :
+# openspec init    # écrit les skills openspec-* et le dossier openspec/
+# openspec update  # régénère les instructions après mise à jour du CLI</code></pre>
+<p>Les skills installés portent des noms comme <code>openspec-explore</code>, <code>openspec-propose</code>, <code>openspec-apply-change</code>, <code>openspec-archive-change</code> (et d'autres selon le profil configuré via <code>openspec config profile</code>). L'agent les référence par nom ; ai-atlas ne les vendorise pas et ne redéfinit pas leur contenu. Au fil des versions d'Openspec, les noms peuvent évoluer — c'est le CLI qui fait foi (<code>openspec update</code> réécrit les skills locaux).</p>
 <h3 id="division-of-ownership">Division of ownership</h3>
-<table><tr><th>What</th><th>Owned by</th></tr><tr><td>SDD workflow (phases, artifacts, exit criteria)</td><td>the Openspec skills — follow them as the source of truth</td></tr><tr><td>Persona, routing, gates</td><td>the <code>orchestration-engineer</code> agent</td></tr><tr><td>Technical depth</td><td>the catalog skills (<code>arch-<em></code>, <code>be-</em></code>, <code>fe-<em></code>, <code>ui-</em></code>, <code>tst-<em></code>, <code>ops-</em></code>, <code>fnd-*</code>)</td></tr></table>
-<p>ai-atlas therefore never describes the Openspec phases. If the Openspec workflow changes, this document stays valid — the agents keep loading the skills by name and the skills carry the update.</p>
+<table><tr><th>What</th><th>Owned by</th></tr><tr><td>SDD workflow (phases, artifacts, exit criteria)</td><td>the Openspec CLI + its skills — follow them as the source of truth</td></tr><tr><td>Persona, routing, gates</td><td>the <code>orchestration-engineer</code> agent</td></tr><tr><td>Technical depth</td><td>the catalog skills (<code>arch-<em></code>, <code>be-</em></code>, <code>fe-<em></code>, <code>ui-</em></code>, <code>tst-<em></code>, <code>ops-</em></code>, <code>fnd-*</code>)</td></tr></table>
+<p>ai-atlas therefore never describes the Openspec phases. If the Openspec workflow changes (the CLI evolved from a skill-per-phase model to the <code>/opsx:*</code> artifact-guided model), this document stays valid — the agents keep loading the skills by name and the CLI carries the update.</p>
 <blockquote><p><strong>Rule:</strong> the agent states <em>which</em> Openspec skill it is following and <em>who</em></p></blockquote>
 <blockquote><p>receives the handoff. It never restates what the skill says.</p></blockquote>
 <h3 id="delegation-rules-ai-atlas-additions">Delegation rules (ai-atlas additions)</h3>
