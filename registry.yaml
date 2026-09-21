@@ -1,5 +1,5 @@
 version: 1
-description: ai-engineer — SDLC skills and agents for AI coding assistants
+description: ai-atlas — SDLC skills and agents for AI coding assistants
 skills:
   - id: arch-api-contract-design
     domain: architect

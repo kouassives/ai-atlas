@@ -57,7 +57,7 @@ const agents = readdirSync(AGENTS)
 // --- registry.yaml ---------------------------------------------------------
 const yaml = [
   "version: 1",
-  "description: ai-engineer — SDLC skills and agents for AI coding assistants",
+  "description: ai-atlas — SDLC skills and agents for AI coding assistants",
   "skills:",
   ...skills.map((s) => `  - id: ${s.id}\n    domain: ${s.domain}\n    description: "${s.description.replace(/"/g, "'")}"`),
   "agents:",
@@ -78,11 +78,11 @@ const manifest = (name, description) => ({
   plugins: skills.map(plugin),
 });
 
-const claudeMarket = manifest("ai-engineer", "SDLC skills for AI coding assistants (54 skills, OpenCode-first).");
+const claudeMarket = manifest("ai-atlas", "SDLC skills for AI coding assistants (54 skills, OpenCode-first).");
 mkdirSync(join(ROOT, ".claude-plugin"), { recursive: true });
 writeFileSync(join(ROOT, ".claude-plugin", "marketplace.json"), JSON.stringify(claudeMarket, null, 2) + "\n");
 
-const agentsMarket = manifest("ai-engineer", "SDLC skills for AI coding assistants (54 skills, OpenCode-first).");
+const agentsMarket = manifest("ai-atlas", "SDLC skills for AI coding assistants (54 skills, OpenCode-first).");
 mkdirSync(join(ROOT, ".agents", "plugins"), { recursive: true });
 writeFileSync(join(ROOT, ".agents", "plugins", "marketplace.json"), JSON.stringify(agentsMarket, null, 2) + "\n");
 

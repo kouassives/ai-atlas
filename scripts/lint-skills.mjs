@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * ai-engineer — Tier 1 structural lint
+ * ai-atlas — Tier 1 structural lint
  *
  * Verifies every skill in `skills/` and every agent in `agents/` against the
  * collection conventions defined in ARCHITECTURE.md §3 / §4.
@@ -190,7 +190,7 @@ const agentFiles = existsSync(AGENTS_DIR)
 for (const f of agentFiles) lintAgent(f);
 
 /* --- report --- */
-console.log(`ai-engineer lint — skills: ${skillDirs.length}, agents: ${agentFiles.length}`);
+console.log(`ai-atlas lint — skills: ${skillDirs.length}, agents: ${agentFiles.length}`);
 for (const w of results.warnings) console.log(`  ⚠ ${w}`);
 for (const e of results.errors) console.log(`  ✖ ${e}`);
 console.log(results.errors.length === 0 ? "✅ PASS" : `❌ FAIL (${results.errors.length} errors)`);

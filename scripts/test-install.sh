@@ -5,7 +5,7 @@
 set -u
 
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
-TMP=$(mktemp -d "${TMPDIR:-/tmp}/ai-engineer-install-test.XXXXXX")
+TMP=$(mktemp -d "${TMPDIR:-/tmp}/ai-atlas-install-test.XXXXXX")
 trap 'rm -rf "$TMP"' EXIT
 PROJ="$TMP/proj"; CLT="$TMP/claude"; mkdir -p "$PROJ" "$CLT"
 

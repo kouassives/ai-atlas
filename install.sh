@@ -1,5 +1,5 @@
 #!/bin/sh
-# ai-engineer — POSIX-sh fallback installer (no dependencies)
+# ai-atlas — POSIX-sh fallback installer (no dependencies)
 #
 #   ./install.sh                       global install for OpenCode -> ~/.config/opencode/
 #   ./install.sh --project             project install for OpenCode -> ./.opencode/
@@ -84,7 +84,7 @@ count_agents=$(printf '%s\n' $agent_files | sed '/^$/d' | wc -l | tr -d ' ')
 
 # --- list mode ---------------------------------------------------------------
 if [ "$LIST_ONLY" -eq 1 ]; then
-  echo "ai-engineer install manifest"
+  echo "ai-atlas install manifest"
   echo "  target : $TOOL ($SCOPE)"
   echo "  skills : $SKILL_DEST  ($count_skills skills)"
   echo "  agents : $AGENT_DEST  ($count_agents agents)"
@@ -121,9 +121,9 @@ copy_one() {
 
 # --- run ----------------------------------------------------------------------
 if [ "$DRY_RUN" -eq 1 ] || [ "$LIST_ONLY" -eq 1 ]; then
-  echo "ai-engineer install (dry-run)"
+  echo "ai-atlas install (dry-run)"
 else
-  echo "ai-engineer install -> $TOOL ($SCOPE)"
+  echo "ai-atlas install -> $TOOL ($SCOPE)"
 fi
 if [ "$DRY_RUN" -eq 0 ] && [ "$LIST_ONLY" -eq 0 ]; then
   echo "  target : $SKILL_DEST + $AGENT_DEST"

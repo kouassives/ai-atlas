@@ -1,4 +1,4 @@
-# ai-engineer
+# ai-atlas
 
 Production-grade **skills** and **agents** for AI coding assistants (OpenCode-first, Agent Skills standard), covering the full software development lifecycle — organized by SDLC role.
 
@@ -6,7 +6,7 @@ Production-grade **skills** and **agents** for AI coding assistants (OpenCode-fi
 
 ## Why this collection
 
-Most collections optimize for one stack (JS/TS, web) or one cultural context. `ai-engineer` covers the **engineering fundamentals** — Clean Architecture, DDD, SOLID, design patterns, microservices, testing, DevOps — in a **language- and stack-agnostic** way, organized by SDLC role:
+Most collections optimize for one stack (JS/TS, web) or one cultural context. `ai-atlas` covers the **engineering fundamentals** — Clean Architecture, DDD, SOLID, design patterns, microservices, testing, DevOps — in a **language- and stack-agnostic** way, organized by SDLC role:
 
 | Domain | Prefix | Skills |
 |---|---|---|
@@ -26,7 +26,7 @@ Standard `skills/<name>/SKILL.md` layout — works with `npx skills add`, every 
 
 ```bash
 # 1. skills (ecosystem standard, once published):
-npx skills add <owner>/ai-engineer
+npx skills add kouassives/ai-atlas
 
 # 2. agents + skills for OpenCode (no dependencies):
 ./install.sh                      # global → ~/.config/opencode/

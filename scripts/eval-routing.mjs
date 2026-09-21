@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * ai-engineer — Tier 2 routing evals
+ * ai-atlas — Tier 2 routing evals
  *
  * Deterministic, zero-cost routing checks: verifies that each skill's
  * DESCRIPTION carries the vocabulary users actually type, that every
@@ -73,7 +73,7 @@ function readDescriptions() {
 /* ------------------------------------------------------------------ */
 
 const skills = readDescriptions();
-console.log(`ai-engineer routing evals — skills with descriptions: ${skills.size}`);
+console.log(`ai-atlas routing evals — skills with descriptions: ${skills.size}`);
 
 if (!existsSync(PROMPTS_FILE)) {
   console.log("  … evals/routing/prompts.json missing — nothing to evaluate");

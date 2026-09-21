@@ -1,6 +1,6 @@
 # Per-tool install
 
-`ai-engineer` ships `skills/` in the standard Agent Skills layout
+`ai-atlas` ships `skills/` in the standard Agent Skills layout
 (`skills/<name>/SKILL.md`) plus an `agents/` core for OpenCode.
 
 ## OpenCode
@@ -8,9 +8,9 @@
 ### `npx skills add` (recommended, once published)
 
 ```bash
-npx skills add <owner>/ai-engineer                  # all skills
-npx skills add <owner>/ai-engineer --skill fe-security
-npx skills add <owner>/ai-engineer --list
+npx skills add kouassives/ai-atlas                  # all skills
+npx skills add kouassives/ai-atlas --skill fe-security
+npx skills add kouassives/ai-atlas --list
 ```
 
 The skills CLI discovers the flat `skills/` layout directly and writes each

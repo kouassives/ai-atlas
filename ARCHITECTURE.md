@@ -1,4 +1,4 @@
-# ai-engineer — Collection Architecture
+# ai-atlas — Collection Architecture
 
 > Status: **Draft v1.0** — produced by the Builder (architect-designer agent unavailable in this environment; synthesis grounded in the OpenCode configuration spec, the Agent Skills ecosystem analysis, and validated product decisions).
 
@@ -18,7 +18,7 @@
 ## 1. Repository structure
 
 ```
-ai-engineer/
+ai-atlas/
 ├── README.md                 # What, why, install (1-liner), usage, security statement
 ├── LICENSE                   # MIT
 ├── ARCHITECTURE.md           # This document — conventions + taxonomy + quality
@@ -258,9 +258,9 @@ permission:
 ### Primary: `npx skills add` (ecosystem standard)
 
 ```
-npx skills add <owner>/ai-engineer                # all 54 skills
-npx skills add <owner>/ai-engineer --skill be-tdd  # single skill
-npx skills add <owner>/ai-engineer --list         # browse
+npx skills add kouassives/ai-atlas                # all 54 skills
+npx skills add kouassives/ai-atlas --skill be-tdd  # single skill
+npx skills add kouassives/ai-atlas --list         # browse
 ```
 
 - The flat `skills/<name>/SKILL.md` layout is exactly what the skills CLI scans (mirrors agent-skills). ✓
@@ -355,6 +355,6 @@ Lots L3–L7 are **parallelizable** after L1 (single pilot domain L2 validates c
 
 ## 9. Open decisions (owner)
 
-- Repo/GitHub name and `npm`-less identity: default `ai-engineer` (owner placeholder `<owner>`).
+- Repo/GitHub name and `npm`-less identity: default `ai-atlas` (live at `github.com/kouassives/ai-atlas`).
 - License: MIT (used throughout; confirm before publishing).
 - Whether the `orchestrator.md` primary agent ships in v1 or is deferred to L8.
