@@ -13,7 +13,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
+          # Note: no cache — the project has zero npm dependencies (Node stdlib only).
       - name: Tier 1 — structural lint
         run: node scripts/lint-skills.mjs
       - name: Tier 2 — routing evals
