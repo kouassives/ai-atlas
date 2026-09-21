@@ -386,6 +386,12 @@ function landingPage() {
     <ul class="domain-grid">
     ${domainCounts.map(([label, n]) => `<li><a href="skills.html">${esc(label)}</a><span>${n} skills</span></li>`).join("")}
     </ul>
+  </section>
+  <section class="sdd-panel">
+    <p class="kicker">Spec-Driven Development</p>
+    <h2>Every change starts as a proposal — following the Openspec workflow</h2>
+    <p>The <a href="agent/orchestration-engineer.html"><code>orchestration-engineer</code></a> agent processes one feature end-to-end: it loads the <a href="docs/spec-driven-development.html">Openspec skills by name</a> (<code>openspec-context-loading</code> → <code>openspec-proposal-creation</code> → <code>openspec-implementation</code> → <code>openspec-archiving</code>), writes a spec delta, and delegates technical work to the specialist agents under handoff contracts. No implementation before user approval.</p>
+    <div class="steps">${["Context", "Proposal", "Plan", "Implement", "Verify", "Review", "Archive"].map((s) => `<span class="step">${s}</span>`).join("")}</div>
   </section>`;
   const body = readme.replace(/^#\s+.*\n/m, ""); // drop the README h1 (hero has it)
   const content = `${stats}\n<section class="readme">${mdToHtml(body)}</section>`;
@@ -454,7 +460,11 @@ function skillDetailPage(s) {
 }
 
 function agentsPage() {
-  const cards = agents
+  const ranked = [...agents].sort((a, b) => {
+    const p = (x) => (x.fm.mode === "primary" ? 0 : 1);
+    return p(a) - p(b) || a.id.localeCompare(b.id);
+  });
+  const cards = ranked
     .map(
       (a) => `<li class="agent-card" data-search="${esc((a.id + " " + (a.fm.description || "")).toLowerCase())}">
       <a class="agent-link" href="agent/${escapeId(a.id)}.html"><code>${esc(a.id)}</code></a>
@@ -466,7 +476,7 @@ function agentsPage() {
   const content = `
     <section class="hero sub">
       <h1>Agents</h1>
-      <p>Personas that compose the domain skills: one primary orchestrator, specialist subagents for each SDLC role.</p>
+      <p>Two primary entry agents (<code>orchestration-engineer</code> — Spec-Driven Development on the <a href="docs/spec-driven-development.html">Openspec workflow</a> — and <code>orchestrator</code>), plus specialist subagents that compose the domain skills per SDLC role.</p>
     </section>
     <section class="filter"><label for="agent-filter">Filter</label><input id="agent-filter" type="search" placeholder="filter agents…"></section>
     <ul class="agent-grid" id="agent-grid">${cards}</ul>`;
@@ -544,6 +554,12 @@ pre code{background:none;border:0;padding:0}
 .badge{border:1px solid var(--border);border-radius:999px;padding:.15rem .7rem;font-size:.76rem;color:var(--muted)}
 .back{margin-top:1rem}
 .back a{font-size:.9rem}
+.sdd-panel{margin:1.6rem 0 .4rem;background:linear-gradient(135deg,#14202e,#101a24);border:1px solid var(--accent);border-left:4px solid var(--accent-2);border-radius:12px;padding:1.1rem 1.3rem}
+.sdd-panel .kicker{margin-bottom:.35rem}
+.sdd-panel h2{margin:.1rem 0 .4rem;font-size:1.15rem}
+.sdd-panel p{margin:.3rem 0;color:var(--muted)}
+.sdd-panel .steps{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.7rem}
+.sdd-panel .step{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:.15rem .7rem;font-size:.78rem;color:var(--fg)}
 .agent-grid{list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
 .agent-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem}
 .agent-link{font-size:1.05rem}

@@ -35,6 +35,12 @@ pre code{background:none;border:0;padding:0}
 .badge{border:1px solid var(--border);border-radius:999px;padding:.15rem .7rem;font-size:.76rem;color:var(--muted)}
 .back{margin-top:1rem}
 .back a{font-size:.9rem}
+.sdd-panel{margin:1.6rem 0 .4rem;background:linear-gradient(135deg,#14202e,#101a24);border:1px solid var(--accent);border-left:4px solid var(--accent-2);border-radius:12px;padding:1.1rem 1.3rem}
+.sdd-panel .kicker{margin-bottom:.35rem}
+.sdd-panel h2{margin:.1rem 0 .4rem;font-size:1.15rem}
+.sdd-panel p{margin:.3rem 0;color:var(--muted)}
+.sdd-panel .steps{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.7rem}
+.sdd-panel .step{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:.15rem .7rem;font-size:.78rem;color:var(--fg)}
 .agent-grid{list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
 .agent-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem}
 .agent-link{font-size:1.05rem}
