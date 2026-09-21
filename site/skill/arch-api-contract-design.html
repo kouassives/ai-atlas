@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>arch-api-contract-design · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Architect</p>
+      <h1><code>arch-api-contract-design</code></h1>
+      <p class="tagline">Defines public interfaces contract-first: OpenAPI, versioning, error semantics, backward compatibility, and Hyrum's Law. Use when defining public interfaces, when designing contracts before implementation, when a public API must stay backward-compatible, or when clients depend on behavior the spec never promised.</p>
+      <p class="badges"><span class="badge">architect</span><span class="badge">design</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="api-contract-design">API Contract Design</h2>
+<h3 id="overview">Overview</h3>
+<p>A public API is a contract with clients you do not control. <strong>Contract-first</strong> means the specification IS the product: it is written, reviewed, and versioned before (and independent of) implementation. This skill covers spec-first design, versioning and backward compatibility policy, error semantics as part of the contract, and the uncomfortable truths of Hyrum's Law — clients depend on everything, including your bugs.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Defining a public or cross-team interface (HTTP, SDK, events, RPC).</li><li>Designing the contract before implementation, or reviewing an existing contract's spec.</li><li>Planning a breaking or additive change to a public API.</li><li>Onboarding partners/clients who will build against the spec, not the code.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Endpoint implementation details (status codes per operation, idempotency mechanics) — that is <code>be-api-design</code>.</li><li>Internal function signatures (that is class/module design — <code>be-solid-principles</code>).</li><li>Choosing REST vs GraphQL vs gRPC itself — decide the style first (<code>be-api-design</code>), then contract-design it.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-make-the-spec-the-first-class-artifact">Step 1 — Make the spec the first-class artifact</h4>
+<ul><li>HTTP: an <strong>OpenAPI</strong> document (or equivalent typed schema) that is the single source of truth; generated from it (or verified against it by contract tests), never maintained by hand in parallel.</li><li>Events: typed schemas with versioning (<code>be-async-messaging</code> for delivery semantics).</li><li>The spec is reviewed like code: schema, semantics, examples, and error surface. If the spec is unreadable, the implementation will be a guess.</li></ul>
+<h4 id="step-2-encode-semantics-in-the-schema-not-the-prose">Step 2 — Encode semantics in the schema, not the prose</h4>
+<ul><li>Types, formats, requiredness, enums (and their extension rules), nullable-vs-optional disambiguated explicitly.</li><li>Every field documented with: meaning, constraints, example, and what clients may assume about it across versions.</li><li>Response shapes are versioned artifacts; a field is never repurposed silently ("was string, now means something else").</li></ul>
+<h4 id="step-3-define-error-semantics-as-part-of-the-contract">Step 3 — Define error semantics as part of the contract</h4>
+<ul><li>Error vocabulary per operation: codes, status mapping, retryability bit (<code>be-api-design</code> for the mechanics).</li><li>The spec must state, per operation, what happens on timeout, on validation, and on conflict — or clients must GUESS, and guesses become Hyrum dependencies.</li></ul>
+<h4 id="step-4-version-the-surface-define-the-compatibility-policy">Step 4 — Version the surface, define the compatibility policy</h4>
+<ul><li><strong>Additive changes</strong> (new endpoints/fields/params): allowed without a version bump; MUST NOT break existing consumers.</li><li><strong>Breaking changes</strong> (removed/renamed/repurposed fields, tightened constraints, changed semantics): only under a new version, with a documented migration and sunset date.</li><li>State the policy in the spec header: what you consider breaking. Clients then know what a minor spec update may contain.</li><li>Never version for internal restlessness; every version is a parallel contract you maintain.</li></ul>
+<h4 id="step-5-respect-hyrums-law">Step 5 — Respect Hyrum's Law</h4>
+<p>Assume clients depend on: exact error strings, field ordering, pagination shapes, timing quirks, and even documented-as-internal responses. So:</p>
+<ul><li>Test the documented contract AND the de-facto surface (capture real client traffic/assertions).</li><li>Remove nothing "nobody should depend on" without a deprecation notice and a dead-code window.</li><li>Document what is safe to change (the compatibility policy above) so clients know which dependencies are protected.</li><li>If a de-facto behavior is load-bearing, promote it into the contract — the law stops being a surprise once the dependency is declared.</li></ul>
+<h4 id="step-6-validate-contracts-with-contract-tests">Step 6 — Validate contracts with contract tests</h4>
+<ul><li>Contract tests assert the running implementation matches the spec (request/response schemas, error codes, version rules).</li><li>These tests are the counterpart to <code>tst-integration-testing</code>: they protect the promise even when providers and consumers evolve independently.</li><li>Example payloads in the spec double as test fixtures — keep them real and current.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"The implementation is the source of truth"</td><td>The day the implementation changes, "truth" changes with it and clients break silently.</td></tr><tr><td>"We document breaking changes in the changelog"</td><td>Changelogs are for humans who read them; versions and sunset dates are the machine-checkable part.</td></tr><tr><td>"Field X was never public, deleting it is fine"</td><td>Hyrum's Law says otherwise — deprecate, then delete after the window.</td></tr><tr><td>"One more field won't hurt"</td><td>Additive is fine — as long as the field name, meaning, and type stay stable forever after.</td></tr><tr><td>"OpenAPI is boilerplate overhead"</td><td>It is the only artifact both sides can read, review, and test against without a phone call.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Implementations that drift from the spec with no contract test catching it</li><li>Breaking changes shipped in "minor" spec updates</li><li>Fields repurposed, tightened, or removed with no deprecation window</li><li>Error semantics absent from the spec (clients guessing statuses)</li><li>De-facto behaviors depended on by real traffic with no promotion into the contract</li><li>A spec so stale it documents systems that do not exist</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Spec is the single source of truth, machine-readable (OpenAPI/typed schemas)</li><li>[ ] Semantics encoded in schema: types, formats, requiredness, enums, nullable-vs-optional</li><li>[ ] Error vocabulary and retryability defined per operation</li><li>[ ] Versioning policy stated; additive-only without bumps; breaking under new versions + sunset</li><li>[ ] Hyrum review done: de-facto surface captured (traffic assertions) and promoted where load-bearing</li><li>[ ] Contract tests verify the implementation against the spec continuously</li><li>[ ] Examples in the spec are real and current</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>be-async-messaging · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Developer Backend</p>
+      <h1><code>be-async-messaging</code></h1>
+      <p class="tagline">Designs and maintains message and event flows: queues vs events, producer/consumer semantics, at-least-once reality, dead-lettering, ordering constraints, and replay. Use when adding messaging or events between services, when choosing between a queue and a topic, when a consumer falls behind or loses messages, or when events need to be replayed or retro-processed.</p>
+      <p class="badges"><span class="badge">backend</span><span class="badge">implementation</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="async-messaging">Async Messaging</h2>
+<h3 id="overview">Overview</h3>
+<p>Messaging decouples producers from consumers — in time, in scale, and in failure. That decoupling is purchased with new failure modes: loss, duplication, reordering, and lag. This skill covers the decisions that keep a message system honest: queue vs topic selection, delivery semantics (at-least-once is the default reality), consumer lifecycles, dead-lettering, ordering, and replay. Idempotent consumers are mandatory and covered in depth by <code>be-microservices-patterns</code>.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Adding messaging or events between services for the first time.</li><li>Choosing between a queue and a topic/event stream for a flow.</li><li>A consumer falls behind, drops messages, or loses them on restart.</li><li>Events must be replayed or re-processed historically.</li><li>Auditing existing message flows for the classic failure shapes.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Synchronous request/response fits the flow (a call that needs the answer): reaching for a queue to "decouple" a need-answer call is over-engineering.</li><li>Local event listeners within one process (use language-level constructs, not a broker).</li><li>Cross-service consistency patterns (saga/outbox) — that is <code>be-microservices-patterns</code>.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-pick-the-primitive-by-intent">Step 1 — Pick the primitive by intent</h4>
+<table><tr><th>Need</th><th>Primitive</th></tr><tr><td>A task to be consumed exactly once by one worker</td><td><strong>Queue</strong></td></tr><tr><td>An event to be observed by many independent consumers</td><td><strong>Topic / stream</strong></td></tr><tr><td>Retrospective reprocessing, event sourcing, auditing</td><td><strong>Stream with retention + replay</strong></td></tr></table>
+<p>When in doubt, prefer the stream/event shape: it preserves history, allows later consumers, and replays for free. A queue for "events others might care about later" is a history-erasing mistake.</p>
+<h4 id="step-2-state-the-delivery-contract-honestly">Step 2 — State the delivery contract honestly</h4>
+<p>Refuse the phrase "exactly-once". The honest contracts are:</p>
+<ul><li><strong>At-most-once</strong>: best-effort, loss accepted — acceptable only for non-critical notifications where loss is fine.</li><li><strong>At-least-once</strong>: the default. Duplicates possible; every consumer MUST be idempotent (dedup by message ID + idempotent business operation — see <code>be-microservices-patterns</code>).</li></ul>
+<p>Document per flow which contract applies. A flow whose consumers are not idempotent is assumed at-least-once and is a duplication bug waiting to happen.</p>
+<h4 id="step-3-design-the-consumer-lifecycle">Step 3 — Design the consumer lifecycle</h4>
+<ul><li><strong>Poll-and-ack</strong>: consume → process → <strong>acknowledge only after the business work is durable</strong>. Processing then ack prevents re-delivery exactly when it matters.</li><li><strong>Reject/discard discipline</strong>: a poison message (permanently unprocessable) must not be retried forever — after a dead-letter threshold it moves to a DLQ for inspection.</li><li><strong>Retries</strong>: transient failures retry with backoff (see <code>be-microservices-patterns</code>), NOT instant re-poll loops that burn the broker; stick to the broker's retry/DLQ machinery rather than hand-rolled sleep-retry.</li><li>Lag monitoring: consumer lag is a first-class metric with an alert, not a surprise.</li></ul>
+<h4 id="step-4-dead-letter-with-intent">Step 4 — Dead-letter with intent</h4>
+<p>A DLQ is not a trash can; it is an incident queue. Every dead-lettered message must be inspectable (original payload, reason, timestamp, retry count) and its handling owned by an on-call story. DLQ depth with no owner is deferred data loss.</p>
+<h4 id="step-5-ordering-only-where-it-is-a-requirement">Step 5 — Ordering: only where it is a requirement</h4>
+<ul><li>Global ordering is the exception; <strong>per-key ordering</strong> (e.g. per <code>order_id</code>) is the common real requirement. Choose brokers/partitions that key by the ordering dimension.</li><li>If consumers parallelize on the ordering key, they inherit ordering breaches — document the parallelism/ordering trade-off per flow.</li><li>Never assume "the broker preserves order" for differently-keyed messages; and never assume cross-key ordering exists at all.</li></ul>
+<h4 id="step-6-plan-replay-from-day-one">Step 6 — Plan replay from day one</h4>
+<ul><li>Keep retention sized by the real replay window (features, audits, recovery).</li><li>Replay must be <strong>safe by design</strong>: consumers idempotent (already guaranteed), and replay writes to the same pipeline with the same keys so later events do not overwrite earlier ones.</li><li>When a replay is ordered, state the constraint to the operator — replays that reorder against live traffic create phantom inconsistency.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"The broker guarantees exactly-once"</td><td>It guarantees at-least-once; exactly-once is an application myth.</td></tr><tr><td>"Messages are rare, we won't lose any"</td><td>"Rare" is the worst case for losing them — you notice in production, twice.</td></tr><tr><td>"We can just re-queue failures"</td><td>Unbounded re-queues are poison-message loops; DLQ discipline is the answer.</td></tr><tr><td>"Order doesn't matter for this flow"</td><td>Say it out loud only after checking per-key causality — it usually matters somewhere.</td></tr><tr><td>"Replay is a rare ops task"</td><td>Every incident is a replay; size retention for the incidents you will have.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Consumers that ack before durable business work completes</li><li>Retry loops with no dead-letter path (poison messages loop forever)</li><li>A DLQ with no owner, no inspection UI, and no alert</li><li>Events published to a queue where multiple future consumers are expected</li><li>Parallel consumer pools on an ordering key</li><li>Retention set to "as long as we can afford" with no replay plan</li><li>"Exactly-once" anywhere in a design doc</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Primitive chosen by intent (queue vs topic vs stream) and documented</li><li>[ ] Delivery contract stated per flow: at-least-once default, consumers idempotent</li><li>[ ] Ack-after-durable-process; retry via broker machinery; poison → DLQ after threshold</li><li>[ ] DLQ owned: inspectable, reason+payload kept, alert on depth, handling story</li><li>[ ] Ordering requirement declared per flow; keyed parallelization matches it</li><li>[ ] Replay plan: retention window sized, replay safe by idempotency, ordering constraint documented</li><li>[ ] Consumer lag monitored and alerted</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

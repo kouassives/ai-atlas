@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>be-performance · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Developer Backend</p>
+      <h1><code>be-performance</code></h1>
+      <p class="tagline">Diagnoses and fixes performance issues: profiling before optimizing, caching strategies, N+1 query detection, connection pooling, and latency budgets. Use when performance matters or regresses, when a request or query is slow, when load tests fail, or when someone proposes a cache or a micro-optimization without measurement.</p>
+      <p class="badges"><span class="badge">backend</span><span class="badge">implementation</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="performance">Performance</h2>
+<h3 id="overview">Overview</h3>
+<p>Performance work fails in two opposite ways: unmeasured guessing ("let's add a cache") and unbounded perfectionism. Both yield the same outcome — complexity with no measured win. This skill enforces the evidence loop: budget → baseline → profile → fix → verify → keep. The two recurring structural causes in backend work — N+1 queries and connection exhaustion — are covered explicitly.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>A request, query, or flow is slower than its budget or regressed.</li><li>Load/stress tests fail latency or throughput targets.</li><li>Someone proposes a cache, an index, an async rewrite, or a micro-optimization — before accepting, run the loop.</li><li>Capacity planning or latency budget review for an endpoint.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Premature optimization in features with no performance requirement — YAGNI wins (<code>fnd-engineering-principles</code>).</li><li>Database schema/index design itself (that is <code>be-database-design</code>); this skill uses its evidence, it does not redo it.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-set-the-budget-and-the-measurement">Step 1 — Set the budget and the measurement</h4>
+<p>Every performance task starts with a number, not a feeling: <strong>latency budget</strong> (p50/p95/p99) and <strong>throughput requirement</strong>, per endpoint or flow. If no budget exists, the measurement target is "find the dominant cost and eliminate it without changing behavior." Baseline it before touching anything — the baseline is the only honest control.</p>
+<h4 id="step-2-profile-before-optimizing">Step 2 — Profile before optimizing</h4>
+<ul><li>Trace the request end-to-end: where does the time actually go (DB? serialization? external calls? GC? queues)?</li><li>Profiler/tracer output beats intuition — record the top 3 costs with percentages before proposing a fix.</li><li>Rule: <strong>no change without a plan that shows the measured dominant cost.</strong> A cache for a path that is DB-bound but caching the wrong layer moves nothing.</li></ul>
+<h4 id="step-3-hunt-the-two-structural-causes-first">Step 3 — Hunt the two structural causes first</h4>
+<ul><li><strong>N+1 queries</strong>: the ORM fires one query per row of a lazily-loaded relation. Detection: query logs/explain, latency proportional to row count. Fix: eager loading/joins/batched IN-queries. This is the single most common backend regression — check it before any cache discussion.</li><li><strong>Connection/resource exhaustion</strong>: connection pools sized below concurrent need, connections held during slow external calls or long transactions, leaked pools. Fix: bound pool to DB capacity, release promptly, never run external calls inside a DB transaction holding a pooled connection.</li></ul>
+<h4 id="step-4-caching-last-resort-with-a-discipline">Step 4 — Caching: last resort with a discipline</h4>
+<p>Only after the query/design is already correct and still too slow:</p>
+<ul><li>Cache <strong>read-mostly, eventually-tolerant</strong> data — never a cache for data whose staleness is unacceptable without an explicit invalidation story.</li><li>Design the key (content-addressable or normalized), the TTL (documented staleness window), the size bound, and the <strong>invalidation path</strong> (write-through/TTL/versioned key) — a cache with no invalidation plan is a correctness bug scheduled for later.</li><li><strong>Cache stampede protection</strong>: single-flight/coalescing for recomputation; jitter TTLs; rate-limit recompute.</li><li>Measure the hit-ratio and latency effect after shipping. A cache that doesn't measurably help gets removed.</li></ul>
+<h4 id="step-5-fix-and-verify-the-same-loop-you-started">Step 5 — Fix and verify the same loop you started</h4>
+<ul><li>Re-run the exact same measurement after the change; report before/after on the same metric (p95, throughput).</li><li>If the measured dominant cost did not move, the change did not do what the profile claimed — investigate, do not "call it close enough."</li><li>Watch the downstream: slower-but-load-balanced, faster-but-inconsistent, quicker-but-more-connections: performance is a portfolio, not a single metric.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"It's slow, add a cache"</td><td>80% of backend slowness is N+1 or connection patterns; a cache hides both at the cost of correctness risk.</td></tr><tr><td>"Micro-optimizations add up"</td><td>They add up only when measured; unmeasured micro-opts are complexity with a placebo.</td></tr><tr><td>"The profiler doesn't matter, I know the cause"</td><td>Profiling is how "I was sure it was X" turns out to be Y — redirect the same energy into two minutes of tracing.</td></tr><tr><td>"Cache TTL of 5 minutes is fine"</td><td>Only if staleness <= 5 minutes is acceptable to every reader — document it, or it fails in an audit someday.</td></tr><tr><td>"It's faster on my machine"</td><td>Single-client local speed is not latency under concurrency — load-test the real shape.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>An optimization proposed with no baseline measurement</li><li>Query count growing with list size (N+1 signature)</li><li>Caches with no invalidation path or no hit-ratio measurement</li><li>Connection pools sized to guesses, or external calls inside transactions</li><li>Optimizations that change behavior silently (stale reads, dropped work) to "gain" speed</li><li>Before/after numbers on different metrics or different code paths</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Latency/throughput budget stated and baselined before changes</li><li>[ ] Dominant cost identified by profile/trace (top 3, with percentages)</li><li>[ ] N+1 and connection exhaustion checked and resolved before any cache talk</li><li>[ ] Any cache: key, TTL with documented staleness, size bound, invalidation path, stampede protection</li><li>[ ] Before/after measured on the SAME metric and code path</li><li>[ ] No behavior change beyond the performance intent; caching correctness documented</li><li>[ ] Unhelpful caches removed, not retained out of sunk cost</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

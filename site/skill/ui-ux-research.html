@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>ui-ux-research · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">UI Designer</p>
+      <h1><code>ui-ux-research</code></h1>
+      <p class="tagline">Runs user research: interviews, personas, problem framing, and discovery. Use when the target user or problem is unknown, when a feature is being invented without user contact, or when decisions rest on assumptions nobody verified.</p>
+      <p class="badges"><span class="badge">ui-designer</span><span class="badge">discovery</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="ux-research">UX Research</h2>
+<h3 id="overview">Overview</h3>
+<p>Research exists to replace assumptions with evidence about who the users are and what problem they actually have. It is the cheapest de-risking in product work: an interview week beats a build quarter aimed at a ghost. This skill covers the discovery loop: <strong>framing the problem</strong> (not the solution), <strong>interviews</strong> (not surveys of opinions), and <strong>personas</strong> (usable summaries, not posters). Research output is a decision tool, not a deliverable that decorates a drive.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Target user or problem unknown; the "build what we assume" risk is high.</li><li>Stakeholders disagree about who the product is for.</li><li>A feature was idea-validated on vibes and nobody has met a user.</li><li>Before any significant design investment (wireframes, prototypes, implementation).</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>The problem and user are known and you need design execution (<code>ui-ux-flows</code>, <code>ui-visual-design</code>).</li><li>The gate is already passed: research findings exist and the question is implementation.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-frame-the-problem-before-the-solution">Step 1 — Frame the problem before the solution</h4>
+<ul><li>Write the problem hypothesis the product will test: user, pain, context, and why it matters. The frame is wrong if it contains the solution ("users need a dashboard" is a solution; "users cannot tell if their job ran" is a problem).</li><li>List the assumptions the product depends on and rank them by risk — the riskiest assumption is the research question, not the nicest one.</li></ul>
+<h4 id="step-2-interview-users-dont-survey-opinions">Step 2 — Interview users, don't survey opinions</h4>
+<ul><li><strong>Interviews</strong>: 5–8 per user segment, open-ended, on behavior and past events ("tell me about the last time you…"), free of leading questions and product-selling. Record and transcribe.</li><li><strong>Surveys</strong> are for confirming distribution of a known behavior at scale — not for discovering problems; "would you use this?" over a form is fiction (<code>tst-test-design-techniques</code> does not apply here: this is not a test, it is an inquiry).</li><li>Never interview only your own team, your friends, or the sales list — recruit the actual or adjacent segment.</li></ul>
+<h4 id="step-3-distill-into-personas-that-are-decision-tools">Step 3 — Distill into personas that are decision tools</h4>
+<ul><li>A persona is: name, role/context, goals, pains, workarounds, and the trigger situations where the problem bites. It is NOT demography theater (age, city, "likes coffee") — demographics without behavior do not steer design.</li><li>Each persona carries the evidence trail (quotes/batches of transcripts) so anyone can check the claim. One to three personas; more means the frame was too broad.</li></ul>
+<h4 id="step-4-record-what-you-did-not-learn">Step 4 — Record what you did NOT learn</h4>
+<ul><li>Write the open questions and the segments you did not reach. An un-interviewed segment is a future product surprise — mark it as risk, not as validated.</li><li>Surprising findings (the user contradicts the assumption) get written up as the headline, not buried: disconfirmation is the whole point of research.</li></ul>
+<h4 id="step-5-hand-the-frame-to-design">Step 5 — Hand the frame to design</h4>
+<ul><li>Output = problem statement + personas + open questions, reviewed against the goal before any wireframe. Design now works from evidence; <code>ui-ux-flows</code> turns the frame into flows, <code>ui-prototyping</code> tests it cheaply.</li><li>The ADR/fnd record: research decisions (recruit, method, findings) get a dated note so future "who are our users?" discussions start from evidence (<code>fnd-adr</code>).</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"We know our users, we ARE the users"</td><td>The team is the most reliable blind spot in product history.</td></tr><tr><td>"Surveys are faster than interviews"</td><td>Surveys discover opinions about your idea; interviews discover the problem.</td></tr><tr><td>"Personas are fluffy posters"</td><td>Bad personas are posters; evidence-tied personas are decisions.</td></tr><tr><td>"Shipping fast beats researching"</td><td>Speed on the wrong problem is the most expensive speed there is.</td></tr><tr><td>"We'll talk to users after launch"</td><td>Then launch validated the assumptions you never checked.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Solution-shaped problem statements ("we need a…" as the frame)</li><li>Surveys/interviews of your own team; recruited-only-friends sessions</li><li>Personas with demographics but no behavior, pains, or evidence</li><li>No open-questions list; disconfirming findings buried</li><li>Research done after the design is already committed</li><li>Zero user contact before heavy design/build investment</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Problem framed without the solution; riskiest assumptions ranked</li><li>[ ] Interviews run (5–8/segment, transcribed), not opinion surveys</li><li>[ ] Personas are decision tools: behavior + pains + evidence, 1–3 max</li><li>[ ] Open questions and un-reached segments written as risk</li><li>[ ] Findings handed to design; surprising data is the headline</li><li>[ ] No "we are the user" rationalization in the record</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

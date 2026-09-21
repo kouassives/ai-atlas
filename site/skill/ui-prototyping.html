@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>ui-prototyping · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">UI Designer</p>
+      <h1><code>ui-prototyping</code></h1>
+      <p class="tagline">Prototypes design ideas: fidelity levels, interactive mockups, and validation with users. Use when testing design ideas cheaply, when the design is unvalidated and building the real thing is expensive, or when stakeholders need to react to something concrete.</p>
+      <p class="badges"><span class="badge">ui-designer</span><span class="badge">design</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="prototyping">Prototyping</h2>
+<h3 id="overview">Overview</h3>
+<p>Prototyping is the art of <strong>buying answers at the cheapest fidelity that can give them</strong>: a sketch answers "is the concept right?", a wireframe flow answers "is the path clear?", an interactive mockup answers "is the interaction obvious and pleasant?". The fidelity ladder is climbed deliberately — each level costs more to build and answers deeper questions — and every prototype is validated with users or stakeholders before the next level. A prototype's job is to be thrown away.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>The design idea is unvalidated; the real implementation is expensive.</li><li>Design alternatives need an A/B before committing.</li><li>Stakeholders need to react to something concrete — a prototype settles meetings that documents never will.</li><li>Feasibility/UX risk needs retiring cheaply before <code>fe-*</code> implementation.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>The question is implementation, the design is validated (go build it).</li><li>A test of the real system is what is needed (<code>tst-e2e-testing</code>, <code>ui-usability-testing</code> — a prototype is not a test run).</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-pick-the-fidelity-that-answers-the-question">Step 1 — Pick the fidelity that answers the question</h4>
+<table><tr><th>Fidelity</th><th>Answers</th><th>Best for</th></tr><tr><td>Sketch/paper</td><td>Concept, layout instinct</td><td>First framing, 5-minute ideas</td></tr><tr><td>Wireframe flow</td><td>Path clarity, IA sanity</td><td><code>ui-ux-flows</code> validation</td></tr><tr><td>Static mockup</td><td>Visual direction</td><td>Stakeholder direction pick</td></tr><tr><td>Interactive mockup</td><td>Interaction clarity, task completion</td><td>The "does it feel right" question</td></tr></table>
+<ul><li>Match fidelity to the decision pending — a full interactive mockup for a concept that is still a sketch is money spent on the wrong question.</li><li>The rule: <strong>the cheapest level that can still answer the question</strong> — and note which level you validated at.</li></ul>
+<h4 id="step-2-build-interactive-only-where-interaction-is-the-question">Step 2 — Build interactive only where interaction is the question</h4>
+<ul><li>Interactive mockups exist to test task flow, affordance, and reaction — not to demo polish. They carry realistic content, realistic states (empty/error), and a bounded set of paths (the tested flows, not the whole app).</li><li>A click-through that dead-ends on "and then this feature" is a prototype that sold the demo and failed the validation. Every path a user can walk must be complete in the prototype.</li></ul>
+<h4 id="step-3-validate-with-users-and-record-honestly">Step 3 — Validate with users and record honestly</h4>
+<ul><li>Prototypes are validation instruments: run tasks with users (see <code>ui-usability-testing</code> for the session craft), collect WHERE they hesitated or failed — not applause.</li><li>Present prototypes to stakeholders as decision surfaces (sample real options, capture the pick), not as "the design is done" announcements.</li></ul>
+<h4 id="step-4-throw-the-prototype-away-deliberately">Step 4 — Throw the prototype away deliberately</h4>
+<ul><li>The prototype is evidence, not the blueprint: the decisions migrate (to <code>ui-visual-design</code>, <code>ui-design-systems</code>, <code>fe-*</code>), the artifact goes. Keeping the prototype as "almost the app" creates the world's worst implementation spec.</li><li>Write the findings record: what was validated, what changed, what was abandoned and why — so the prototype's value outlives the artifact (<code>fnd-adr</code>).</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"We'll just make it in the real codebase, we're agile"</td><td>Real-code is the most expensive prototype medium; you cannot throw it away.</td></tr><tr><td>"A high-fidelity mockup is more convincing"</td><td>Convincing is not validing; the fidelity must answer the question, not impress the room.</td></tr><tr><td>"Prototypes are for demoing to stakeholders"</td><td>If nobody behavioral-tested it, it is an animated brochure.</td></tr><tr><td>"We'll evolve the prototype into the product"</td><td>Evolving prototypes bypass the design system and every code quality gate.</td></tr><tr><td>"We don't have time to prototype"</td><td>Time to prototype is the discount on the rebuild you are not budgeting for.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Prototyping in the production codebase</li><li>High fidelity before the lower-level questions are answered (mockup of a concept that was never framed — <code>ui-ux-research</code> missing)</li><li>Interactive paths that end in dead ends; demo-only content</li><li>No behavioral validation; stakeholder applause as the only evidence</li><li>Prototype dressed as a deliverable and migrated instead of thrown away</li><li>No findings record; decisions undocumented</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Fidelity chosen to answer the pending question (cheapest that answers it)</li><li>[ ] Interactive only where interaction is the question; all walkable paths complete; states included</li><li>[ ] Validated with real users/stakeholders; hesitations recorded, not applause</li><li>[ ] Findings record written (validated / changed / abandoned)</li><li>[ ] Prototype thrown away deliberately; decisions migrated to design/implementation</li><li>[ ] No rationalization-based fidelity inflation</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

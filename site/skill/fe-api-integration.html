@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>fe-api-integration · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Developer Frontend</p>
+      <h1><code>fe-api-integration</code></h1>
+      <p class="tagline">Wires UI to APIs: fetching, caching, optimistic updates, error handling, retries, and stale-while-revalidate. Use when wiring UI to APIs, when loading states are per-component chaos, when errors leave users stuck, or when refetches hammer the backend.</p>
+      <p class="badges"><span class="badge">frontend</span><span class="badge">implementation</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="api-integration">API Integration</h2>
+<h3 id="overview">Overview</h3>
+<p>The UI's job for server data is to <strong>fetch, cache, and invalidate</strong> — not to hold data. This skill covers the integration layer: a single cache keyed by query identity, loading/error states that are part of the data's story, retries with backoff on the right failures, optimistic updates with honest rollback, and staleness policies that keep the UI fast without lying.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Wiring components to API data (lists, details, mutations, pagination, search).</li><li>Every component has its own loading/error boolean and refetch-on-own-init.</li><li>Errors leave the user with a spinner forever or a blank page.</li><li>Refetching on every mount, or never refetching at all.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Choosing the library (<code>fe-state-management</code> §3 sets its place; the mechanics below are library-agnostic).</li><li>Backend contract design (<code>be-api-design</code>/<code>arch-api-contract-design</code>) — this skill consumes the contract.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-one-cache-keyed-by-query-identity">Step 1 — One cache, keyed by query identity</h4>
+<ul><li>Server data lives in ONE server-state cache (per <code>fe-state-management</code> §3), keyed by the full query identity (endpoint + params + auth scope) — same key, same data, no duplicate fetchers.</li><li>Reads go through the cache; writes invalidate or update it. No component "fetches its own copy".</li></ul>
+<h4 id="step-2-make-loading-and-error-part-of-the-data-story">Step 2 — Make loading and error part of the data story</h4>
+<ul><li>Every data need has three states held together — data, loading, error — returned as one unit from the hook/cache (not scattered booleans).</li><li>Loading UX: initial load vs background refetch are different (skeleton vs subtle refresh) — the cache's stale-while-revalidate shape gives both for free.</li><li>Errors are a state, not an exception: render a recovery path (retry button, cached fallback), never a spinner forever. The error UI carries the user's next action.</li></ul>
+<h4 id="step-3-retry-with-discipline">Step 3 — Retry with discipline</h4>
+<ul><li>Retry transient failures (network blip, 429, 5xx) with backoff + jitter, capped attempts; never retry 4xx business rejections (<code>be-microservices-patterns</code> retry discipline applies client-side too).</li><li>Show honest progress when a retry loop is running; auto-retry silently only for background refreshes, never for a user's action.</li><li>Timeouts: a hanging request is a failure with a timeout, not an infinite spinner — the UI must conclude.</li></ul>
+<h4 id="step-4-optimistic-updates-with-honest-rollback">Step 4 — Optimistic updates with honest rollback</h4>
+<ul><li>For mutations users experience as instant (likes, toggles, quick edits): apply the change to the cache immediately, fire the request, and <strong>roll back on failure</strong> with a clear error notice.</li><li>Rollback restores the exact prior state; a rollback that leaves half-updated UI is worse than no optimism.</li><li>Reserve optimism for idempotent, low-stakes mutations; destructive or cross-feature writes stay pessimistic (show progress, then confirm).</li></ul>
+<h4 id="step-5-coordinate-mutations-with-the-server-contract">Step 5 — Coordinate mutations with the server contract</h4>
+<ul><li>Mutations carry the backend's contract: idempotency keys, correct verbs/status handling, and the server's error shape surfaced to the user in terms they can act on (per <code>be-api-design</code>, <code>tst-api-testing</code>).</li><li>Refetch/invalidate after mutations is declarative (invalidate the affected cache keys), not ad-hoc "call this component's refresh".</li><li>Pagination and filtering use the cache's query identity so navigating back is instant instead of a refetch storm.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"Each component fetches on mount, it's simple"</td><td>Simple until the fifth mount means the fifth backend hammering.</td></tr><tr><td>"A spinner until it loads is fine"</td><td>A spinner forever is a design decision that punishes the user for a timeout.</td></tr><tr><td>"Retry everything — resilience!"</td><td>Retrying a 400 is slamming the same wall with a polite backoff.</td></tr><tr><td>"Optimistic is fancy, use it everywhere"</td><td>Optimistic on a payment is how "it said OK" reports begin.</td></tr><tr><td>"Cache it so we never refetch"</td><td>Stale-forever is data lying to the user; staleness policy is the cache's contract.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Per-component fetch/loading booleans; same query fetched twice in one screen</li><li>Infinite spinners on error; no retry path in the error state</li><li>Retry loops on 4xx; unordered retry storms</li><li>Optimistic updates without rollback or on destructive writes</li><li>Mutations that don't invalidate the cache (stale screens after "saved!")</li><li>No timeout conclusion for hanging requests</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Single server-state cache; queries keyed by full identity; no duplicate fetchers</li><li>[ ] data/loading/error as one unit; skeleton vs background-refresh distinguished</li><li>[ ] Retries: transient-only, backoff+jitter, capped; user-action failures surface honestly</li><li>[ ] Timeouts conclude; no infinite spinners</li><li>[ ] Optimistic only where safe, with exact rollback + error notice</li><li>[ ] Mutations respect the contract (idempotency, error shapes) and invalidate cache keys</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

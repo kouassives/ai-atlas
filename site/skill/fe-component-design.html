@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>fe-component-design · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Developer Frontend</p>
+      <h1><code>fe-component-design</code></h1>
+      <p class="tagline">Designs UI components: composition, presentational vs container roles, prop and event contracts, and reusability without premature abstraction. Use when building UI components, when a component grows props and conditionals without bound, or when 'reusable' components are actually hard to use and change.</p>
+      <p class="badges"><span class="badge">frontend</span><span class="badge">implementation</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="component-design">Component Design</h2>
+<h3 id="overview">Overview</h3>
+<p>Components are the frontend's units of design — and of coupling. Their discipline: <strong>composition over configuration</strong> (small pieces assembled beat a big component with 20 props), separation of <strong>presentational</strong> (how it looks) from <strong>container</strong> (where data comes from) concerns, explicit prop/event contracts, and reusability earned by repetition, not declared in advance.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Building new components, or refactoring a component too big to reason about.</li><li>A component's props list reads like a feature's requirements (growing without bound).</li><li>Components that "look reusable" but are unused, unreadable, or unchangeable.</li><li>Splitting logic-bearing UI from presentational pieces.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>One-off markup inside a feature that will never repeat — leave it inside the feature (<code>fe-architecture</code>).</li><li>Global design-system atoms belong to the design system (<code>ui-design-systems</code>) once repetition proves them.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-stratify-the-roles">Step 1 — Stratify the roles</h4>
+<ul><li><strong>Presentational</strong>: props in, rendered UI out, no data fetching, no global state, no routing. Pure, dumb, predictable — the reusable surface.</li><li><strong>Container/logic</strong>: owns data acquisition and state; renders presentational children with the data they need.</li><li>The split is the dependency rule at component scale: presentational components are the "core" (no I/O), containers are the adapters.</li></ul>
+<h4 id="step-2-prefer-composition-to-configuration">Step 2 — Prefer composition to configuration</h4>
+<ul><li>A component with <code>variant</code>, <code>size</code>, <code>showHeader</code>, <code>layout</code>, <code>onMode</code>… is a config surface that grows forever — assemble small components instead (<code>&lt;Card&gt;&lt;Card.Header&gt;…</code> beats <code>&lt;Card variant=&quot;with-header&quot; showIcon layout=&quot;compact&quot; …/&gt;</code>).</li><li>Share behavior via composition/children/slots and small wrapper components, not via a prop-per-feature.</li><li>When a new requirement needs a new prop AND a new conditional, the component should usually be split, not extended.</li></ul>
+<h4 id="step-3-make-the-propevent-contract-explicit">Step 3 — Make the prop/event contract explicit</h4>
+<ul><li>Props are the contract: typed, documented, with sensible defaults; no silent "if you pass both X and Y, Y wins" mystery rules.</li><li>Events flow UP (callbacks/emits describe what happened: <code>onSubmit</code>, <code>onSelect</code>), state/data flows DOWN. No child reaching into parent state (that is <code>fe-state-management</code> scope).</li><li>Boolean-prop proliferation is the first smell of a missing sibling component.</li></ul>
+<h4 id="step-4-reusability-is-earned">Step 4 — Reusability is earned</h4>
+<ul><li>Reuse when the THIRD instance appears (YAGNI): the first two duplications are usually different enough that early abstraction was wrong.</li><li>The cost side: a "reusable" component has an API to maintain, users to not-break, and abstraction to justify. Repeatable use in the codebase pays that; a predicted use does not.</li><li>If a supposedly-reusable component is only used once but tweaked everywhere, it is a template, not a component — inline the variations.</li></ul>
+<h4 id="step-5-keep-the-accessibility-and-responsive-contract-attached">Step 5 — Keep the accessibility and responsive contract attached</h4>
+<ul><li>Components that render interactive or text-bearing UI carry their semantics (<code>fe-accessibility</code>) and viewport behavior (<code>fe-responsive-design</code>) as part of their contract — accessibility is not a later wrapper.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"One more prop won't hurt"</td><td>The twentieth prop is the one that makes the component unchangeable.</td></tr><tr><td>"We made it reusable for the future"</td><td>The future rewrites it; the present pays the coupling.</td></tr><tr><td>"Container logic in the component is simpler"</td><td>Simpler to write, forever harder to test and change.</td></tr><tr><td>"Props are documented in the types"</td><td>Types document shape, not semantics — defaults, units, and interaction rules belong in words.</td></tr><tr><td>"This component is shared, put it in platform"</td><td>Only after real repetition; a single-use "shared" component is a castle in the air.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Prop lists that grow with every feature (config-compound)</li><li>Components that fetch data and render pixels at the same time</li><li>Events/state flowing down, or children reaching into parent stores</li><li>"Reusable" components with one real user and ten tweaks</li><li>Booleans as a design language (<code>showX</code>, <code>withY</code>, <code>hasZ</code>)</li><li>Accessibility/responsive behavior glued on outside the contract</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Presentational vs container split applied; presentational = pure props-in/UI-out</li><li>[ ] Composition preferred; no config-compound with unbounded props</li><li>[ ] Contract explicit: typed props with documented semantics, events up / data down</li><li>[ ] Reusability earned (third-use rule); single-use "shared" components rejected</li><li>[ ] A11y + responsive behavior part of the component's contract</li><li>[ ] Components testable: logic extracted, presentational renderable in isolation</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

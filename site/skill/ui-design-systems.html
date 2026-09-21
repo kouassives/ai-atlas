@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>ui-design-systems · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">UI Designer</p>
+      <h1><code>ui-design-systems</code></h1>
+      <p class="tagline">Creates and extends design systems: design tokens, component libraries, theming, and documentation. Use when creating or extending a design system, when buttons and colors drift between screens, or when a visual language needs codification into tokens and components.</p>
+      <p class="badges"><span class="badge">ui-designer</span><span class="badge">design</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="design-systems">Design Systems</h2>
+<h3 id="overview">Overview</h3>
+<p>A design system is the visual language of the product made <strong>codified</strong>: design tokens (the single source for color, space, type, radius, motion), a component library (the reusable units, <code>fe-component-design</code> shapes the code, this skill defines the system), <strong>theming</strong> (one codebase, many brands/environments via token swapping), and documentation that makes the system a working contract. The system's enemy is drift — and its medicine is being used by real screens.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Buttons, colors, and spacing drift between screens; the same "primary button" looks different in four places.</li><li>A new visual language exists (from <code>ui-visual-design</code>) and needs codification.</li><li>Multiple products/brands share a codebase and need theming.</li><li>New components should ENTER the system (naming, tokens, docs, ownership).</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>A single-screen visual decision (<code>ui-visual-design</code> decides it; the system records it later once repeated).</li><li>Codifying a system that has not been visually designed — tokens encode decisions; they do not make them.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-extract-the-token-layer-first">Step 1 — Extract the token layer first</h4>
+<ul><li><strong>Design tokens</strong> are the primitive vocabulary: color/role, spacing scale, type scale, radius, shadows, motion — each with a semantic name (<code>color.text.muted</code>, <code>space.4</code>, <code>radius.md</code>), NOT a value name (<code>color.blue</code>, <code>size.medium</code> is borderline — semantic beats sentiment).</li><li>Tokens are the ONLY place raw values live. Implementations (components) reference tokens; a raw hex in a component is drift with a timestamp.</li><li>Start from the verified visual system (<code>ui-visual-design</code> verification), not by inventing tokens that fit existing mess — that cryptographizes the drift.</li></ul>
+<h4 id="step-2-codify-the-component-library-as-a-contract">Step 2 — Codify the component library as a contract</h4>
+<ul><li>Each component in the library is a contract: API (props/events, per <code>fe-component-design</code>), tokens used, states (default, hover, focus, error, disabled, loading), a11y behavior (<code>fe-accessibility</code>), responsive behavior (<code>fe-responsive-design</code>), and usage rules (when to use/not use, dosage).</li><li>A component with undocumented states is a component whose states will be reinvented per screen — with different colors each time.</li><li>Two competing "almost the same" components are a new shared component waiting to be extracted; the system tracks the merge, not the duplication.</li></ul>
+<h4 id="step-3-make-theming-a-token-level-operation">Step 3 — Make theming a token-level operation</h4>
+<ul><li>Theming swaps token VALUES at a scope (theme/context), not components or styles sprinkled with overrides. One component codebase, N visual identities.</li><li>Themes are explicit: a theme manifest listing the token overrides, verified for contrast/a11y parity (<code>fe-accessibility</code>), not "we apply some overrides and hope".</li><li>Theming must not be the permission slip for drift: a theme override with no manifest entry is a banned pattern.</li></ul>
+<h4 id="step-4-document-what-to-use-why-and-when-not">Step 4 — Document what to use, why, and when not</h4>
+<ul><li>Component docs contain: purpose, API, visual states, usage dos/donts, and the alternatives (including "don't use this, use the layout primitives"). Usage guidance is what turns a library into a system.</li><li>Tokens documented with rationale (why this scale/ratio) so future designers extend the system instead of breaking it.</li><li>The system has ownership: one owner/team decides what enters; without ownership, every team's emergency component enters.</li></ul>
+<h4 id="step-5-keep-the-system-honest-with-real-usage">Step 5 — Keep the system honest with real usage</h4>
+<ul><li>The system is only as good as its consumption: new screens build from tokens + library; drift is caught (audits, lint on raw values, visual regression tests — <code>tst-regression</code> for the UI).</li><li>The feedback loop is two-way: a repeated one-off component is evidence the system is missing a capability — extraction is scheduled, not forbidden.</li><li>Versioning and migration: token/component changes ship with a changelog and a migration path; systems die by silent breaking changes.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"We'll codify the design when we have time"</td><td>Drift compounds; every screen is a renegotiation of the same button.</td></tr><tr><td>"Tokens with value names are simpler"</td><td><code>color.blue</code> tells you nothing about why; semantics make the system navigable.</td></tr><tr><td>"One more duplicate component is fine"</td><td>A duplicate is a fork; every fork doubles future design change costs.</td></tr><tr><td>"Theming is just some CSS overrides"</td><td>Overrides are drift wearing a theming costume.</td></tr><tr><td>"Everyone can add to the system"</td><td>Everyone adding is the system's design-by-committee death.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Raw values (hex, px) inside components instead of tokens</li><li>Components with undocumented states; "almost the same" duplicates</li><li>Theme overrides without manifest/ownership; a11y parity unchecked</li><li>Docs without usage guidance or alternatives</li><li>No system owner; no drift detection (audits/lint/visual regression)</li><li>Silent breaking changes to tokens/components</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Token layer extracted with semantic names; raw values only in tokens</li><li>[ ] Component library is a documented contract (API, states, a11y, responsive, usage)</li><li>[ ] Theming via token manifests with verified a11y parity</li><li>[ ] Docs include purpose, dos/donts, and alternatives; rationale recorded</li><li>[ ] Ownership defined; drift detection in place</li><li>[ ] Additions enter via the defined process; migration paths documented</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>ops-iac-terraform · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">DevOps</p>
+      <h1><code>ops-iac-terraform</code></h1>
+      <p class="tagline">Builds infrastructure as code with Terraform or OpenTofu: state management, modules, and drift handling. Use when provisioning infrastructure, when state is shared or locked poorly, when environments drift from the code, or when infra changes are unreviewable or unrepeatable.</p>
+      <p class="badges"><span class="badge">devops</span><span class="badge">deployment</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="infrastructure-as-code-terraformopentofu">Infrastructure as Code (Terraform/OpenTofu)</h2>
+<h3 id="overview">Overview</h3>
+<p>Infrastructure as Code exists so that infrastructure changes get the same review, versioning, and repeatability as application changes. Terraform's power comes with two failure fixtures: <strong>state</strong> (the single source of truth about reality) and <strong>drift</strong> (reality diverging from the code). This skill covers safe state management, module design, reviewable plan discipline, and honest drift handling.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Provisioning or modifying infrastructure (VPCs, databases, clusters, IAM, buckets).</li><li>State is stored locally, locked badly, or owned by nobody.</li><li>Environments differ from the code (drift) or from each other.</li><li>Infra changes happen by console click and no one knows who did it.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Deploying workloads into an existing cluster (<code>ops-kubernetes</code>, <code>ops-gitops</code>); cluster-level operators vs app delivery.</li><li>One-shot experimental environments you intend to throw away (still: if it matters, write it).</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-state-is-sacred-remote-locked-owned">Step 1 — State is sacred: remote, locked, owned</h4>
+<ul><li>Remote state (S3/GCS/backend) with <strong>locking</strong> (DynamoDB/consul): two engineers running <code>apply</code> without locking is a scheduled corruption.</li><li>State is sensitive (often contains secrets/data) — protected like <code>be-security-engineering</code> says; no state in git.</li><li>One owner per state file; environments get distinct states or workspaces with clear handoffs.</li></ul>
+<h4 id="step-2-plan-then-apply-as-the-review-artifact">Step 2 — Plan-then-apply as the review artifact</h4>
+<ul><li>The <code>plan</code> output is the code review's diff: every apply is preceded by a plan someone actually read.</li><li>CI does <code>plan</code> on PRs; humans read it; apply happens after merge or approved promote — never "just run apply and see".</li><li><code>destroy</code> is an incident-grade action: requires the same review, plus a confirm step and a re-creation check.</li></ul>
+<h4 id="step-3-modules-reuse-the-bones-not-the-bodies">Step 3 — Modules: reuse the bones, not the bodies</h4>
+<ul><li>Modules capture repeated structure (networking, service, storage) with inputs for the varying parts.</li><li>A module is an API: version it, document its inputs/outputs, changelog it — pin module versions like dependencies.</li><li>Don't module-ize prematurely (YAGNI): two similar spots is a candidate; one spot is not a module yet.</li><li>Prefer composition of small modules over a mega-module that re-implements everything.</li></ul>
+<h4 id="step-4-handle-drift-honestly">Step 4 — Handle drift honestly</h4>
+<ul><li>Drift (manual console changes, deleted resources, out-of-band mutations) is detected by <code>plan</code>, not denied.</li><li>On drift: triage — reconcile the code to reality (import/adopt) when the manual state is intentional, or plan to bring reality back to code. Never "terraform apply --auto-approve" over unknown drift without looking at it.</li><li><strong>Prevent, don't just repair</strong>: the thing that drifted manually is the thing that needs an IaC change so it stops happening.</li></ul>
+<h4 id="step-5-keep-destroyrecreate-and-data-loss-out-of-reach">Step 5 — Keep destroy/recreate and data loss out of reach</h4>
+<ul><li><code>prevent_destroy</code> on stateful resources (databases, object stores) where your provider supports lifecycle hooks.</li><li>Tag/label everything (owner, environment, cost center) — untagged resources are ungovernable and undiffable.</li><li>Secrets via the provider's secret backend/reference, never in the code or in plan output logs.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"Local state is fine for my laptop experiments"</td><td>The laptop state file is how an environment gets recreated from a stale snapshot.</td></tr><tr><td>"I'll just apply, the plan is obvious"</td><td>The plan is only obvious after it deleted the resource someone thought was 'obvious too'.</td></tr><tr><td>"A console change is faster than writing Terraform"</td><td>The console change is also unreviewed, unrepeatable, and undocumented — drift starts there.</td></tr><tr><td>"Terraform state push fixes the mess"</td><td>Pushing state over real infra is how you adopt other people's accidents; import thoughtfully.</td></tr><tr><td>"prevent_destroy is a hassle"</td><td>It is the only thing between a mistyped apply and the database's last backup.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>State local, unlocked, or in git</li><li>Applies from laptops with no reviewed plan; destroys with no confirm</li><li>Modules unversioned, undocumented, or re-created per environment</li><li>Drift ignored or "fixed" with blind <code>apply --auto-approve</code></li><li>Stateful resources without <code>prevent_destroy</code></li><li>Untagged resources; secrets in code or plan logs</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] State remote + locked + single owned; no state in git</li><li>[ ] Plan is the review artifact; apply post-review/post-merge; destroy reviewed+confirmed</li><li>[ ] Modules versioned and documented; used for repeated structure only</li><li>[ ] Drift triaged and resolved into code (reconcile or repair), with the manual-trigger prevented by IaC</li><li>[ ] <code>prevent_destroy</code> on stateful resources; resources tagged (owner/env)</li><li>[ ] Secrets referenced from secret backends, never in code or output</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

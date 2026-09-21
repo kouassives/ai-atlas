@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>ops-observability · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">DevOps</p>
+      <h1><code>ops-observability</code></h1>
+      <p class="tagline">Makes running systems observable: structured logging, RED/USE metrics, tracing, and dashboard layout. Use when shipping anything that runs in production, when debugging needs log greps across services, when metrics lack a coherent picture, or when latency problems need correlation across hops.</p>
+      <p class="badges"><span class="badge">devops</span><span class="badge">operations-maintenance</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="observability">Observability</h2>
+<h3 id="overview">Overview</h3>
+<p>Observability is the production counterpart of testing: tests ask "does it work on my machine/CI", observability answers "what is it doing right now, and why". The three signals — <strong>logs</strong> (events), <strong>metrics</strong> (aggregates), <strong>traces</strong> (causality) — answer different questions; a system is observable when an on-call engineer can answer "what broke, where, and why" without guessing.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Shipping a new service, endpoint, or feature that will run in production.</li><li>Debugging without observability — grepping logs across services, or "cargo-culting" a dashboard.</li><li>A latency or reliability problem that needs correlation across hops.</li><li>Reviewing whether the current signals would have caught last month's incident.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Alerting thresholds and on-call practice — that is <code>ops-monitoring-alerting</code> (uses, but does not repeat, this).</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-logs-structured-correlated-useful">Step 1 — Logs: structured, correlated, useful</h4>
+<ul><li><strong>Structured</strong> (key=value or JSON), not prose: machine-filterable without regex torture.</li><li>Every request/flow gets a <strong>correlation id</strong> propagated through spans/messages (<code>request_id</code> for HTTP, message id for events) — without it, "this failed here AND there" is a research project.</li><li>Log at the right level, at meaningful boundaries (entry/exit, decisions, failures); <strong>never log secrets, tokens, or PII</strong> (<code>be-security-engineering</code>).</li><li>Logs are for events engineers search for later — a log line must carry the answer to "what happened here".</li></ul>
+<h4 id="step-2-metrics-red-for-requests-use-for-resources">Step 2 — Metrics: RED for requests, USE for resources</h4>
+<ul><li><strong>RED</strong> per service: Rate, Errors, Duration (per endpoint/critical path). RED is the whole story for request-driven services.</li><li><strong>USE</strong> per resource/infra: Utilization, Saturation, Errors (CPU, memory, queues, connections). USE is the whole story for subsystems.</li><li>Latency metrics are percentiles (p50/p95/p99) over a window, not averages. Tagged enough to slice (endpoint, status class, tenant) without exploding cardinality.</li><li>Metrics feed dashboards AND alerting (<code>ops-monitoring-alerting</code>) — a metric nobody alerts on is a souvenir.</li></ul>
+<h4 id="step-3-traces-connect-the-hops">Step 3 — Traces: connect the hops</h4>
+<ul><li>Distributed tracing (OpenTelemetry) gives the causality RED cannot: which hop ate the budget on a slow request.</li><li>Trace every boundary that matters: HTTP in/out, DB queries, message publish/consume, external calls. Sampled tracing (head-based sampling) covers debugging without a storage explosion.</li><li>Traces connect to logs (correlation id) and metrics (latency histograms) — the three signals reference each other.</li></ul>
+<h4 id="step-4-dashboards-questions-not-wallpaper">Step 4 — Dashboards: questions, not wallpaper</h4>
+<ul><li>Each dashboard answers one question for one audience (on-call: "what's breaking NOW"; capacity: "how much headroom"; product: "how healthy is the feature").</li><li>Include the RED/USE panels + correlation id + recent errors; annotate deploys (every dashboard shows what changed behind a regression).</li><li>Dashboard as decoration (20 panels no one reads) is noise — prune panels when they stop answering a question.</li></ul>
+<h4 id="step-5-make-it-standard-in-the-delivery-loop">Step 5 — Make it standard in the delivery loop</h4>
+<ul><li>The DoD includes observability: an endpoint's logs/metrics/trace exist before merge, not after incident #1 (<code>references/definition-of-done</code>, <code>ops-ci-cd</code> gate).</li><li>Validate cold: exercise a failure path in staging and confirm the signal it produces (a signal that did not prove it fires is a guess).</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"We'll add logging when it's in prod"</td><td>Then the first prod bug is debugged blind, at the highest stakes.</td></tr><tr><td>"Metrics: average latency looks fine"</td><td>Averages hide the p95 tail that the pager actually feels.</td></tr><tr><td>"The logs have everything in them"</td><td>Without correlation ids and structure, "everything" is unusable for a multi-hop flow.</td></tr><tr><td>"A dashboard for every metric"</td><td>Unread dashboards are the most expensive noise the team ships.</td></tr><tr><td>"OTel is too heavy for us"</td><td>Auto-instrumentation gets you most of the way with a fraction of the ceremony.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Unstructured logs, no correlation id, secrets in log lines</li><li>Averages-only latency; missing rate/errors on the hot path</li><li>No tracing across a multi-hop flow (or traces not joinable to logs)</li><li>Dashboards with panels no one can name a decision for</li><li>Metrics with no alerting ownership</li><li>Observability added after the incident, not before the merge</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Structured logs with correlation ids propagated; no secrets/PII logged</li><li>[ ] RED metrics on request paths (percentiles), USE on resources; sliced by useful tags</li><li>[ ] Tracing at boundaries; traces joinable to logs and metrics</li><li>[ ] Dashboards answer named questions; deploys annotated</li><li>[ ] Observability shipped with the code (DoD), not retrofitted</li><li>[ ] Failure paths exercised once in staging to prove the signals fire</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>ops-kubernetes · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">DevOps</p>
+      <h1><code>ops-kubernetes</code></h1>
+      <p class="tagline">Deploys and operates workloads on Kubernetes: manifests, health probes, resource requests and limits, networking, rolling updates, and rollbacks. Use when writing or reviewing cluster manifests, when pods restart mysteriously or get scheduled badly, when a deployment has no rollback story, or when resource usage is unconstrained.</p>
+      <p class="badges"><span class="badge">devops</span><span class="badge">deployment</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="kubernetes">Kubernetes</h2>
+<h3 id="overview">Overview</h3>
+<p>Kubernetes turns YAML into a distributed system — which means the YAML is where the mistakes happen. This skill covers the deployment basics that keep workloads healthy and recoverable: explicit resources, real health probes, sane networking, and a rollout/rollback story. Its whole job is to make the cluster predictable when it will least predictably fail.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Writing or reviewing Deployments, Services, Ingresses, ConfigMaps, or jobs.</li><li>Pods restart-loop, get scheduled onto the wrong nodes, or die at scale.</li><li>A rollout goes wrong and there is no rollback procedure.</li><li>Tuning resource allocation or autoscaling.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Building the image itself (<code>ops-docker-containers</code>), provisioning clusters/state (<code>ops-iac-terraform</code>), or GitOps delivery (<code>ops-gitops</code>).</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-declare-resources-explicitly">Step 1 — Declare resources explicitly</h4>
+<ul><li><code>requests</code> = what the scheduler reserves; <code>limits</code> = what the runtime kills at. Set BOTH on every container: requests for scheduling honesty, limits for runaway protection.</li><li>Set them from observed usage (profile, don't guess — <code>be-performance</code>), with headroom for bursts.</li><li>HPA scales on metrics; it cannot fix an under-requested container that the scheduler oversubscribed.</li></ul>
+<h4 id="step-2-health-checks-liveness-vs-readiness-are-different-lies">Step 2 — Health checks: liveness vs readiness are different lies</h4>
+<ul><li><strong>readiness</strong> gates the Service traffic: the pod is not receiving load until ready. Point it at the real dependency state (DB warm, cache connected).</li><li><strong>liveness</strong> restarts the container on deadlock/hang. If you only have one probe, readiness-first; a wrong liveness probe restarts healthy pods in a loop (restart storms are the classic symptom).</li><li><code>startupProbe</code> for slow-starting apps prevents liveness from killing them before ready.</li><li>The probe must test the app itself, not a shell in the same image (follows <code>ops-docker-containers</code> §5).</li></ul>
+<h4 id="step-3-replicas-and-rollout-always-have-a-rollback-story">Step 3 — Replicas and rollout: always have a rollback story</h4>
+<ul><li><code>strategy: RollingUpdate</code> with <code>maxUnavailable</code>/<code>maxSurge</code> tuned for the workload's semantics (e.g. 0 for stateful-critical paths).</li><li><strong>PodDisruptionBudget</strong> for voluntary disruptions (node drains, autoscaling): without it, upgrades can drain the whole service.</li><li>Rollbacks: every release is a <em>previous ready manifest</em> record — <code>kubectl rollout undo</code> is the emergency brake, but the planned picture (GitOps <code>ops-gitops</code>, tagged manifests) is the routine one.</li><li>Versioned images + <code>rollout status --timeout</code> in the pipeline so bad rollouts are seen before the alert arrives.</li></ul>
+<h4 id="step-4-networking-keep-it-explicit-and-least-privilege">Step 4 — Networking: keep it explicit and least-privilege</h4>
+<ul><li>Services and Ingresses: least-access rules, TLS termination pinned (no default certs), no Service of type LoadBalancer where an Ingress/ClusterIP serves.</li><li>NetworkPolicy where the cluster supports it — namespaces are not security boundaries by themselves.</li><li>Config and secrets via ConfigMap/Secret injected as volumes/env — never baked in the image (<code>ops-docker-containers</code>).</li></ul>
+<h4 id="step-5-operate-like-incidents-are-planned">Step 5 — Operate like incidents are planned</h4>
+<ul><li>Logs/metrics from the cluster follow <code>ops-observability</code>; pod restarts, node pressure, and image pulls are alertable signals, not research projects.</li><li>Taint/toleration and affinity keep workloads where they belong; don't scatter scheduling hopes across labels.</li><li>Version/drift: the running cluster state and the repo state must match (GitOps closes this loop).</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"No limits — pods can burst"</td><td>Unbounded limits are how one neighbor starves the node and the scheduler taints everything.</td></tr><tr><td>"One probe is enough"</td><td>Readiness and liveness ask different questions; collapsing them produces either restarted-but-serving or dying-but-serving pods.</td></tr><tr><td>"We'll write the rollback if we need it"</td><td>Incidents are not the time to reconstruct the previous good state.</td></tr><tr><td>"Default replicas=1 is fine for now"</td><td>Single-replica without PDB is an availability NFR violation in disguise.</td></tr><tr><td>"The image has the config baked in"</td><td>Config in image = one build per environment and secrets in layers.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Missing requests/limits, or limits set from vibes not profiles</li><li>Wrong probe shape: liveness that kills slow starts, readiness that ignores real dependencies</li><li>No PDB, no rollback record, no <code>rollout status</code> wait in pipeline</li><li>Services/Ingresses more permissive than needed; default TLS certs</li><li>Config/secrets baked into images</li><li>Scheduling hopes (labels/affinities) with no plan</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] requests+limits on every container, set from measured usage with burst headroom</li><li>[ ] readiness (real dependency state) and liveness (hang detection) correct; startupProbe where slow-starting</li><li>[ ] RollingUpdate tuned; PDB present for critical workloads; rollback manifest is recorded and replayable</li><li>[ ] Pipeline waits on rollout status with timeout; bad rollouts caught pre-alert</li><li>[ ] Networking least-privilege; TLS pinned; NetworkPolicy used where supported</li><li>[ ] Config/secrets injected, never baked; cluster state matches repo/GitOps</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

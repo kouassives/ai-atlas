@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>ops-gitops · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">DevOps</p>
+      <h1><code>ops-gitops</code></h1>
+      <p class="tagline">Runs deployments declaratively with GitOps: Git as the single source of truth, ArgoCD/Flux style reconciliation, and environment promotion. Use when deployments are imperative scripts, when cluster state drifts from any repo, or when promoting between environments is manual and error-prone.</p>
+      <p class="badges"><span class="badge">devops</span><span class="badge">deployment</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="gitops">GitOps</h2>
+<h3 id="overview">Overview</h3>
+<p>GitOps makes Git the single source of truth for what runs where: the desired state lives in a repo, an operator (ArgoCD, Flux) reconciles the cluster to it, and every change is a merge with a diff and a rollback story. The value is not the tool — it is that <strong>drift is visible and changes are reviewable</strong> by the same machinery as code.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Deployments happen via imperative scripts, kubectl one-liners, or cron deploys.</li><li>Cluster state and repo state diverge and nobody can say when or why.</li><li>Promoting between dev/staging/prod is manual and error-prone.</li><li>A deployment breaks and the rollback path is "we remember the old yaml".</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Single small cluster, single author, no environment matrix — <code>kubectl apply</code> with a well-organized repo may honestly be enough (KISS).</li><li>Provisioning the cluster's infra itself (that is <code>ops-iac-terraform</code>).</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-put-the-desired-state-in-git-exclusively">Step 1 — Put the desired state in Git, exclusively</h4>
+<ul><li>The deployment repo holds the full desired environment: manifests, config, secrets references (external, via the cluster's secret manager), image versions.</li><li>The rule: <strong>nobody changes a running cluster except the operator reading Git</strong>. Manual <code>kubectl edit</code> is drift by definition, even if "temporary".</li><li>One repo/branch per environment with an explicit promotion path (see Step 4).</li></ul>
+<h4 id="step-2-reconcile-and-surface-drift-as-a-finding">Step 2 — Reconcile, and surface drift as a finding</h4>
+<ul><li>The operator polls or watches Git and converges the cluster to the repo state (auto-sync with <code>selfHeal</code>, or manual sync — decide per environment; prod commonly manual-sync with a visible diff).</li><li>Drift (out-of-band changes) surfaces as a diff in the operator UI/status: treat it as an incident-report, not a log line. Find out WHAT changed the cluster ownerlessly and fix the process (<code>ops-iac-terraform</code> §4 discipline applies).</li><li>Never auto-sync over unknown drift — look at it before reconciling it away (that is how manual hotfixes get silently destroyed).</li></ul>
+<h4 id="step-3-make-rollbacks-a-normal-operation">Step 3 — Make rollbacks a normal operation</h4>
+<ul><li>Rollback = merge/revert the Git state; the operator does the rest. The rollback story is a previous commit — trivial and perfect.</li><li>Keep image versions explicit and immutable-registry-resolvable so "that exact state" stays reproducible.</li></ul>
+<h4 id="step-4-promotions-are-prs-with-diff-review">Step 4 — Promotions are PRs with diff review</h4>
+<ul><li>dev → staging → prod promotions move the SAME artifact (<code>ops-ci-cd</code> §3) and the SAME manifests, through merge requests that show the plain diff.</li><li>Add the release gate at promotion: smoke tests (see <code>tst-e2e-testing</code> for journey tests), config diff, and approval where compliance demands it.</li><li>The promotion asks only for the actual delta; "staging drifted" is a repo problem, not a promotion blocker by itself — fix the drift first, then promote.</li></ul>
+<h4 id="step-5-keep-the-loop-honest">Step 5 — Keep the loop honest</h4>
+<ul><li>The operator's health, sync status, and last-sync time are monitored (<code>ops-monitoring-alerting</code>): a GitOps operator that silently stops reconciling is a time bomb.</li><li>Pipeline (CI) builds and pushes the artifact; GitOps (CD) only promotes desired state — don't blur them into one "+ync" script that deploys from build machines with credentials.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"We hotfixed prod directly, it's faster"</td><td>That's exactly when the operator self-heals it away or everyone else's state is now wrong.</td></tr><tr><td>"Auto-sync everything; Git is truth"</td><td>Auto-sync over unknown drift quietly deletes manual (maybe intentional, maybe not) changes.</td></tr><tr><td>"Rollback is just git revert"</td><td>Yes — that is the whole point, and why this system is cheaper than every imperative one.</td></tr><tr><td>"We'll adopt GitOps later"</td><td>Later means after the next incident where prod and repo diverge.</td></tr><tr><td>"kubectl apply is basically GitOps"</td><td>apply preserves the imperative habit; Git-as-truth plus reconciliation is the difference.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Manual cluster changes not represented in Git</li><li>Auto-sync self-healing over unresolvable drift without a visible diff</li><li>Promotions by copy-paste commands instead of PRs</li><li>Rollback story = "we remember what it looked like"</li><li>Operator not monitored (sync health/last-sync absent from dashboards)</li><li>CI machines holding CD credentials and deploying directly</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Git holds the full desired state; manual cluster edits are an incident, not a shortcut</li><li>[ ] Reconcile discipline chosen per environment; drift surfaces as visible conflict</li><li>[ ] Rollback = previous commit, reproducible; images immutable+resolvable</li><li>[ ] Promotions are PRs with artifact+manifest diff, smoke gate, and approval where needed</li><li>[ ] Operator health/sync monitored; last-sync visible</li><li>[ ] CI builds/pushes, GitOps promotes — credentials separation enforced</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>be-security-engineering · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Developer Backend</p>
+      <h1><code>be-security-engineering</code></h1>
+      <p class="tagline">Implements application security: OWASP Top 10 guidance for code, authentication and authorization flows, secrets handling, and dependency auditing. Use when handling credentials or untrusted input, when building login or permission systems, when auditing dependencies or fixing vulnerabilities, or when implementing anything that faces untrusted users.</p>
+      <p class="badges"><span class="badge">backend</span><span class="badge">implementation</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="security-engineering">Security Engineering</h2>
+<h3 id="overview">Overview</h3>
+<p>This is the implementation-depth companion to the baseline discipline in <code>fnd-security-basics</code>. Where the foundation skill guarantees the minimum for every change, this one covers the deliberate security engineering: the OWASP Top 10 as concrete code decisions, authN/authZ flows done right, secret lifecycle, and dependency risk management.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Building or extending authentication (login, sessions, tokens, MFA) or authorization (roles, permissions, resource checks).</li><li>Handling credentials, keys, PII, or payment data.</li><li>Auditing dependencies or remediating a vulnerability report.</li><li>Implementing anything with untrusted input beyond the baseline (uploads, links, templating, SQL, deserialization).</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Baseline hygiene for ordinary endpoints — run <code>fnd-security-basics</code> first and always.</li><li>Threat-modeling workshops or pentest scoping — that is the audit upstream of this skill.</li><li>Cryptographic primitive design — use vetted libraries (libsodium, Tink, JCA/KMS), never bespoke crypto.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-map-the-ten-classes-to-code-checks">Step 1 — Map the ten classes to code checks</h4>
+<table><tr><th>Class</th><th>The code-level checks</th></tr><tr><td><strong>A01 Broken Access Control</strong></td><td>Enforce authZ per resource and method; deny by default; never trust client-supplied role/owner fields</td></tr><tr><td><strong>A02 Cryptographic Failures</strong></td><td>TLS everywhere; secrets via KMS/secret manager; sensitive data encrypted at rest with library crypto; no bespoke algorithms</td></tr><tr><td><strong>A03 Injection</strong></td><td>Parameterized SQL/ORM for all queries; never string-concatenate queries or shell commands; template escaping context-aware</td></tr><tr><td><strong>A04 Insecure Design</strong></td><td>AuthN/Z checked at the boundary (Step 3); make the dangerous path unrepresentable in the framework primitives</td></tr><tr><td><strong>A05 Misconfiguration</strong></td><td>Default creds removed; verbose errors off in prod; secure headers (HSTS/CSP/no-sniff); debug endpoints gated</td></tr><tr><td><strong>A06 Vulnerable Components</strong></td><td>Dependency audit in CI, pinned + lockfiles, upgrade window enforced (Step 5)</td></tr><tr><td><strong>A07 Identification Failures</strong></td><td>Rate-limit login; lockout/backoff; MFA for privileged accounts; session rotation on privilege change</td></tr><tr><td><strong>A08 Integrity Failures</strong></td><td>Deserialization of untrusted bytes only with allowlisted types; JWT signature+issuer validated, not just decoded</td></tr><tr><td><strong>A09 Logging Failures</strong></td><td>Structured logs with request_id; never log secrets/tokens/PII; alert on security-relevant events</td></tr><tr><td><strong>A10 SSRF</strong></td><td>Outbound fetch allowlists by host/port/scheme; block cloud-metadata endpoints; no user input in URLs, ever</td></tr></table>
+<h4 id="step-2-authn-who-are-you-provably">Step 2 — AuthN: who are you, provably</h4>
+<ul><li>Passwords: hash with a vetted KDF (bcrypt/argon2/scrypt), per-user salt, constant-time compare; require strength, allow breach-check via haveibeenpwned-style APIs.</li><li>Sessions/tokens: short-lived access + refresh with rotation; tokens stored server-side (or JWTs signed with strong keys + strict validation: signature, issuer, audience, expiry, <code>alg</code> pinned — never <code>none</code>); session invalidation on logout/password change/privilege change.</li><li>Rate limit and lock out intelligently (per-account + per-IP, with backoff) to keep A07 costs bounded.</li></ul>
+<h4 id="step-3-authz-can-you-do-this-to-this">Step 3 — AuthZ: can you do THIS to THIS</h4>
+<p>Model as three explicit questions per operation:</p>
+<ol><li><strong>Authenticated?</strong> (who)</li><li><strong>Authorized for the action?</strong> (what: role/permission check — evaluate policy server-side)</li><li><strong>Authorized for the resource?</strong> (which: ownership/scope check — this is where object-level bugs live; verify the caller owns or is scoped to the requested <code>{id}</code>)</li></ol>
+<p>Deny by default; the happy path is the check, not the exception. Every new endpoint gets all three lines, not "it's behind auth".</p>
+<h4 id="step-4-secrets-lifecycle">Step 4 — Secrets lifecycle</h4>
+<ul><li><strong>At rest</strong>: injected config (env/secret manager) — not code, not repos, not frontend bundles. CI scans for leak patterns and fails on key material.</li><li><strong>In motion</strong>: sent only over TLS, in headers/bodies — never query strings (logs, history, referrers).</li><li><strong>In logs</strong>: redacted by default; an error that echoes a token is a security finding.</li><li><strong>On suspicion</strong>: treat as compromised — rotate everything that shared the secret, do not "clean up formatting".</li></ul>
+<h4 id="step-5-dependencies-as-attack-surface">Step 5 — Dependencies as attack surface</h4>
+<ul><li>Lockfiles committed; CI failing on high/critical in audit (npm audit, pip-audit, OSV, Grype…).</li><li>Additions reviewed with changelog read; removals celebrated.</li><li>An unmaintained dependency is a liability worse than a removed feature — schedule the removal, do not let it age.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"Only admins land here, so the role check is enough"</td><td>Role checks without resource checks are the top IDOR in production.</td></tr><tr><td>"The JWT is signed, it's secure"</td><td>Signed JWTs with sloppy validation (no alg pinning, no expiry) are forged within the hour.</td></tr><tr><td>"It's an internal API, SSRF isn't a concern"</td><td>Internal APIs reach internal metadata endpoints — SSRF is exactly an internal-API risk.</td></tr><tr><td>"We store the API key in the frontend config, it's obfuscated"</td><td>Obfuscation is not security; the secret ships to every browser.</td></tr><tr><td>"The dependency is old but stable"</td><td>"Stable" and "unmaintained" are how CVEs get announced the day you didn't upgrade.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Concatenated SQL or shell strings anywhere near user input</li><li>JWT validation without <code>alg</code> pinning, issuer/audience/expiry checks</li><li>AuthZ by role only, missing per-resource ownership checks</li><li>Secrets in query strings, frontend bundles, or committed files</li><li>Unsupported/abandoned dependencies with known-CVE exposure</li><li>Verbose error pages or debug endpoints in production</li><li>Login without rate limiting or lockout</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Ten OWASP classes walked and each applicable check applied or explicitly N/A with reason</li><li>[ ] AuthN: vetted password hashing, session/token lifecycle incl. invalidation, login rate limiting</li><li>[ ] AuthZ: authenticated × action × resource checks on every endpoint, deny by default</li><li>[ ] Secrets: injected config only, TLS-only transport, redacted logs, rotate-on-suspicion</li><li>[ ] Dependencies pinned + lockfile, CI audit gate, changelog-reviewed additions</li><li>[ ] SSRF posture: outbound fetch allowlists; metadata endpoints blocked</li><li>[ ] No bespoke crypto; vetted libraries used throughout</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

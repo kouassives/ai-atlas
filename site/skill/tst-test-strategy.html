@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>tst-test-strategy · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Tester</p>
+      <h1><code>tst-test-strategy</code></h1>
+      <p class="tagline">Plans a testing approach: test pyramid and quadrants, risk-based scoping, coverage goals, and what to automate versus not. Use when planning the test approach for a feature or system, when test effort is scattered or reactive, or when coverage goals need to be backed by evidence, not vibes.</p>
+      <p class="badges"><span class="badge">tester</span><span class="badge">testing</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="test-strategy">Test Strategy</h2>
+<h3 id="overview">Overview</h3>
+<p>A test strategy decides WHERE the test budget goes before the tests are written: which layers carry the risk, what coverage is actually worth, and what automation genuinely buys. It is the answer to "how will we know this is right?" — scoped by risk, staged by cost, and owned by the team rather than improvised per sprint.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Planning the test approach for a feature, service, or release.</li><li>Test effort feels scattered (everyone tests different layers) or reactive (tests after incidents).</li><li>Coverage goals must be set and defended ("90% coverage" with no reasoning is not a goal).</li><li>Choosing what to automate vs to keep manual.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Writing the individual tests — that is <code>tst-unit-testing</code>/<code>tst-integration-testing</code>/<code>tst-e2e-testing</code> etc.</li><li>The RED-GREEN-REFACTOR implementation loop — that is <code>be-tdd</code>.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-put-risk-first">Step 1 — Put risk first</h4>
+<p>List the things that would hurt most if broken: money movement, authZ, data loss, core user journeys (and their NFRs, per <code>arch-nfrs</code>). The strategy concentrates the pyramid's layers where the risk lives — the pyramid is a shape, not a quota; a payment flow earns integration depth that a settings page does not.</p>
+<h4 id="step-2-shape-the-test-pyramid-honestly">Step 2 — Shape the test pyramid honestly</h4>
+<ul><li><strong>Unit</strong> (fast, many) for logic and rules at every edge.</li><li><strong>Integration</strong> (fewer, slower) at real seams: the DB-boundary queries, the messaging contracts, external-service adapters via real loopback/testcontainers — this is where the pyramid's missing-middle bugs actually live.</li><li><strong>E2E</strong> (few, precious) only for the critical user journeys that cross the whole stack.</li><li>State the planned ratio as a starting point (80/15/5 per <code>be-tdd</code>) and then let RISK revise it — the artifact of the strategy is the final distribution and the reasoning.</li></ul>
+<h4 id="step-3-set-coverage-goals-with-evidence-not-vibes">Step 3 — Set coverage goals with evidence, not vibes</h4>
+<ul><li>Coverage is a conversation about <strong>what is worth protecting</strong>, not a percentage trophy: measure line/branch coverage on the layers where bugs are expensive, and let it be lower where logic is thin glue.</li><li>Coverage goals per tier: "core domain ≥ 90%, controllers 60%, glue tolerated low but reviewed".</li><li>A coverage number that nobody acts on is a decoration; the goal comes with the question "what risk does this number protect?"</li></ul>
+<h4 id="step-4-automate-what-repeats-keep-manual-what-judges">Step 4 — Automate what repeats; keep manual what judges</h4>
+<ul><li>Automate: regression-prone checks, contract surfaces, anything CI can run faster than humans.</li><li>Keep manual (deliberately, with owners): exploratory passes, visual/UX judgment, data-consistency spot checks that resist stable assertions.</li><li>"We'll automate it later" is a strategy FAIL unless the manual step has an owner and a removal date — otherwise the manual smoke stays forever as an unowned ritual.</li></ul>
+<h4 id="step-5-define-the-test-levels-their-exits">Step 5 — Define the test levels & their exits</h4>
+<p>For each tier, name: the environment it runs in, the data it needs, how it's triggered (per-commit / nightly / pre-release), and what "green" means. The strategy becomes executable the moment a signal — CI status per tier, release gate — can be derived from it. Without exit definitions, the strategy is an essay.</p>
+<h4 id="step-6-review-the-strategy-against-the-failure-record">Step 6 — Review the strategy against the failure record</h4>
+<p>Test strategy is a living artifact: after each incident, ask "would the current strategy have caught this?" — if not, the strategy changes (a test, a tier, or an automation decision). The strategy is wrong when the answer stays "no" and nobody moves.</p>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"90% coverage everywhere"</td><td>A percentage without a risk story protects the wrong things expensively.</td></tr><tr><td>"E2E tests cover everything"</td><td>E2E coverage is slow, flaky, and late — it finds what the lower tiers already priced.</td></tr><tr><td>"We'll automate the smoke test later"</td><td>Later is an unowned manual ritual; schedule the automation or drop the promise.</td></tr><tr><td>"Risk-based testing is just gut feeling"</td><td>Risk-based is evidence-weighted — the record of what broke before is the evidence.</td></tr><tr><td>"The pyramid is for other teams"</td><td>The pyramid is the budget guide; everyone with a test budget has one.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Coverage numbers with no risk reasoning or per-tier goal</li><li>E2E-heavy suites doing what integration should; zero integration at DB seams</li><li>No test tiers defined (environments/data/triggers/exit)</li><li>Manual smokes with no owner and no automation date</li><li>Strategy never revised after incidents</li><li>Test effort invisible to CI/release gates</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Risks prioritized; pyramid shaped by risk with the final distribution reasoned</li><li>[ ] Coverage goals per tier, tied to the risk they protect</li><li>[ ] Automation decisions explicit; manual items owned with dates</li><li>[ ] Test levels defined: environment, data, trigger, exit criterion</li><li>[ ] Strategy revised after incidents (would-it-have-caught review)</li><li>[ ] Strategy readable as executable signals (CI tiers, release gates)</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

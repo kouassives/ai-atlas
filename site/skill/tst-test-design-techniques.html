@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>tst-test-design-techniques · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Tester</p>
+      <h1><code>tst-test-design-techniques</code></h1>
+      <p class="tagline">Designs test cases systematically from requirements: equivalence partitioning splits inputs into ranges, boundary value analysis probes boundaries, decision tables cover condition combinations, and state transitions test flows. Use when designing a test case set, when coverage of a rule or boundary is accidental, or when a feature's input space needs structured sampling.</p>
+      <p class="badges"><span class="badge">tester</span><span class="badge">testing</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="test-design-techniques">Test Design Techniques</h2>
+<h3 id="overview">Overview</h3>
+<p>The number of inputs a system accepts is infinite; the tests you can write are finite. Test design techniques turn the infinite input space into a small, high-yield sample: inputs that behave alike get grouped (partitioning), the dangerous edges get explicitly probed (boundaries), rule combinations get enumerated (decision tables), and stateful flows get walked as machines (state transition). These are the tools that make requirement-derived test design exact instead of accidental.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Turning requirements/acceptance criteria into test cases (<code>arch-requirements-analysis</code> feeds this).</li><li>A rule with ranges, limits, or combinations needs systematic coverage.</li><li>Reviewing whether an existing suite actually covers the space or just the obvious middle.</li><li>Stateful flows (wizards, orders, sessions) that change behavior based on history.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Random exploratory testing (that has its own session discipline).</li><li>Where the framework's property-based testing is the better tool (generative invariants) — still, the partitions often feed the generator.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-equivalence-partitioning">Step 1 — Equivalence partitioning</h4>
+<p>Group inputs into classes that the system treats identically (valid/invalid, per rule): for an order quantity with 1..99 valid: valid partition (1-99), invalid-low (≤0), invalid-high (≥100). <strong>One representative per partition</strong> is enough — testing three numbers inside 1-99 tests the same road three times.</p>
+<h4 id="step-2-boundary-value-analysis">Step 2 — Boundary value analysis</h4>
+<p>Boundary bugs concentrate at the edges of partitions. For each boundary, test <strong>on, just-below, just-above</strong>: quantity 0, 1, 2 and 98, 99, 100. Include the validated parser edge (string lengths, format tolerances, off-by-one in pagination/loops). Rules: inclusive vs exclusive is a fact to be pinned, not assumed.</p>
+<h4 id="step-3-decision-tables-for-rule-combinations">Step 3 — Decision tables for rule combinations</h4>
+<p>When behavior depends on combinations of conditions (discount × membership × minimum order), build the table:</p>
+<table><tr><th>Condition</th><th>R1</th><th>R2</th><th>R3</th><th>R4</th></tr><tr><td>is_member</td><td>Y</td><td>Y</td><td>N</td><td>N</td></tr><tr><td>order ≥ 50€</td><td>Y</td><td>N</td><td>Y</td><td>N</td></tr><tr><td><strong>discount</strong></td><td>10%</td><td>0%</td><td>5%</td><td>0%</td></tr></table>
+<ul><li>Every column is one <strong>test case</strong>; every applicable combination gets a column. Missed combinations are missed behaviors, and the table makes the miss visible during review.</li><li>Collapse with "—" (don't care) only when the behavior genuinely does not depend on it — then keep one representative.</li></ul>
+<h4 id="step-4-state-transition-testing-for-flows">Step 4 — State transition testing for flows</h4>
+<ul><li>Model the flow as states + events + transitions (+ guards): e.g. order states <code>new → paid → shipped → delivered</code>, with invalid transitions (<code>paid → delivered</code> must not exist).</li><li>Test each <strong>transition</strong> at least once; test each state's <strong>invalid/guarded events</strong> (cancel after ship should be rejected); walk the full happy path and the failure-path recoveries (payment failed → retry → paid).</li><li>This is where unexpected-event coverage (double-submit, late cancel, stale token) is born.</li></ul>
+<h4 id="step-5-negative-and-robustness-cases">Step 5 — Negative and robustness cases</h4>
+<p>Every technique produces the positive AND negative side: invalid partitions, boundary violations, forbidden transitions, malformed payloads, and the all-business-side failure shapes (<code>fnd-security-basics</code> steps: authz, injection, size caps). A test set with only happy paths is a demo, not a suite.</p>
+<h4 id="step-6-name-cases-then-trace-them">Step 6 — Name cases, then trace them</h4>
+<p>Each derived case is traceable to a requirement line or edge-case catalog entry (checklist from <code>arch-requirements-analysis</code>): "QTY-B-01: boundary 100 above max". Untraceable cases are either speculative weight or lost requirements. The trace makes coverage reviewable in both directions.</p>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"Test a few random inputs, that's enough"</td><td>Random inputs cluster in the peaceful middle; the bugs live at boundaries and combinations.</td></tr><tr><td>"The table has too many columns"</td><td>The columns are the combinations the feature actually has — the table is exposing truth, not bloat.</td></tr><tr><td>"Boundaries are obvious, we cover them"</td><td>Off-by-one is the most frequently-missed defect class in review; obviousness is retrospective.</td></tr><tr><td>"State machines are overkill for this flow"</td><td>Any flow with history IS a state machine; the technique is how its illegal transitions get tested.</td></tr><tr><td>"We only test what the user can do"</td><td>Users do exactly what the tests ignore, in the order the tests never tried.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Multiple redundant cases inside one partition; boundaries uncovered</li><li>Decision combinations with no table (misses invisible during review)</li><li>Flows tested happy-path only; illegal transitions never asserted</li><li>No negative/robustness cases (authz, caps, malformed input)</li><li>Test cases with no requirement traceability</li><li>Only middle-of-range values everywhere (bell-curve coverage)</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Partitions enumerated with one representative each (valid + invalid)</li><li>[ ] Boundaries tested on/just-below/just-above, inclusive-vs-exclusive pinned</li><li>[ ] Decision tables built for combinatorial rules; don't-care collapsed consciously</li><li>[ ] State transitions: every transition + guarded/invalid events + recovery paths</li><li>[ ] Negative/robustness cases present (authz, size caps, malformed inputs)</li><li>[ ] Every case traceable to a requirement or edge-case catalog entry</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

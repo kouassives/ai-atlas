@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="./">
+<title>Home · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html" class="active">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+  <section class="hero">
+    <h1>ai-atlas</h1>
+    <p class="tagline">Production-grade skills and agents for AI coding assistants — covering the full software development lifecycle, organized by SDLC role.</p>
+    <div class="stats">
+      <div class="stat"><strong>54</strong><span>skills</span></div>
+      <div class="stat"><strong>9</strong><span>agents</span></div>
+      <div class="stat"><strong>3</strong><span>docs</span></div>
+    </div>
+  </section>
+  <section class="domains">
+    <h2>Domains</h2>
+    <ul class="domain-grid">
+    <li><a href="skills.html">Foundation</a><span>6 skills</span></li><li><a href="skills.html">Architect</a><span>8 skills</span></li><li><a href="skills.html">Developer Backend</a><span>9 skills</span></li><li><a href="skills.html">Developer Frontend</a><span>8 skills</span></li><li><a href="skills.html">UI Designer</a><span>6 skills</span></li><li><a href="skills.html">Tester</a><span>8 skills</span></li><li><a href="skills.html">DevOps</a><span>9 skills</span></li>
+    </ul>
+  </section>
+<section class="readme"><p>Production-grade <strong>skills</strong> and <strong>agents</strong> for AI coding assistants (OpenCode-first, Agent Skills standard), covering the full software development lifecycle — organized by SDLC role.</p>
+<blockquote><p><strong>Status: released.</strong> Architecture locked. All 54 skills + 9 agents published across foundation, architect, backend, frontend, ui-design, tester, and devops domains. Installer, marketplace manifests, full quality suite, and a static catalog site (<a href="https://kouassives.github.io/ai-atlas/">GitHub Pages</a>) live.</p></blockquote>
+<h3 id="why-this-collection">Why this collection</h3>
+<p>Most collections optimize for one stack (JS/TS, web) or one cultural context. <code>ai-atlas</code> covers the <strong>engineering fundamentals</strong> — Clean Architecture, DDD, SOLID, design patterns, microservices, testing, DevOps — in a <strong>language- and stack-agnostic</strong> way, organized by SDLC role:</p>
+<table><tr><th>Domain</th><th>Prefix</th><th>Skills</th></tr><tr><td>Foundation (cross-cutting)</td><td><code>fnd-</code></td><td>6</td></tr><tr><td>Architect</td><td><code>arch-</code></td><td>8</td></tr><tr><td>Developer Backend</td><td><code>be-</code></td><td>9</td></tr><tr><td>Developer Frontend</td><td><code>fe-</code></td><td>8</td></tr><tr><td>UI Designer</td><td><code>ui-</code></td><td>6</td></tr><tr><td>Tester</td><td><code>tst-</code></td><td>8</td></tr><tr><td>DevOps</td><td><code>ops-</code></td><td>9</td></tr></table>
+<p>Each skill is <strong>one competency</strong>, self-contained, namespaced to be installable side-by-side with other collections without collisions.</p>
+<h3 id="install">Install</h3>
+<p>Standard <code>skills/&lt;name&gt;/SKILL.md</code> layout — works with <code>npx skills add</code>, every tool's native skill scanner, and the included zero-dependency installer:</p>
+<pre><code class="language-bash"># 1. skills (ecosystem standard, once published):
+npx skills add kouassives/ai-atlas
+
+# 2. agents + skills for OpenCode (no dependencies):
+./install.sh                      # global → ~/.config/opencode/
+./install.sh --project            # project → ./.opencode/
+./install.sh --list | --dry-run   # preview
+./install.sh --force              # overwrite
+
+# 3. other tools:
+./install.sh --agent claude-code  # → ~/.claude/skills/ (+ agents)
+./install.sh --agent codex        # → ~/.codex/skills/
+./install.sh --agent cursor       # → ~/.cursor/skills/</code></pre>
+<p>Or place a skill folder into <code>.opencode/skills/</code> (project) / <code>~/.config/opencode/skills/</code> (global) and restart OpenCode. Agents ship in <code>agents/</code> → <code>.opencode/agent/</code>. Per-tool details: <a href="install.html">docs/usage.md</a>.</p>
+<h3 id="security-statement">Security statement</h3>
+<p>Skills are instructions — treat downloaded skills like executable code. Review before installing, and pin installed versions. This collection ships no executable scripts inside skills and its CI enforces a content security lint. Releases are tagged with checksums.</p>
+<h3 id="roadmap">Roadmap</h3>
+<ol><li><strong>L0</strong> Scaffolding (this) — ✅</li><li><strong>L1</strong> Foundation skills (<code>fnd-<em></code>) — ✅ </em>(sdlc-overview, engineering-principles, code-review, adr, security-basics, technical-writing)*</li><li><strong>L2</strong> Pilot domain: developer-backend (<code>be-<em></code>) — ✅ </em>(solid-principles, api-design, microservices-patterns, database-design, async-messaging, security-engineering, performance, tdd, refactoring)* + <code>backend-developer</code> / <code>code-reviewer</code> agents + shared <code>definition-of-done</code></li><li><strong>L3</strong> architect domain (<code>arch-<em></code>) — ✅ </em>(requirements-analysis, system-design, ddd, clean-architecture, design-patterns, microservices-architecture, api-contract-design, nfrs)* + <code>arch-specialist</code> agent</li><li><strong>L4</strong> devops domain (<code>ops-<em></code>) — ✅ </em>(ci-cd, docker-containers, kubernetes, iac-terraform, gitops, observability, monitoring-alerting, devsecops, release-management)* + <code>devops-engineer</code> agent</li><li><strong>L5</strong> tester domain (<code>tst-<em></code>) — ✅ </em>(test-strategy, test-design-techniques, unit-testing, integration-testing, e2e-testing, api-testing, performance-testing, regression)* + <code>tester</code> agent</li><li><strong>L6</strong> frontend domain (<code>fe-<em></code>) — ✅ </em>(architecture, component-design, state-management, api-integration, accessibility, responsive-design, performance, security)* + <code>frontend-developer</code> agent</li><li><strong>L7</strong> ui-designer domain (<code>ui-<em></code>) — ✅ </em>(ux-research, ux-flows, visual-design, design-systems, prototyping, usability-testing)* + <code>ui-designer</code> agent</li><li><strong>L8</strong> Hardening — ✅ <code>install.sh</code> (POSIX-sh, tested) + <code>test-install.sh</code>, <code>orchestrator.md</code> primary agent, marketplace manifests (<code>registry.yaml</code>, <code>.claude-plugin/</code>, <code>.agents/plugins/</code>), execution-eval coverage check, <code>release.yml</code> (tag → SHA256SUMS), docs</li><li><strong>L9</strong> Spec-Driven Development — ✅ <code>orchestration-engineer</code> primary agent running the Openspec workflow (context → proposal → plan → implement → verify → review → archive) with delegation to specialists via handoff contracts; <code>docs/spec-driven-development.md</code>; static catalog site (<code>scripts/gen-site.mjs</code> → <code>site/</code>, GitHub Pages via <code>.github/workflows/site.yml</code>)</li></ol>
+<p>See <a href="https://github.com/kouassives/ai-atlas/blob/main/ARCHITECTURE.md">ARCHITECTURE.md</a> for the full design.</p>
+<h3 id="license">License</h3>
+<p>MIT — see <a href="https://github.com/kouassives/ai-atlas/blob/main/LICENSE">LICENSE</a>. Contributions welcome, see <a href="https://github.com/kouassives/ai-atlas/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>.</p></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

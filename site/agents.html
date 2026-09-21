@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="./">
+<title>Agents · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html" class="active">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <h1>Agents</h1>
+      <p>Personas that compose the domain skills: one primary orchestrator, specialist subagents for each SDLC role.</p>
+    </section>
+    <section class="filter"><label for="agent-filter">Filter</label><input id="agent-filter" type="search" placeholder="filter agents…"></section>
+    <ul class="agent-grid" id="agent-grid"><li class="agent-card" data-search="arch-specialist architect specialist: turns vague asks into requirements and designs, analyzes trade-offs, reviews architecture per the arch-* skills, and records decisions as adrs. read-only reviewer.">
+      <a class="agent-link" href="agent/arch-specialist.html"><code>arch-specialist</code></a>
+      <span class="mode subagent">subagent</span>
+      <p class="purpose">Architect specialist: turns vague asks into requirements and designs, analyzes trade-offs, reviews architecture per the arch-* skills, and records decisions as ADRs. Read-only reviewer.</p>
+    </li><li class="agent-card" data-search="backend-developer senior backend developer: implements features and fixes per the be-* and arch-* skills, writes tests first, works in small verified increments, and verifies before handing off.">
+      <a class="agent-link" href="agent/backend-developer.html"><code>backend-developer</code></a>
+      <span class="mode subagent">subagent</span>
+      <p class="purpose">Senior backend developer: implements features and fixes per the be-* and arch-* skills, writes tests first, works in small verified increments, and verifies before handing off.</p>
+    </li><li class="agent-card" data-search="code-reviewer senior code reviewer: multi-axis review per fnd-code-review — correctness, architecture, security, performance, readability — with severity labels and a go/no-go verdict. read-only.">
+      <a class="agent-link" href="agent/code-reviewer.html"><code>code-reviewer</code></a>
+      <span class="mode subagent">subagent</span>
+      <p class="purpose">Senior code reviewer: multi-axis review per fnd-code-review — correctness, architecture, security, performance, readability — with severity labels and a go/no-go verdict. Read-only.</p>
+    </li><li class="agent-card" data-search="devops-engineer devops engineer: builds and operates delivery per the ops-* skills — pipelines, containers, infrastructure, deployments, observability, and releases — with security gates as a default. works on change, verifies in the real environment.">
+      <a class="agent-link" href="agent/devops-engineer.html"><code>devops-engineer</code></a>
+      <span class="mode subagent">subagent</span>
+      <p class="purpose">DevOps engineer: builds and operates delivery per the ops-* skills — pipelines, containers, infrastructure, deployments, observability, and releases — with security gates as a default. Works on change, verifies in the real environment.</p>
+    </li><li class="agent-card" data-search="frontend-developer senior frontend developer: builds features and ui per the fe-* skills and the ui-* design language — accessible, responsive, performant components with clean state and api integration. verifies in the browser before handing off.">
+      <a class="agent-link" href="agent/frontend-developer.html"><code>frontend-developer</code></a>
+      <span class="mode subagent">subagent</span>
+      <p class="purpose">Senior frontend developer: builds features and UI per the fe-* skills and the ui-* design language — accessible, responsive, performant components with clean state and API integration. Verifies in the browser before handing off.</p>
+    </li><li class="agent-card" data-search="orchestration-engineer primary agent for spec-driven development: processes one feature end-to-end from specification to archive — runs the openspec workflow (context, proposal, implementation, verification, review, archive) and delegates technical work to the ai-atlas specialist agents with handoff contracts and quality gates. use as the entry agent for any feature, change, or bugfix that should start as a specification.">
+      <a class="agent-link" href="agent/orchestration-engineer.html"><code>orchestration-engineer</code></a>
+      <span class="mode primary">primary</span>
+      <p class="purpose">Primary agent for Spec-Driven Development: processes one feature end-to-end from specification to archive — runs the Openspec workflow (context, proposal, implementation, verification, review, archive) and delegates technical work to the ai-atlas specialist agents with handoff contracts and quality gates. Use as the entry agent for any feature, change, or bugfix that should start as a specification.</p>
+    </li><li class="agent-card" data-search="orchestrator primary agent: routes work by sdlc stage, spawns the specialist subagents, and enforces quality gates before delivering. use as the entry agent for any feature, fix, or architecture task on a codebase.">
+      <a class="agent-link" href="agent/orchestrator.html"><code>orchestrator</code></a>
+      <span class="mode primary">primary</span>
+      <p class="purpose">Primary agent: routes work by SDLC stage, spawns the specialist subagents, and enforces quality gates before delivering. Use as the entry agent for any feature, fix, or architecture task on a codebase.</p>
+    </li><li class="agent-card" data-search="tester senior tester: designs and runs the test approach per the tst-* skills — strategy, techniques, unit/integration/e2e/api/performance/regression testing — and reports evidence, not opinions. works with the code, never just reviews it.">
+      <a class="agent-link" href="agent/tester.html"><code>tester</code></a>
+      <span class="mode subagent">subagent</span>
+      <p class="purpose">Senior tester: designs and runs the test approach per the tst-* skills — strategy, techniques, unit/integration/e2e/API/performance/regression testing — and reports evidence, not opinions. Works with the code, never just reviews it.</p>
+    </li><li class="agent-card" data-search="ui-designer ui/ux designer: runs research, flows, and visual design per the ui-* skills; produces wireframes/mockups; validates designs with real users before implementation is handed to the frontend developer.">
+      <a class="agent-link" href="agent/ui-designer.html"><code>ui-designer</code></a>
+      <span class="mode subagent">subagent</span>
+      <p class="purpose">UI/UX designer: runs research, flows, and visual design per the ui-* skills; produces wireframes/mockups; validates designs with real users before implementation is handed to the frontend developer.</p>
+    </li></ul>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

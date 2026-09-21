@@ -30,5 +30,10 @@ jobs:
           node scripts/emit-marketplace.mjs
           git diff --exit-code registry.yaml .claude-plugin/marketplace.json .agents/plugins/marketplace.json
         shell: bash
+      - name: Site freshness
+        run: |
+          node scripts/gen-site.mjs
+          git diff --exit-code site/
+        shell: bash
       - name: Install script smoke test
         run: sh scripts/test-install.sh

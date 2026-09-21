@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>fnd-sdlc-overview · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Foundation</p>
+      <h1><code>fnd-sdlc-overview</code></h1>
+      <p class="tagline">Maps the full software development lifecycle: which stage a request belongs to, which role owns it, which skills apply, and the exit criteria for handing off between stages. Use when starting a new project, when a request spans multiple phases, when the team is unsure what should happen next, or when deciding which specialist agent or skill applies to a task.</p>
+      <p class="badges"><span class="badge">foundation</span><span class="badge">analysis</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="sdlc-overview">SDLC Overview</h2>
+<h3 id="overview">Overview</h3>
+<p>The software development lifecycle is a sequence of stages from discovery to operations. Every request you receive belongs to (at least) one stage, and each stage has an owning role, a set of applicable skills, and <strong>exit criteria</strong> that must be met before the next stage starts. This skill is the router: it tells you which skill or agent to apply when the stage of work is unclear.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Starting a brand-new project or feature and need the full map of what happens next.</li><li>A request spans multiple stages ("build me the whole thing") and needs decomposition.</li><li>Deciding which specialist agent (architect, backend, frontend, ui, tester, devops) should own a task.</li><li>The team disagrees about what should happen before code is written.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>A request is already scoped to ONE stage and ONE clear competency — apply that skill directly, do not widen the scope.</li><li>A trivial mechanics task ("rename this variable", "fix this typo").</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-classify-the-request-into-a-stage">Step 1 — Classify the request into a stage</h4>
+<table><tr><th>Stage</th><th>Owning role</th><th>What exits the stage</th></tr><tr><td><strong>Discovery</strong></td><td>UI Designer + Architect</td><td>A problem statement, target user, and success metric</td></tr><tr><td><strong>Analysis / Requirements</strong></td><td>Architect</td><td>Requirements: user stories, acceptance criteria, explicit non-goals</td></tr><tr><td><strong>Design / Architecture</strong></td><td>Architect</td><td>An architecture: components, boundaries, NFRs, ADRs for key decisions</td></tr><tr><td><strong>UI / UX design</strong></td><td>UI Designer</td><td>Flows, wireframes, and a visual design that implements the requirements</td></tr><tr><td><strong>Implementation</strong></td><td>Backend / Frontend developers</td><td>Working code with tests, per the design</td></tr><tr><td><strong>Testing / QA</strong></td><td>Tester</td><td>Evidence the build meets the acceptance criteria</td></tr><tr><td><strong>Build / CI</strong></td><td>DevOps</td><td>An artifact that is reproducibly built and verified</td></tr><tr><td><strong>Deploy</strong></td><td>DevOps</td><td>The artifact live in the target environment, rollback ready</td></tr><tr><td><strong>Ops / Maintenance</strong></td><td>DevOps + all roles</td><td>The system observable, monitored, and patchable</td></tr></table>
+<p>Identify the <em>earliest</em> stage the request touches. If it touches more than one, the earliest stage owns it — later stages are downstream.</p>
+<h4 id="step-2-name-the-owning-role-and-the-skills-to-apply">Step 2 — Name the owning role and the skills to apply</h4>
+<ul><li>Architect stages → <code>arch-*</code> skills (requirements-analysis, system-design, ddd, clean-architecture…)</li><li>Backend implementation → <code>be-*</code> skills</li><li>Frontend implementation → <code>fe-*</code> skills</li><li>UI design → <code>ui-*</code> skills</li><li>QA → <code>tst-*</code> skills</li><li>Build/deploy/ops → <code>ops-*</code> skills</li><li>Any stage, when a cross-cutting concern appears (review, ADR, security, docs) → <code>fnd-*</code> skills</li></ul>
+<h4 id="step-3-check-the-exit-criteria-of-the-current-stage-before-moving-on">Step 3 — Check the exit criteria of the current stage before moving on</h4>
+<p>Do not advance to the next stage until the current one's exit criteria are met (see the table above). If the previous stage's exit criteria are missing (e.g. no requirements before implementation), stop and surface that gap — do not silently invent the missing artifact.</p>
+<h4 id="step-4-hand-off-with-a-passable-artifact">Step 4 — Hand off with a passable artifact</h4>
+<p>When the stage is complete, the handoff artifact must be self-contained: the next role must be able to pick it up without a conversation. If the artifact is missing pieces, say so explicitly instead of proceeding.</p>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"It's a small feature, I'll just build it"</td><td>Small features still have requirements, design, tests, and review. Skip the ceremony, not the gates.</td></tr><tr><td>"We'll figure out the requirements as we code"</td><td>Discovery during implementation is rework at 10x the cost.</td></tr><tr><td>"The user asked for everything, so start with code"</td><td>The stages are dependencies, not suggestions. The first missing artifact decides the first stage.</td></tr><tr><td>"I know what a dashboard looks like, no need for a designer"</td><td>You skipped Discovery/Requirements; the exit criteria you are missing are exactly the ones that define success.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Code being written before requirements or design exist.</li><li>A stage marked "done" with no artifact (no spec, no design, no tests).</li><li>Agents being applied to stages they do not own (e.g. a tester writing the architecture).</li><li>Handoff artifacts that require a meeting to be understood.</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] The request is classified into exactly one owning stage (the earliest it touches)</li><li>[ ] The owning role and its skills are identified</li><li>[ ] The current stage's exit criteria are checked — explicitly</li><li>[ ] Missing upstream artifacts are surfaced to the user, not invented</li><li>[ ] The handoff artifact is self-contained and named</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

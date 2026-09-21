@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>arch-design-patterns · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Architect</p>
+      <h1><code>arch-design-patterns</code></h1>
+      <p class="tagline">Chooses and applies classic GoF and architectural patterns by intent: the pattern's purpose, when to apply it, and its trade-offs. Use when facing a known problem shape — factories, strategies, observers, adapters, repositories, decorators — and when a pattern needs to be selected against a concrete context rather than applied by fashion.</p>
+      <p class="badges"><span class="badge">architect</span><span class="badge">design</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="design-patterns">Design Patterns</h2>
+<h3 id="overview">Overview</h3>
+<p>Patterns are named solutions to recurring problem shapes — a shared vocabulary that lets two engineers say "adapter" instead of re-explaining translation layers. The discipline is selection, not application: each pattern has an intent that must match the ACTUAL problem, and each carries a trade-off that must be affordable. A pattern applied because it is familiar, to a problem it does not fit, is worse than no pattern.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>A known recurring problem shape appears: object creation, behavior selection, interface mismatch, one-to-many notification, caching/wrapping.</li><li>Choosing a pattern for a concrete context and needing the intent + trade-off review.</li><li>Reviewing existing pattern choices for misapplication.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>The problem is a one-off with no recurrence — a direct solution beats the pattern (YAGNI).</li><li>The language already provides the pattern cheaply (closures as strategy/observer, functional composition) — use the simpler form.</li><li>Distributed/architectural patterns (saga, outbox, bulkhead) live in <code>be-microservices-patterns</code>; decomposition decisions in <code>arch-microservices-architecture</code>.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-name-the-problem-shape-not-the-pattern">Step 1 — Name the problem shape, not the pattern</h4>
+<p>State the actual problem: "we create families of related objects with a configurable variant per environment", "two interfaces don't match", "many objects must react to one object's changes". If you cannot name the problem shape, you cannot select a pattern. Patterns are answers; the question is the shape.</p>
+<h4 id="step-2-match-intent-from-the-catalogue">Step 2 — Match intent from the catalogue</h4>
+<table><tr><th>Problem shape</th><th>Pattern intents to evaluate</th></tr><tr><td>Object creation with variants / families</td><td><strong>Factory Method, Abstract Factory, Builder</strong> (variant config, complex construction)</td></tr><tr><td>Behavior varies per context</td><td><strong>Strategy</strong> (capsuled algorithms), <strong>State</strong> (behavior varies with internal state)</td></tr><tr><td>Object/interface mismatch</td><td><strong>Adapter, Facade</strong> (shape translation vs simplified surface)</td></tr><tr><td>One-to-many change notification</td><td><strong>Observer</strong> (event subscription), <strong>Publisher/Subscriber</strong> (via <code>be-async-messaging</code> at scale)</td></tr><tr><td>Wrapping with added behavior</td><td><strong>Decorator</strong> (responsibilities stacked without subclassing)</td></tr><tr><td>Object graph coherence</td><td><strong>Prototype</strong> (cloning), <strong>Flyweight</strong> (shared state)</td></tr><tr><td>Data access abstraction</td><td><strong>Repository</strong> (collection-like persistence port — pairs with <code>arch-clean-architecture</code>)</td></tr></table>
+<h4 id="step-3-test-the-fit-with-the-intent-checklist">Step 3 — Test the fit with the intent checklist</h4>
+<p>For the leading candidate, verify:</p>
+<ol><li><strong>Intent matches</strong>: the problem really is the pattern's problem (not a neighboring one).</li><li><strong>Language leverage</strong>: can a simpler idiom (closures, generics, duck typing, stdlib) deliver the behavior with less machinery? If yes — take the simpler form and note it.</li><li><strong>Cost affordable</strong>: the pattern adds indirection/coupling; the team must be able to traverse it. Complexity budget spent here is unavailable elsewhere.</li></ol>
+<h4 id="step-4-retain-the-trade-off-in-the-codeadr">Step 4 — Retain the trade-off in the code/ADR</h4>
+<p>For each pattern applied to a real boundary, leave the WHAT and the WHY-WASN'T-IT-SIMPLER where a reader will find it:</p>
+<pre><code class="language-text">// Strategy selected over compose-with-dispatch:
+// variant set is open-ended at runtime (plugins), whitelisted via registry.</code></pre>
+<p>For boundary-crossing pattern choices, write an ADR (<code>fnd-adr</code>) — the alternatives and accepted cost deserve the immutable record.</p>
+<h4 id="step-5-review-for-pattern-rot">Step 5 — Review for pattern rot</h4>
+<p>Patterns decay into unintentional <strong>anti-patterns</strong>:</p>
+<ul><li><em>God Object</em> (facade that grew), <em>Sequential Coupling</em> (methods must be called in a secret order), <em>Singleton abuse</em> (global mutable state — prefer dependency injection), <em>Spaghetti</em> (un-ownable flows).</li></ul>
+<p>When reviewing, ask what the code would look like WITHOUT the pattern — the answer should be "more tangled", not "the same".</p>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"It's a classic GoF pattern, it must be right"</td><td>Classic fit ≠ problem fit; the intent check is the whole game.</td></tr><tr><td>"We need a factory because we'll have many variants"</td><td>"Will have" is speculative — YAGNI; wait for the second real variant.</td></tr><tr><td>"Singleton is fine, it's just the config"</td><td>Global mutable state is the most-adopted anti-pattern; inject instead.</td></tr><tr><td>"Observer vs pub/sub — same thing"</td><td>Same shape, different scale: in-process listeners vs distributed events have different failure modes.</td></tr><tr><td>"The pattern adds safety"</td><td>Patterns add structure; safety comes from tests and invariants, which the structure must support.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>A pattern whose naming is legible but whose intent does not match the problem</li><li>Patterns layered to compensate for another pattern's weak fit</li><li>A factory with one product, an observer with one subscriber, an adapter with one shape</li><li>Singletons carrying mutable state</li><li>No note/ADR recording why the pattern was chosen over the simpler alternative</li><li>Anti-pattern shapes: god objects, sequential coupling, spaghetti flows</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Problem shape named BEFORE any pattern naming</li><li>[ ] Candidate intent matched against the catalogue; alternatives considered</li><li>[ ] Simpler language idiom considered and either taken or explicitly rejected with reason</li><li>[ ] Trade-off affordable and recorded (note or ADR for boundary choices)</li><li>[ ] No pattern rot shapes present; review answers "more tangled without it"</li><li>[ ] No speculative pattern for a variant that does not exist yet</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

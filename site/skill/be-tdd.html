@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>be-tdd · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Developer Backend</p>
+      <h1><code>be-tdd</code></h1>
+      <p class="tagline">Drives implementation and bug fixes with test-driven development: Red-Green-Refactor, the test pyramid (80/15/5), test sizes, DAMP over DRY, and what not to mock. Use when implementing logic or fixing bugs, when code has no tests, when a bug needs a regression test first, or when test suites are slow, brittle, or testing the wrong layer.</p>
+      <p class="badges"><span class="badge">backend</span><span class="badge">testing</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="test-driven-development">Test-Driven Development</h2>
+<h3 id="overview">Overview</h3>
+<p>TDD is a design discipline wearing a testing costume: writing the failing test first forces the API into existence, keeps the design minimal, and produces a regression net for free. Beyond the loop, this skill covers the test pyramid and test sizes, the readability principle (DAMP over DRY), and the mocking discipline that keeps suites fast and honest.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Implementing new logic or a feature with real behavior.</li><li>Fixing a bug: write the regression test that reproduces it FIRST, watch it fail, then fix.</li><li>Code exists with no tests — add the safety net incrementally around changes.</li><li>Suites are slow, brittle, or assert implementation details.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Writing tests for pure plumbing with no logic (a getter, a config read) — the pyramid's base is not all code, it's all behavior.</li><li>Test strategy design across a whole system (that is <code>tst-</code> domain).</li><li>UI/composable testing has its own rules in the <code>fe-</code>/<code>ui-</code> domains.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-write-the-failing-test-first-red">Step 1 — Write the failing test first (Red)</h4>
+<ul><li>Name the behavior, not the method: <code>it rejects an order with no items</code> beats <code>testValidateOrder</code>.</li><li>One behavior per test; act through the <strong>public API</strong> of the unit — never reach into internals just to "be faster".</li><li>The test must fail for the RIGHT reason (behavior missing), not a compile error or a fixture bug. A test that fails before it would have passed anyway is not a Red.</li></ul>
+<h4 id="step-2-make-it-pass-in-the-minimal-honest-way-green">Step 2 — Make it pass in the minimal honest way (Green)</h4>
+<ul><li>Implement the simplest thing that satisfies the test. Resist the temptation to build the "complete" design — YAGNI (<code>fnd-engineering-principles</code>).</li><li>If the test needs refactoring to be honest (wrong assertions, test-only branches in prod code: <code>if (test) { js }</code>), fix the test — that branch is a smell, not a shortcut.</li></ul>
+<h4 id="step-3-refactor-under-the-green-net">Step 3 — Refactor under the green net</h4>
+<ul><li>Improve the design while the tests prove behavior is preserved.</li><li>This is when the SOLID shape emerges (<code>be-solid-principles</code>): extract, rename, restructure — the net catches wholesale moves.</li><li>If refactoring requires touching test assertions, the tests were coupled to shape; loosen them (they should assert behavior, not calls).</li></ul>
+<h4 id="step-4-shape-the-suite-with-the-pyramid-80155">Step 4 — Shape the suite with the pyramid (80/15/5)</h4>
+<ul><li><strong>~80% unit tests</strong>: fastest, one unit with mocks at its boundaries.</li><li><strong>~15% integration tests</strong>: real collaborators at the seams (DB via a real test instance, HTTP via real loopback) — this is where contract and SQL bugs actually live.</li><li><strong>~5% end-to-end tests</strong>: the thinnest smoke layer over the real deployed shape.</li><li>The ratio is a guardrail, not a ruler: the category that keeps growing while bugs escape is where the next test goes.</li></ul>
+<h4 id="step-5-keep-tests-readable-damp-over-dry">Step 5 — Keep tests readable: DAMP over DRY</h4>
+<ul><li>Tests read as <strong>specifications</strong>: descriptive names, arrange-act-assert visible, small inline fixtures where clarity wins.</li><li>DRY up only the expensive/noisy mechanics (connection setup, factories) — never the behavior narrative. A test whose meaning requires three helper walk-throughs is documentation debt.</li></ul>
+<h4 id="step-6-mock-the-boundary-not-the-behavior">Step 6 — Mock the boundary, not the behavior</h4>
+<p>Mock <strong>nowhere you can avoid</strong>: mock external seams (HTTP, clock, queues, randomness, persistence you don't own) so the unit is fast and deterministic. Do NOT mock:</p>
+<ul><li>the unit under test's collaborators you own and that hold logic — use real ones (integration) or you test a fiction;</li><li>the framework primitives you wrap (the wrapper is yours; the browser/DB/sdk behavior is theirs).</li></ul>
+<p>If a mock is carrying assertion logic, it has become a parallel implementation — the test proves nothing.</p>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"I'll write the tests after, it's faster"</td><td>Tests written after are written from the tunnel of the completed implementation — they bless the shape instead of steering it.</td></tr><tr><td>"This is UI/glue code, TDD doesn't apply"</td><td>Apply it to anything with branching; the thin glue stays thin because the branch logic was extracted to be testable.</td></tr><tr><td>"Mocking everything makes the tests fast"</td><td>It makes them fiction. Wealth of mocks = poverty of truth.</td></tr><tr><td>"The pyramid is old-fashioned"</td><td>The ratio is the empirical result of wasted e2e suites; the shape survives the trend cycle.</td></tr><tr><td>"The test suite is too slow, we skip it"</td><td>Slow tests are a debt symptom — classify by size and shrink the slow tiers, don't abandon the net.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Tests asserting implementation details (method calls, internal fields) instead of behavior</li><li>A test written after the fix that would have passed before it</li><li><code>if (test)</code> branches or args in production code</li><li>Mocks for in-house collaborators with real logic</li><li>100% unit tests and zero integration (the confident-but-wrong suite)</li><li>Entirely e2e-heavy suites (the slow-and-flaky suite)</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Failing test written first and failed for the right reason (for new behavior or the bug's regression)</li><li>[ ] Minimal honest implementation; no test-only prod branches</li><li>[ ] Refactor performed under a green net with behavior-assertions intact</li><li>[ ] Suite shaped toward the pyramid; each new test sized at its right tier</li><li>[ ] Tests read as specs (DAMP); only mechanics DRYed</li><li>[ ] Mocks only at external seams; no parallel-implementation mocks</li><li>[ ] Suite run green and reasonably fast; no skipped/silenced tiers</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

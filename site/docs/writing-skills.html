@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>Writing skills — author handbook · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="readme"><h2 id="writing-skills-author-handbook">Writing skills — author handbook</h2>
+<p>How to write a skill that passes the quality bar. Conventions are normative — the CI lint (<code>scripts/lint-skills.mjs</code>) enforces them mechanically.</p>
+<h3 id="before-you-write">Before you write</h3>
+<ul><li><strong>One skill = one competency.</strong> If you reach for "…and also", split.</li><li>Read 2–3 existing skills first (model your grain on them).</li><li>Check the routing index (<code>SKILLS.md</code>) — you must NOT collide with an existing trigger vocabulary.</li></ul>
+<h3 id="the-template">The template</h3>
+<pre><code class="language-markdown">---
+name: &lt;prefix&gt;-&lt;kebab-name&gt;
+description: &quot;&lt;What it does&gt;. &lt;Triggers a real user might type, front-loaded&gt;. Use when &lt;situation&gt;.&quot;
+license: MIT
+compatibility: opencode, claude-code, codex
+metadata:
+  domain: &lt;foundation|architect|developer-backend|developer-frontend|ui-designer|tester|devops&gt;
+  sdlc-stage: &lt;discovery|analysis|design|ui-design|implementation|testing|build|deploy|ops-maintenance&gt;
+  version: 1.0.0
+---
+
+# &lt;Skill Name&gt;
+
+## Overview
+2–5 lines: what it does, why it matters, when it pays off.
+
+## When to Use
+- Trigger bullets — the situations that should load this skill.
+- …
+
+**When NOT to use:**
+- Anti-triggers — adjacent situations where this skill must stay quiet.
+
+## Process
+1. Step, with concrete thresholds (&quot;~100 lines&quot;, &quot;80/15/5&quot;).
+2. Include a before/after example where it clarifies.
+3. …
+
+## Common Rationalizations
+| Excuse an agent gives to skip a step | Reality |
+|---|---|
+| &quot;I'll add the tests later.&quot; | Later never comes. Verification is the gate. |
+
+## Red Flags
+- Signs the skill is being applied wrong, or skipped.
+
+## Verification
+- [ ] Checkboxes the agent ticks — evidence-based exit criteria.
+- [ ] &quot;Seems right&quot; is never sufficient.
+
+## References
+Optional. Relative links ONLY to `references/` inside this skill's folder.</code></pre>
+<h3 id="rules-that-matter-non-negotiable">Rules that matter (non-negotiable)</h3>
+<table><tr><th>Rule</th><th>Why</th></tr><tr><td><code>name</code> = folder name, lowercase-hyphen, ≤ 64 chars</td><td>Strict OpenCode loader</td></tr><tr><td>Domain prefix in name: <code>fnd- arch- be- fe- ui- tst- ops-</code></td><td>Anti-collision with other collections</td></tr><tr><td><code>description</code> in English, 2–3 sentences, <strong>user words front-loaded</strong>, ends "Use when…"</td><td>This is the ONLY thing the model sees for routing — it must contain what users actually type</td></tr><tr><td><code>When NOT to use</code> block present</td><td>Anti-trigger discipline — the #1 trait of a well-written skill</td></tr><tr><td>Self-contained: no links to <code>../</code>, no root <code>references/</code>, no sibling skills</td><td>Per-skill install must not break (agent-skills #361 bug, solved by design here)</td></tr><tr><td>Markdown only inside the folder: <code>SKILL.md</code>, <code>references/*.md</code> (+ <code>assets/</code> optional)</td><td>Sharable across every harness</td></tr><tr><td>≤ 200 lines in <code>SKILL.md</code></td><td>Token budget; depth goes in <code>references/</code></td></tr><tr><td>No exfiltration / secret-collection / `curl … \</td><td>sh` instructions</td><td>Security lint (Tier 1)</td></tr></table>
+<h3 id="depth-progressive-disclosure">Depth: progressive disclosure</h3>
+<p><code>SKILL.md</code> is the always-loaded entry point. Anything deep (checklists, reference tables, detailed examples) goes into <code>references/</code> inside the skill folder and is read <strong>on demand</strong>. Budget: the agent should "know" the skill after 200 lines and load the rest only when a step needs it.</p>
+<h3 id="before-submitting-your-local-checklist">Before submitting (your local checklist)</h3>
+<ol><li><code>node scripts/lint-skills.mjs</code> → no errors (warnings acceptable on first pass)</li><li>Added ≥ 1 routing prompt for the skill in <code>evals/routing/prompts.json</code></li><li><code>node scripts/eval-routing.mjs</code> → PASS (no collisions)</li><li><code>node scripts/gen-index.mjs</code> → SKILLS.md regenerated</li><li>Write the Tier 3 execution eval case: <code>evals/cases/&lt;skill-name&gt;.md</code></li><li>Test the skill once in a real OpenCode scratch project (<code>.opencode/skills/&lt;name&gt;/</code>)</li></ol></section>
+    <p class="back"><a href="docs/usage.html">← back to documentation</a></p>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

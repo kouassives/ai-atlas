@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>arch-requirements-analysis · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Architect</p>
+      <h1><code>arch-requirements-analysis</code></h1>
+      <p class="tagline">Turns vague asks into requirements: user stories, acceptance criteria, edge cases, and explicit non-goals. Use when an ask is underspecified, when a feature request has no definition of done, when stakeholders disagree on scope, or before any design or implementation work begins.</p>
+      <p class="badges"><span class="badge">architect</span><span class="badge">analysis</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="requirements-analysis">Requirements Analysis</h2>
+<h3 id="overview">Overview</h3>
+<p>Nearly every failed build traces to requirements that were assumed, not agreed. This skill converts an underspecified ask into a small, reviewable requirements artifact: user stories with acceptance criteria, named edge cases, and — critically — explicit non-goals. The output is the contract that Gate 1 of any engineering workflow checks before design and implementation begin.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>An ask is a sentence ("make login better") with no measurable outcome.</li><li>A feature request has no definition of done or acceptance criteria.</li><li>Stakeholders disagree on what "done" means, or scope keeps moving.</li><li>Before system design and implementation — requirements first, always.</li><li>When reverting to the user for clarification is needed but you want to bring questions, not a blank page.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>The requirement is already a crisp spec with acceptance criteria — go straight to <code>arch-system-design</code>.</li><li>Gathering market/product strategy (that is upstream — see the <code>ui-</code>/product skills).</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-extract-the-ask-into-a-wherewantdone-shape">Step 1 — Extract the ask into a WHERE/WANT/DONE shape</h4>
+<p>For the original ask, answer three lines:</p>
+<ul><li><strong>WHO</strong> needs it (role, not person) and <strong>WHY</strong> now (the driver).</li><li><strong>WHAT</strong> observable behavior must exist when it is done ("the user can X without Y").</li><li><strong>What is explicitly OUT</strong>: non-goals for this iteration.</li></ul>
+<p>If WHO/WHY cannot be answered, the ask is not ready — return questions, not guesses.</p>
+<h4 id="step-2-write-user-stories-with-story-level-acceptance-criteria">Step 2 — Write user stories with story-level acceptance criteria</h4>
+<pre><code class="language-text">As a &lt;role&gt;,
+I want &lt;capability&gt;,
+so that &lt;outcome&gt;.
+
+Acceptance criteria:
+- Given &lt;context&gt;, when &lt;action&gt;, then &lt;observable result&gt;</code></pre>
+<ul><li>Given/When/Then criteria are testable statements of behavior, not implementation.</li><li>Each story gets <strong>"and" removed</strong>: one capability per story. A story with "and" is two stories.</li><li>Keep stories small enough to be delivered and demoed in an iteration.</li></ul>
+<h4 id="step-3-derive-the-edge-case-catalog">Step 3 — Derive the edge case catalog</h4>
+<p>Walk each acceptance criterion against its negation and boundaries:</p>
+<ul><li><strong>Empty / missing</strong> inputs (no items, blank fields, first-run state)</li><li><strong>Boundaries</strong>: min/max/max+1/exactly-at-limit (see <code>tst-test-design-techniques</code> for the full toolset)</li><li><strong>Duplicate & concurrent</strong>: same request twice, two users same resource, retries</li><li><strong>Permission variants</strong>: no role, different role, resource the user does not own</li><li><strong>Failure modes</strong>: dependency down, timeout, partial success, then retry</li></ul>
+<p>Each surfaced edge case that is in-scope becomes its own acceptance criterion. Edge cases you decide are out-of-scope must be listed under non-goals with a reason.</p>
+<h4 id="step-4-write-the-non-goals-explicitly">Step 4 — Write the non-goals explicitly</h4>
+<p>Non-goals are the antidote to scope creep: they name what this work will NOT do, in this iteration, and why. A requirements artifact without non-goals is a scope-open invitation. Examples: "no mobile support this iteration (web only)", "no real-time updates (polling acceptable)".</p>
+<h4 id="step-5-validate-with-the-cheapest-feedback">Step 5 — Validate with the cheapest feedback</h4>
+<ul><li>Read each acceptance criterion aloud as a test: can a tester write a failing test from it today? If not, it is too vague.</li><li>Confirm the story list against the WHO/WHY: does every story serve the driver?</li><li>Get sign-off from the asker (or a named proxy) on stories + non-goals BEFORE design. "No sign-off" is a red flag, not a hurry signal.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"We all know what this means, just build it"</td><td>"We all know" is how requirements drift silently until demo day.</td></tr><tr><td>"Acceptance criteria slow us down"</td><td>They are the only objective definition of done; without them "done" is whoever said it last.</td></tr><tr><td>"Non-goals are negative thinking"</td><td>They are the cheapest contract against the scope creep everyone argues about later.</td></tr><tr><td>"The edge cases are obvious"</td><td>The edge cases are where production incidents live; obviousness is retrospective.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>A story with no acceptance criteria</li><li>An ask with a solution embedded ("add a button"), not a behavior</li><li>Edge cases waved off as "we'll handle them during implementation"</li><li>No non-goals section</li><li>No named person who owns the requirement's accuracy</li><li>Stories so large they cannot be demoed in an iteration</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] WHO/WHY/WANT stated; driver named</li><li>[ ] User stories one-capability each, with Given/When/Then acceptance criteria</li><li>[ ] Edge case catalog derived (empty, boundary, duplicate, permission, failure) and every in-scope case converted to a criterion</li><li>[ ] Non-goals explicit, each with a reason</li><li>[ ] Criteria are test-writable from a clean reading</li><li>[ ] Sign-off obtained from the asker on scope + non-goals</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

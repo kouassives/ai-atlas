@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>arch-microservices-architecture · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Architect</p>
+      <h1><code>arch-microservices-architecture</code></h1>
+      <p class="tagline">Decides service decomposition: how to split or consolidate services, bounded-context-aligned boundaries, data ownership, and when NOT to use microservices at all. Use when splitting a monolith, when services have unclear ownership or shared databases, or when the team is considering microservices and needs an honest decomposition analysis.</p>
+      <p class="badges"><span class="badge">architect</span><span class="badge">design</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="microservices-architecture">Microservices Architecture</h2>
+<h3 id="overview">Overview</h3>
+<p>Microservices are a <strong>boundary technology</strong>: they enforce ownership, team independence, and isolated scaling — and they charge in operational complexity, latency, and distributed failure modes (the pattern catalog in <code>be-microservices-patterns</code> is the tax you then pay). This skill is the decomposition discipline: WHEN a service split earns its cost, how to find the boundaries (bounded contexts first), and how to declare data ownership so services stop sharing state.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Splitting a monolith into services — or <strong>consolidating</strong> services that were split too eagerly.</li><li>Services share databases, models, or deployment cycles and the coupling is painful.</li><li>The team needs a decomposition proposal with boundaries, ownership, and the honest when-NOT case.</li><li>Volunteers for the "just add another service" reflex.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>The system is one team, one deployable, moderate scale — a modular monolith earns the same boundaries at a tenth of the operational cost.</li><li>Scaling is the only motivation: scaling is about bottlenecks and data, solved first by modules, caches, and queues (<code>be-performance</code>).</li><li>A service has been proposed with no owner, no data boundary, and no failure analysis — that is a deployment unit, not a microservice.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-ask-the-motivation-question-honestly">Step 1 — Ask the motivation question honestly</h4>
+<p>Concrete, non-marketing reasons to split: independent deploy cadence, independent scaling of a hot component, team ownership/boundary alignment, failure isolation. Reasons that are NOT sufficient alone: "modules are hard", "everyone else does it", "the monolith is scary". If the honest answer is "deploy independence for one hot module", that is ONE service — not twenty.</p>
+<h4 id="step-2-find-boundaries-with-bounded-contexts-not-table-ownership">Step 2 — Find boundaries with bounded contexts, not table ownership</h4>
+<p>Decompose by <strong>bounded contexts</strong> (<code>arch-ddd</code>), not by tables, layers, or JSON size:</p>
+<ul><li>Which contexts have their own vocabulary and rules? Those are service candidates.</li><li>Which business flows cross contexts? Those crossings become <strong>contracts</strong> (APIs/events), not shared state.</li><li><strong>Never</strong> split the same context across services — that converts a language boundary into a distributed transaction, which is the worst of both worlds.</li></ul>
+<h4 id="step-3-declare-data-ownership-per-service">Step 3 — Declare data ownership per service</h4>
+<p>For each candidate service, one line: "X owns these data, exclusively; everyone else reads/writes X's data only through X's contract." A service whose data is read directly or whose tables are written by others does not exist — it is a facade. The shared-database "compromise" is the single most reliable way to get distributed coupling without distributed benefits.</p>
+<h4 id="step-4-map-the-flows-and-their-failure-surfaces">Step 4 — Map the flows and their failure surfaces</h4>
+<p>For every cross-service flow: synchronous calls become latencies; asynchronous crossings become consistency windows (<code>be-async-messaging</code>, <code>be-microservices-patterns</code> for saga/outbox/circuit breakers). If a critical flow now requires three services and two consistency windows, that flow must justify its split in the trade-off record — otherwise keep it in one service even if the context boundary suggests otherwise.</p>
+<h4 id="step-5-prefer-the-modular-monolith-default">Step 5 — Prefer the modular monolith default</h4>
+<p>When the honest motivation does not pass Step 1–4 fully: propose the <strong>modular monolith</strong> — the same bounded-context boundaries, the same modules/ownership in one deployable, safe local transactions, cheap refactors. The service boundaries drawn in the modular monolith are exactly the seams you would need to split later — and they are where a FUTURE, evidence-driven split starts, instead of a fashion-driven one.</p>
+<h4 id="step-6-record-the-decomposition-as-an-adr">Step 6 — Record the decomposition as an ADR</h4>
+<p>Write the split (or the deliberate non-split) as an ADR (<code>fnd-adr</code>): motivation, the boundaries chosen/rejected, data ownership table, and the accepted costs. Decomposition decisions without records get re-litigated at every outage; with a record, re-litigation is cheap and evidence-based.</p>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"Shared DB is fine, it's just reads"</td><td>Direct reads are ownership violations; the report you saved months ago later takes your read model hostage.</td></tr><tr><td>"We'll split the monolith into 10 services"</td><td>First split by honest motivation, then by contexts; ten eager services = ten sagas to maintain.</td></tr><tr><td>"Microservices scale better"</td><td>Scaling is about the bottleneck; a well-moduled monolith scales with replicas until a real independent bottleneck appears.</td></tr><tr><td>"Each service makes the team independent"</td><td>Independence is a boundary property, not a physical one; shared owners and shared DBs follow every weak boundary.</td></tr><tr><td>"We can always merge later"</td><td>Merging services is a multi-team, multi-deployment project — the most expensive redo there is.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Services with no exclusive data ownership (shared DBs, direct cross-service reads)</li><li>Decomposition by layers/tables instead of bounded contexts</li><li>A context split across services, forcing distributed transactions</li><li>Critical flows demanding more consistency windows than their value justifies</li><li>Splits driven by "monolith is hard" with no named bottleneck</li><li>No ADR recording the boundaries, ownership, and accepted costs</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Honest motivation stated; non-reasons explicitly rejected</li><li>[ ] Boundaries from bounded contexts; no context split across services</li><li>[ ] Data ownership line per service; no shared databases or direct reads</li><li>[ ] Cross-service flows mapped; consistency windows counted and justified</li><li>[ ] Modular monolith considered as the default; rejection reason recorded</li><li>[ ] ADR written with boundaries, ownership table, and accepted costs</li><li>[ ] Split count justified by motivations, not by fashion</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

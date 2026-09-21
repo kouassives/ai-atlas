@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>tst-performance-testing · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Tester</p>
+      <h1><code>tst-performance-testing</code></h1>
+      <p class="tagline">Validates performance requirements: load, stress, soak tests, benchmarks, and bottleneck analysis. Use when performance requirements need evidence, when a load model must be translated into tests, or when capacity limits and degradation points need to be known before they bite in production.</p>
+      <p class="badges"><span class="badge">tester</span><span class="badge">testing</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="performance-testing">Performance Testing</h2>
+<h3 id="overview">Overview</h3>
+<p>Performance testing turns the NFRs from <code>arch-nfrs</code> into evidence: load tests prove normal operation, stress tests find the breaking point, soak tests catch the slow leaks, and benchmarks pin the regressions. Its discipline is <strong>the load model</strong> — performance tests against made-up traffic prove nothing about the traffic you actually have. The output is the capacity map: what works, where it degrades, and what breaks first.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>A performance requirement (latency budget, throughput, capacity) needs verification.</li><li>The team needs to know the breaking point before a launch, campaign, or scale event.</li><li>Slow regressions (leaks, growth) need a soak story.</li><li>Choosing between two implementations and needing a benchmark's evidence.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Diagnosing a single slow request in production — that is <code>be-performance</code>. This skill DESIGNs the test programs that PROVE the requirements.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-build-the-load-model-from-reality-not-imagination">Step 1 — Build the load model from reality, not imagination</h4>
+<ul><li>The model = the real traffic shape: request mix (endpoint ratios), concurrency, arrival pattern (steady vs burst), data volume reality (row counts, user counts), and growth.</li><li>Sources: production metrics/logs if they exist; product estimates as the honest fallback (with the uncertainty named).</li><li>Every test's parameters trace to the model: users, think times, payload sizes, ramp shape. Load without a model is a lottery ticket.</li></ul>
+<h4 id="step-2-load-test-prove-the-target">Step 2 — Load test: prove the target</h4>
+<ul><li>Configure for the SLO's load (e.g. 2× expected peak) and the SLO's percentile (p95/p99), measured at the tier the NFR names (API, service, journey).</li><li>Ramp to reveal instability — sudden full-load is a stampede the model never generates.</li><li>Result = evidence against the budget: pass/fail per percentile WITH the measurement conditions. "It felt fine" is not a result.</li></ul>
+<h4 id="step-3-stress-and-failure-tests-find-the-edge">Step 3 — Stress and failure tests: find the edge</h4>
+<ul><li><strong>Stress</strong>: push past the target until the system degrades or fails — the content of the test is WHERE it breaks (which resource saturates first: CPU, connections, DB, queue).</li><li><strong>Failure-inject</strong>: kill a dependency mid-load (chaos-style, bounded) — does it degrade gracefully per contract or collapse?</li><li>Both outputs are the capacity map: known limits beat surprise limits.</li></ul>
+<h4 id="step-4-soak-catch-the-slow-rot">Step 4 — Soak: catch the slow rot</h4>
+<ul><li>Sustained load over hours/days at realistic levels: memory leaks, connection leaks, unbounded queues, temp growth (<code>be-performance</code> hunting grounds).</li><li>Soak's metric set: memory/connection/fd trends and monotonically creeping latencies — the slow death signature.</li></ul>
+<h4 id="step-5-benchmarks-for-decisions-in-isolation">Step 5 — Benchmarks for decisions, in isolation</h4>
+<ul><li>When comparing two designs/libraries: benchmark the specific decision (the hot path), on realistic data shapes, minimizing noise (same machine, warmup, repeated runs).</li><li>A benchmark with no decision attached is a souvenir; a benchmark whose decision is "everything" proves nothing.</li></ul>
+<h4 id="step-6-report-the-capacity-map">Step 6 — Report the capacity map</h4>
+<p>The deliverable: per test — model, parameters, results against each target, observed limits, and the first-saturation point. The map lives with the service (docs/ADR-level), because capacity knowledge decays weekly as data grows; re-run on major changes and schedule the soak/stress cadence.</p>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"We'll use a public load-test tool default"</td><td>Default traffic is invented traffic; the model is the whole game.</td></tr><tr><td>"Fire all users at once, it's more realistic"</td><td>Real systems ramp; all-at-once tests the failure to start, not the steady state.</td></tr><tr><td>"p50 looks great, ship it"</td><td>p50 hides the tail the SLA quotes — test what the NFR promises.</td></tr><tr><td>"Stress tests break things, skip them"</td><td>Breaking it in the lab is the gift; breaking it in production is the incident.</td></tr><tr><td>"Soak is for big enterprises"</td><td>Soak is for anything that runs long — leaks are not a size question.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Load parameters not traceable to a model (invented traffic)</li><li>Only average latency asserted; target percentiles unmeasured</li><li>No ramp, no stress, no failure-inject → the capacity map is a guess</li><li>No soak on long-running services → leaks discovered by the pager</li><li>Benchmarks without a decision or with noisy methodology</li><li>Results reported without conditions (load, concurrency, environment)</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Load model built from metrics/estimates; every parameter traced to it</li><li>[ ] Load test proves the SLO at its target load and percentile, with conditions reported</li><li>[ ] Stress + failure-inject found the edge: first point of saturation identified</li><li>[ ] Soak run where long-running: leaks/creep trends reported</li><li>[ ] Benchmarks decision-attached, isolated, methodology clean</li><li>[ ] Capacity map delivered and re-run on major changes</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

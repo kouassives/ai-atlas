@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>fe-security · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Developer Frontend</p>
+      <h1><code>fe-security</code></h1>
+      <p class="tagline">Secures the client side: XSS, CSRF, sanitization, secure headers, and client-side secret hygiene. Use when rendering user content, embedding third-party code, handling tokens in the browser, or when the frontend is part of the ingested untrusted-data path.</p>
+      <p class="badges"><span class="badge">frontend</span><span class="badge">implementation</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="frontend-security">Frontend Security</h2>
+<h3 id="overview">Overview</h3>
+<p>The browser is an extension of the attacker's test lab: everything rendered is an injection surface, every embedded third party is code you do not control, and every secret in the client is published. This skill covers the client-side front: XSS prevention at every render, CSRF defense for state changes, sanitization that is an allowlist, secure headers, and the rule that the frontend holds no secrets.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Rendering user-generated content (comments, profiles, rich text, files).</li><li>Embedding third-party scripts/widgets, or building browser extensions.</li><li>Handling tokens/cookies in the client, or any state-changing request.</li><li>Reviewing frontend code as part of the security baseline (<code>fnd-security-basics</code> applies always; this is its client-side depth).</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Server-side credential/authz handling (that is <code>be-security-engineering</code>); this skill covers what the browser can and cannot be trusted with.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-treat-every-render-as-an-injection">Step 1 — Treat every render as an injection</h4>
+<ul><li>Framework-escaped rendering is the default; the danger is every escape hatch: <code>dangerouslySetInnerHTML</code>, <code>v-html</code>, <code>innerHTML</code>, template injection, <code>eval</code> anywhere.</li><li>Escaping must be output-context-aware (HTML, attribute, URL, JS). One regex will not serve all contexts — use the framework's context-aware escaping.</li><li><strong>Never</strong> put user input into URLs you fetch, style/link hrefs, or script/src — think <code>javascript:</code> in an <code>href</code>.</li></ul>
+<h4 id="step-2-sanitize-with-an-allowlist-at-the-boundary">Step 2 — Sanitize with an allowlist, at the boundary</h4>
+<ul><li>Rich content: sanitize with a vetted allowlist library (DOMPurify-class) that strips tags/attributes by permit, not denylist patterns. A denylist of "bad tags" is the XSS that ships next Tuesday.</li><li>Sanitize the content at ingestion (or render-side with the same allowlist), then treat it as data — tagged and escaped at render.</li><li>Link-allowlisting (http/https only) covers <code>javascript:</code>/<code>data:</code> schemes in user-authored links.</li></ul>
+<h4 id="step-3-defend-state-changing-requests-csrf">Step 3 — Defend state-changing requests (CSRF)</h4>
+<ul><li>State-changing requests: same-site cookies (<code>SameSite</code>), CSRF tokens where the auth model requires them, and explicit origin/referer checking where applicable — never "we trust our own frontend".</li><li>Protected endpoints reject cross-site submissions; <code>Content-Type</code> enforcement stops simple-form CSRF.</li><li>Sensitive operations confirm intent (re-auth for destructive acts) — the frontend enforces the UX; the server enforces the truth (<code>be-security-engineering</code> §3).</li></ul>
+<h4 id="step-4-serve-the-security-headers-from-the-app">Step 4 — Serve the security headers from the app</h4>
+<ul><li>CSP (Content Security Policy) scoped tightly: default-src 'self', no <code>unsafe-inline</code>/<code>unsafe-eval</code> unless a real feature requires it (and then hash/nonce it); frame-ancestors to kill clickjacking; X-Content-Type-Options: nosniff; Referrer-Policy.</li><li>CSP is enforced in the served response AND tested in CI — a CSP header that never got reviewed is a decoration.</li><li>The frontend's role: don't trigger CSP violations with inline scripts/styles; keep third-party embeds explicit and allowlisted.</li></ul>
+<h4 id="step-5-the-client-keeps-no-secrets">Step 5 — The client keeps no secrets</h4>
+<ul><li>Anything in the bundle is public: API keys, tokens, secrets in config — the frontend ships all of it (<code>fnd-security-basics</code>).</li><li>Tokens live in secure, httpOnly, SameSite cookies (or as short-lived in-memory where the flow demands) — not localStorage-forever (XSS reads localStorage).</li><li>Third-party scripts are dependencies: pinned, audited, minimized — a compromised embed is a running keylogger (<code>ops-devsecops</code> supply-chain thinking applies to <code>&lt;script src&gt;</code>).</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"React/Vue escapes automatically"</td><td>Only through the safe paths; every dangerHTML/v-html bypass is yours.</td></tr><tr><td>"The sanitizer blocks bad tags — good enough"</td><td>Denylist sanitizers are how the next mutation XSS ships.</td></tr><tr><td>"We need the API key in the bundle for the SDK"</td><td>Then the API key is public by definition; put it server-side and proxy.</td></tr><tr><td>"Our site doesn't store anything sensitive, CSRF is moot"</td><td>CSRF is about actions, not data — an email-change is damage enough.</td></tr><tr><td>"Third-party widget is from a big company"</td><td>Big companies get injected too; pin, audit, and constrain the embed.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li><code>dangerouslySetInnerHTML</code>/<code>v-html</code>/<code>innerHTML</code> on user content without allowlist sanitize</li><li>User input in URLs, style/link/script sources; <code>javascript:</code> reachable</li><li>Denylist sanitizers; no CSP or a CSP with unsafe-inline/unsafe-eval everywhere</li><li>Tokens/secrets in localStorage or the bundle; API keys client-side</li><li>Unpinned third-party scripts/widgets</li><li>State changes without CSRF posture (SameSite/tokens/origin checks)</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] All escape hatches audited; user content rendered escaped and/or allowlist-sanitized</li><li>[ ] URLs/link sources restricted to safe schemes; no input-borne <code>javascript:</code></li><li>[ ] CSRF posture on state changes (SameSite + tokens/origin where needed); re-auth for destructive acts</li><li>[ ] CSP tight, nonce/hash for exceptions, served and CI-tested; nosniff + referrer policy</li><li>[ ] No secrets in the client; tokens in httpOnly/SameSite cookies or short-lived memory</li><li>[ ] Third-party embeds pinned, audited, minimized</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

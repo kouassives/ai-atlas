@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>fnd-security-basics · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Foundation</p>
+      <h1><code>fnd-security-basics</code></h1>
+      <p class="tagline">Applies the baseline security discipline every feature needs: drawing the trust boundary, validating all untrusted input, authenticating and authorizing every access, protecting secrets, and checking dependencies. Use when a feature takes untrusted input, when handling credentials or personal data, when asked 'is this secure', when hardening an endpoint or service, or before touching anything that faces the internet.</p>
+      <p class="badges"><span class="badge">foundation</span><span class="badge">implementation</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="security-basics">Security Basics</h2>
+<h3 id="overview">Overview</h3>
+<p>Security is not a feature; it is a discipline applied at every boundary. This skill is the baseline that every change must meet before it is called done. It covers the minimum: trust boundaries, input validation, authentication and authorization, secrets handling, and dependency hygiene. Deep analysis (threat modeling, cryptography design, pentesting) is downstream of this skill.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>The code touches ANY input you do not fully control (forms, URLs, files, APIs, config, third-party payloads).</li><li>Credentials, tokens, or personal data are involved.</li><li>Someone asks "is this secure?" — run this checklist before answering.</li><li>A new endpoint, service, or integration is added.</li><li>Before merging anything that faces the internet or a network boundary.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Designing cryptographic algorithms — use established, vetted libraries instead of this skill.</li><li>A full threat model or pentest engagement — this is the baseline, not the audit.</li><li>Pure frontend styling or documentation-only changes with no data flow.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-draw-the-trust-boundary">Step 1 — Draw the trust boundary</h4>
+<p>Draw a diagram (even a mental one) of where untrusted data enters the system. Everything crossing that boundary is <strong>untrusted</strong> until validated — including data from your own services if they can be influenced by users, logs, or config.</p>
+<h4 id="step-2-validate-input-at-the-boundary-never-at-usage">Step 2 — Validate input at the boundary, never at usage</h4>
+<ul><li>Reject, don't sanitize: whitelists over blacklists; explicit types and ranges; max lengths and payload sizes.</li><li>Validate shape/semantics immediately after parsing — before it reaches business logic.</li><li>Every external data source (API responses, files, env, user content) is treated as attacker-controlled.</li></ul>
+<h4 id="step-3-authn-and-authz-on-every-entry-point">Step 3 — AuthN and AuthZ on every entry point</h4>
+<ul><li>Authenticate first: who is calling? Missing authentication is a finding, not a "later".</li><li>Authorize per operation: does this caller have the right for THIS resource? IDOR (object-level authorization) is the most common missed check.</li><li>Never trust values from the client for identity or authorization decisions.</li><li>Use the framework's established auth primitives — do not hand-roll tokens, hashing, or sessions.</li></ul>
+<h4 id="step-4-protect-secrets">Step 4 — Protect secrets</h4>
+<ul><li>No secrets in code, logs, frontends, or version control. Ever. Detection in CI is mandatory.</li><li>Secrets in injected configuration (env/secret managers), not in code or committed files.</li><li>Logs and error messages must not echo tokens, passwords, or PII.</li><li>Treat leaked secrets as compromised: rotate, do not "fix the formatting".</li></ul>
+<h4 id="step-5-dependency-hygiene">Step 5 — Dependency hygiene</h4>
+<ul><li>Pin dependencies; audit them (<code>npm audit</code>, <code>pip-audit</code>, OSV, etc.) before and after adding.</li><li>One dependency per reviewable change; read the changelog, not just the version number.</li><li>Every dependency is a liability: prefer the standard library and existing primitives.</li></ul>
+<h4 id="step-6-apply-the-output-side-checks">Step 6 — Apply the output-side checks</h4>
+<ul><li>Encode output for its context (HTML → escape for XSS; SQL → parameterize; shell → never interpolate).</li><li>Headers: sensible default (HSTS, CSP, no-sniff) unless something explicitly requires otherwise.</li><li>Rate-limit and bound anything exposed to the internet.</li></ul>
+<h4 id="step-7-record-the-verdict">Step 7 — Record the verdict</h4>
+<p>State explicitly what was checked and what remains open (e.g. "auth delegated to the gateway — verify gateway policy"). An unstated assumption is how breaches happen.</p>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"It's an internal service, no one will attack it"</td><td>Internal services are reached through the same compromised user sessions — authZ applies everywhere.</td></tr><tr><td>"We sanitize on output, that's enough"</td><td>Validation at the boundary is where the type and semantics are known. Output encoding is a second layer, not a replacement.</td></tr><tr><td>"The token is only in a query param"</td><td>Logs, history, and referrers leak query strings. Credentials belong in headers or bodies, not URLs.</td></tr><tr><td>"We'll add auth later, it's a spike"</td><td>Auth bolted on later is re-architected, not added.</td></tr><tr><td>"This secret is only for dev"</td><td>Dev secrets leak to prod configs and repos with alarming regularity. Treat all committed secrets as compromised.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Client-authored identity or authorization values trusted server-side</li><li>Validation happening at usage sites instead of at the boundary</li><li>Secrets in config committed to repositories, or tokens in URLs/logs</li><li>Missing authZ on a resource fetch by ID (IDOR-shaped code)</li><li>Dependency bumps with no audit and no changelog review</li><li>Error responses leaking internals, stack traces, or credentials</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Trust boundary drawn; all crossings identified</li><li>[ ] Input validated (type, length, range) at the boundary for every untrusted source</li><li>[ ] Every entry point authenticated and authorization checked per resource</li><li>[ ] No secrets in code/logs/URLs/committed files; secret handling uses injected config</li><li>[ ] Dependencies pinned, audited, changelog reviewed</li><li>[ ] Output-encoding and header baseline applied</li><li>[ ] A verdict statement lists what was checked and what remains open</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

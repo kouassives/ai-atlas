@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>ui-visual-design · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">UI Designer</p>
+      <h1><code>ui-visual-design</code></h1>
+      <p class="tagline">Produces deliberate visual design: typography, color, spacing, hierarchy, and composition. Use when producing visual design, when the UI looks random, or when styling decisions need a system instead of preferences.</p>
+      <p class="badges"><span class="badge">ui-designer</span><span class="badge">design</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="visual-design">Visual Design</h2>
+<h3 id="overview">Overview</h3>
+<p>Visual design is the discipline of <strong>deliberate</strong> choices: every spacing, size, color, and typeface exists because it encodes something (importance, relationship, mood) — not because it was convenient. The levers here are <strong>typography</strong> (type system, scale, measure, legibility), <strong>color</strong> (roles, not preferences; contrast as a requirement), <strong>spacing</strong> (a scale, used consistently), <strong>hierarchy</strong> (what the eye meets first and why), and <strong>composition</strong> (alignment, grouping, rhythm, white space). This skill sets the system that <code>ui-design-systems</code> then codifies into tokens.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Producing visual design for screens (new or redesigned).</li><li>The UI "looks random": sizes, colors, spacings chosen ad hoc.</li><li>The design exists as prototypes that must become a coherent visual language.</li><li>Reviewing visual output for internal consistency.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Accessibility compliance specifics (that is <code>fe-accessibility</code> — this skill respects it as a constraint).</li><li>Codifying the language into tokens/libraries (<code>ui-design-systems</code>).</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-set-a-type-system-not-font-choices">Step 1 — Set a type system, not font choices</h4>
+<ul><li>Define a type scale (a small set of sizes with a clear ratio — not a size per use) and roles: display, heading, body, caption, label. Pick 1–2 families with a reason (readability at size, rendering cost, licensing — <code>fe-performance</code> font loading).</li><li>Body measure (line length) stays in the readable range (~45–75 characters); line-height tuned per role.</li><li>Hierarchy by WEIGHT and SIZE before color — a heading is a heading in grayscale, or the hierarchy is decoration.</li></ul>
+<h4 id="step-2-color-by-role-with-contrast-as-a-requirement">Step 2 — Color by role, with contrast as a requirement</h4>
+<ul><li>Color roles, not free palette: background, surface, text (primary/secondary/disabled), accent, success/warning/danger. Assign roles so swapping a palette does not mean re-deciding every screen.</li><li>Every text/UI color passes the <code>fe-accessibility</code> AA contrast baseline (4.5:1 text, 3:1 UI) — visual design does not get to opt out.</li><li>One accent, used sparingly: if everything is emphasized, hierarchy is flat. Never communicate by color alone.</li></ul>
+<h4 id="step-3-space-with-a-scale">Step 3 — Space with a scale</h4>
+<ul><li>A spacing scale (base unit × step, e.g., 4/8/12/16/24/32/48) used by rule, not by feel — spacing that "looks right" differs per screen and creates the anecdote-layout look.</li><li>Grouping is the visual encoding of relationships: related elements closer, unrelated separated (<code>ui-ux-flows</code> IA becomes spatial grouping here).</li></ul>
+<h4 id="step-4-compose-deliberately">Step 4 — Compose deliberately</h4>
+<ul><li>Alignment: pick edges and stick to them; centered-everything is where design goes to look un-designed.</li><li>Rhythm: repeat spacing/margins so screens feel like one family; white space is a tool (rest) not a bug (waste).</li><li>Establish the visual weight of the primary action on each screen and let composition make it findable without blinking.</li></ul>
+<h4 id="step-5-verify-the-system-before-it-becomes-tokens">Step 5 — Verify the system before it becomes tokens</h4>
+<ul><li>Review the screens in grayscale: if hierarchy and grouping survive, the structure is sound and color was garnish.</li><li>Check the responsive/state story: the type scale and spacing hold across viewports (<code>fe-responsive-design</code>), states (hover/focus/error) are defined visually, and the small viewport never gets micro-sized type.</li><li>Hand off: the verified system is what <code>ui-design-systems</code> turns into design tokens; inconsistencies found here cost pennies, in the library they cost weeks.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"Design is taste; we'll tune it in review"</td><td>Taste without a system is a review loop that never converges.</td></tr><tr><td>"We'll use this nice color, it fits the brand"</td><td>Color that fails contrast is a brand that excludes users.</td></tr><tr><td>"Spacing can be eyeballed"</td><td>Eyeballed spacing is how every screen invents its own scale.</td></tr><tr><td>"Make everything pop"</td><td>Everything popping is nothing popping; hierarchy IS priority.</td></tr><tr><td>"We'll fix hierarchy with color later"</td><td>If the hierarchy needs color to exist, it does not exist.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>A type size for every occasion; no scale or roles</li><li>Free palette with no role system; text colors failing contrast</li><li>Ad-hoc spacing (no unit-based scale); grouped unrelated content</li><li>Misaligned compositions; rhythm breaks between screens</li><li>Hierarchy invisible in grayscale</li><li>No state design (hover/focus/error) and no small-viewport check</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Type system defined (scale + roles, 1–2 families with reasons)</li><li>[ ] Color by role; AA contrast checked for text and UI colors; single accent</li><li>[ ] Spacing from a scale; grouping encodes relationships</li><li>[ ] Composition deliberate: consistent alignment, rhythm, primary-action weight</li><li>[ ] Grayscale review passes (hierarchy/grouping survive without color)</li><li>[ ] Responsive + state behavior designed; handed to tokens without known inconsistencies</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

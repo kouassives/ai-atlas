@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>ui-ux-flows · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">UI Designer</p>
+      <h1><code>ui-ux-flows</code></h1>
+      <p class="tagline">Maps screens to tasks: user flows, information architecture, wireframes, and journey mapping. Use when mapping screens to tasks, when navigation structure is unclear, or when features exist without a path through them.</p>
+      <p class="badges"><span class="badge">ui-designer</span><span class="badge">design</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="ux-flows-ia-and-wireframes">UX Flows, IA, and Wireframes</h2>
+<h3 id="overview">Overview</h3>
+<p>Before any visual design, UX flows answer "how does the user move from intent to outcome?": <strong>user flows</strong> (task paths, including alternatives and dead ends), <strong>information architecture</strong> (how content and screens are grouped and named), and <strong>wireframes</strong> (structure of each screen — hierarchy, layout, content — without decoration). The journey map keeps the emotional and effort curve of the whole task in view, so design optimizes the journey, not just single screens.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>New feature: establishing the paths between screens before building.</li><li>Navigation/IA unclear, or users "get lost" (support tickets, dropoffs).</li><li>A screen exists, but no one can describe the task it completes.</li><li>Redesign: the flows are re-mapped before the pixels (<code>ui-visual-design</code>).</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Single-screen polish of an existing, mapped flow (go to visual design).</li><li>The flow exists and the question is purely component-level (<code>fe-component-design</code>).</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-map-the-user-flows-first">Step 1 — Map the user flows first</h4>
+<ul><li>Start from the user's intent (from research personas, <code>ui-ux-research</code>), not from the app's menu: "book a trip", "report a problem".</li><li>Draw every path: happy path, alternatives, and the dead ends (missing data, permission failures, offline). Flows are honest only when they include the unhappy paths.</li><li>One task per flow; a flow that spans five apps is fine, but a screen with five unrelated tasks is an IA problem, not a flow problem.</li></ul>
+<h4 id="step-2-structure-the-information-architecture">Step 2 — Structure the information architecture</h4>
+<ul><li>Group screens/content by user mental models ("where would a user EXPECT this"), not by the org chart or the DB schema.</li><li>Name things the way users name them (evidence, not internal jargon); IA naming is navigation copy — wrong names are how search needs rescue.</li><li>Depth vs breadth: keep key task starts in 1–2 clicks; burying core tasks three levels deep is an IA failure even if the screens are pretty.</li></ul>
+<h4 id="step-3-wireframe-each-screens-structure">Step 3 — Wireframe each screen's structure</h4>
+<ul><li>Wireframes show structure: content hierarchy, layout blocks, the primary action, empty and error states — in grayscale, no typography/style decisions yet.</li><li>Wireframe the states, not just the happy render: loading, empty, error, partial (a screen is a system of states — <code>fe-api-integration</code> will implement what this skill sketches).</li><li>Each wireframe carries the flow step(s) it serves; an orphan screen is either missing a flow or missing delete.</li></ul>
+<h4 id="step-4-keep-the-journey-map-in-view">Step 4 — Keep the journey map in view</h4>
+<ul><li>A journey map plots effort/emotion across the whole task (before, during, after). The happy-path click-count is one axis; frustration moments (form walls, waits, dead ends) are the other.</li><li>Optimize the peaks of effort, not the shiniest screen. If the "checkout redesign" made the cart prettier but the delivery-date uncertainty remains, the journey did not improve.</li></ul>
+<h4 id="step-5-validate-the-flows-before-visual-design">Step 5 — Validate the flows before visual design</h4>
+<ul><li>Walk the flows against the personas and the research open-questions; walk the unhappy paths aloud ("then what?" is the test).</li><li>The output is reviewable by stakeholders and testable later: flows + IA + wireframes are the skeleton <code>ui-visual-design</code> dresses — and the reference <code>tst-e2e-testing</code> measures the real journeys against.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"Skip flows, go straight to mockups"</td><td>Mockups without flows optimize screens nobody can reach coherently.</td></tr><tr><td>"IA mirrors our internal structure"</td><td>The org chart and the user's model of your product are different maps.</td></tr><tr><td>"Only the happy path matters at this stage"</td><td>The unhappy paths are where users judge the product — and file tickets.</td></tr><tr><td>"Wireframes waste time before the real design"</td><td>Wireframes are the cheapest place to disagree; visuals are the most expensive.</td></tr><tr><td>"It's just one more screen"</td><td>One more screen without a flow step is navigation drift.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Screens designed with no owning flow; flows that end in "user gives up"</li><li>IA named in internal jargon; core tasks buried 3+ levels</li><li>Wireframes without empty/error/loading states</li><li>Happy-path-only journey maps; frustration moments unplotted</li><li>Visual design started before flow review ("just make the mockup")</li><li>No tie between flows and the research personas/evidence</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] User flows drawn per intent, including alternatives and dead ends</li><li>[ ] IA grouped by user mental model; names are user words; key tasks ≤ 2 clicks</li><li>[ ] Wireframes per screen with hierarchy, primary action, and empty/error/loading states</li><li>[ ] Every wireframe linked to a flow step; no orphans</li><li>[ ] Journey map includes effort/frustration, not just click counts</li><li>[ ] Flows validated against personas and open questions before visual design</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

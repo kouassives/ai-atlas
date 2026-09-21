@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>fe-architecture · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Developer Frontend</p>
+      <h1><code>fe-architecture</code></h1>
+      <p class="tagline">Structures frontend codebases: feature-based modules, clean layers, module boundaries, and folder conventions. Use when structuring a frontend codebase, when components and logic sprawl across folders, when scaling adds new features chaotically, or when a frontend needs architecture review.</p>
+      <p class="badges"><span class="badge">frontend</span><span class="badge">design</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="frontend-architecture">Frontend Architecture</h2>
+<h3 id="overview">Overview</h3>
+<p>Frontend architecture is the answer to "where does this code go, and what may it touch?". The same forces as the backend apply — boundaries, ownership, dependency direction — but with a codebase shaped by UI. This skill establishes <strong>feature-based architecture</strong>: each feature owns its components, logic, and state; shared code lives in a thin platform layer; dependencies point INTO the platform from features, never across features.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Structuring a new frontend (framework-agnostic) or reorganizing a sprawling one.</li><li>Features keep touching each other's internals (a "shared components" dump).</li><li>The question "where does this live?" has no stable answer.</li><li>Reviewing frontend structure for boundaries and dependency direction.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Building a tiny one-off page (single feature, no architecture needed — YAGNI).</li><li>Choosing the framework itself or its build tooling.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-organize-by-feature-not-by-type">Step 1 — Organize by feature, not by type</h4>
+<ul><li>Folder per feature: <code>features/&lt;feature&gt;/</code> containing that feature's components, hooks/logic, and local state. Co-location beats type-folders: "components/ + hooks/ + utils/" dump everything unrelated into one pile.</li><li>A feature is a slice of user capability (checkout, settings, search) — its files change together and travel together.</li><li>Naming a feature well is the architecture: a name that covers two unrelated things is two features pretending to be one.</li></ul>
+<h4 id="step-2-draw-the-layers-platform-vs-features">Step 2 — Draw the layers: platform vs features</h4>
+<pre><code class="language-text">app/ (composition, routing, bootstrap)
+features/&lt;feature&gt;/{components,logic,state}   ← features may use platform
+platform/ (ui primitives, design tokens, http, auth, dev utils)</code></pre>
+<ul><li><strong>Platform</strong> provides shared primitives; features compose them.</li><li><strong>Features do not depend on each other</strong>: a cross-feature need is either lifted to the platform (if truly shared) or handled by the app layer (if it is orchestration). Dependency arrows: app → feature → platform. Never feature → feature.</li></ul>
+<h4 id="step-3-keep-module-boundaries-honest">Step 3 — Keep module boundaries honest</h4>
+<ul><li>A feature's public surface is its entry point (exported component/hook); everything else is private to the folder — enforce via folder conventions/lint boundaries.</li><li>The barrel/directory is the boundary: if importing requires knowing a feature's internals, the boundary is leaking.</li><li>Feature size is bounded by change frequency: when two "features" must always change together, they are one feature.</li></ul>
+<h4 id="step-4-route-with-the-app-layer-compose-with-features">Step 4 — Route with the app layer, compose with features</h4>
+<ul><li>Routing, providers, and app-level state wiring live in the app layer — features render where they are routed, they do not own the app.</li><li>Lazy-load features at the route boundary (this also pays the performance budget — see <code>fe-performance</code>).</li><li>Passing data between features via app/orchestration state is explicit; a feature reaching into another feature's store to set flags is a boundary violation.</li></ul>
+<h4 id="step-5-make-the-structure-testable">Step 5 — Make the structure testable</h4>
+<ul><li>Logic is separated from views (hooks/composables/business utilities) so unit tests target logic without DOM ceremony (<code>tst-unit-testing</code> applies the pyramid to frontend).</li><li>Feature folders are testable in isolation (their deps are platform or injected).</li><li>A component with its business logic embedded becomes an untestable unit and a boundary smell — extract the logic per <code>fe-component-design</code>.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"components/ + hooks/ + utils/ is the standard"</td><td>Type-folders make "where does this live?" a recurring question; features answer it once.</td></tr><tr><td>"This helper is small, import it from the other feature"</td><td>Small cross-feature imports are how boundaries rot one file at a time.</td></tr><tr><td>"Reuse means sharing everything"</td><td>Sharing the platform is reuse; sharing feature internals is coupling.</td></tr><tr><td>"Our app is too small for architecture"</td><td>Small apps grow; the folder convention is the cheapest architecture there is.</td></tr><tr><td>"We'll restructure during the rewrite"</td><td>The rewrite is where the same unowned sprawl gets rebuilt.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Type-folders that force cross-folder walks for one feature</li><li>Features importing from other features' internals</li><li>A "shared components" folder that is really five features' castoffs</li><li>Logic embedded in views with no extraction point</li><li>Routing/providers entangled inside feature folders</li><li>No folder-convention enforcement (boundaries by etiquette)</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Feature folders co-locate components/logic/state; type-folders removed or minimal</li><li>[ ] Layers drawn: app → feature → platform; no feature→feature imports</li><li>[ ] Feature public surfaces defined; internals private by convention/enforcement</li><li>[ ] Routing/providers in the app layer; features lazy-loaded</li><li>[ ] Logic separated from views; feature folders testable in isolation</li><li>[ ] "Where does this live?" has one stable answer per artifact</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

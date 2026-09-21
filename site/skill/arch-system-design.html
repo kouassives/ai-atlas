@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>arch-system-design · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Architect</p>
+      <h1><code>arch-system-design</code></h1>
+      <p class="tagline">Produces high-level system design before implementation: components, boundaries, data flow, non-functional requirements, and explicit trade-off analysis. Use when designing a system or feature, when choosing between architectures or integrations, or when a design needs to be reviewed before code is written.</p>
+      <p class="badges"><span class="badge">architect</span><span class="badge">design</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="system-design">System Design</h2>
+<h3 id="overview">Overview</h3>
+<p>System design turns agreed requirements (<code>arch-requirements-analysis</code>) into a shape the team can implement and argue about cheaply: components with responsibilities, boundaries between them, the data and control flow, NFRs that constrain the choices, and a <strong>trade-off analysis</strong> that records what was chosen, what was rejected, and why. The deliverable fits on a few pages — design that cannot be reviewed fits no one.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Designing a new system or feature before code is written.</li><li>Choosing between integration options, data stores, or architectures.</li><li>A design review is requested and a written artifact is needed to review against.</li><li>Altering an existing system's shape (new boundary, new component, new flow).</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Requirements are still fuzzy — that is <code>arch-requirements-analysis</code>, not design.</li><li>The change is a local implementation detail with no boundary or flow impact — implement it (<code>be-*</code>).</li><li>Picking a specific pattern for one problem shape — that is <code>arch-design-patterns</code>.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-state-the-constraints-then-the-design">Step 1 — State the constraints, then the design</h4>
+<p>Open with the non-functional constraints that actually bind this system: scale target, latency budget, availability, security/compliance data classes, cost ceiling (quantify from <code>arch-nfrs</code>). A design that ignores its NFRs is a fantasy; naming them up front makes every later decision checkable.</p>
+<h4 id="step-2-identify-the-components-and-their-responsibilities">Step 2 — Identify the components and their responsibilities</h4>
+<ul><li>List the components the system needs to do the required behavior — each with ONE responsibility (the SRP check from <code>be-solid-principles</code> applies at component scale too).</li><li>Name the <strong>ownership boundary</strong> of each component: what data, what behaviors, what decisions are exclusively its own.</li><li>No component may depend, at design time, on another's internals — dependencies are only through defined interfaces.</li></ul>
+<h4 id="step-3-draw-the-data-flow-and-the-control-flow">Step 3 — Draw the data flow and the control flow</h4>
+<ul><li><strong>Data flow</strong>: for each user-triggered path, where does data originate, where is it stored, who transforms it, who reads it. Include failure paths: retry, partial failure, timeout.</li><li><strong>Control flow</strong>: synchronous calls vs async messaging and where each belongs (<code>be-async-messaging</code> when in doubt).</li><li>The diagram is the design's spine — if you cannot draw the flow, you do not have a design, you have a wish.</li></ul>
+<h4 id="step-4-analyze-trade-offs-explicitly-per-material-decision">Step 4 — Analyze trade-offs explicitly, per material decision</h4>
+<p>For every decision with a real alternative (storage engine, sync vs async, cache layer, service split), record:</p>
+<pre><code class="language-text">Decision: &lt;choice&gt;
+Alternatives considered: &lt;A&gt;, &lt;B&gt;
+Deciding forces: &lt;the NFR or constraint that tipped it&gt;
+Accepted cost: &lt;what this choice makes harder, and when to revisit&gt;</code></pre>
+<p>The "accepted cost" line is the honest part — every design buys something and pays something. Only reconsider when the cost materializes, not when someone re-asks the question.</p>
+<h4 id="step-5-design-the-failure-behavior-not-just-the-happy-path">Step 5 — Design the failure behavior, not just the happy path</h4>
+<p>For each dependency and each boundary: what happens when it fails slowly, fails fast, or returns garbage? Add timeout, retry-with-backoff, circuit breaker (<code>be-microservices-patterns</code>), dead-letter handling (<code>be-async-messaging</code>), and degrade-path statements where relevant. A design with only a happy path is a one-way ticket to incident mode.</p>
+<h4 id="step-6-fit-the-design-into-the-architecture-style">Step 6 — Fit the design into the architecture style</h4>
+<p>If the system has an established backbone (clean architecture, DDD contexts, hexagonal), declare how this design maps onto it — which layer/context each component belongs to (<code>arch-clean-architecture</code>, <code>arch-ddd</code>). A design that quietly invents a parallel structure is the most expensive kind of drift.</p>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"Design is a waste, just prototype"</td><td>A page of components and flows is cheaper than the second rewrite of the prototype.</td></tr><tr><td>"We'll pick the NFRs during implementation"</td><td>NFRs chosen during implementation are the ones the marketing page promised you didn't read.</td></tr><tr><td>"Trade-off analysis is overkill"</td><td>Without it, every decision is re-litigated by the next teammate who prefers option A.</td></tr><tr><td>"The happy path is what users see"</td><td>Users see the failure path — and so does the on-call rotation.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Design with no NFRs or with NFRs stated but never referenced by decisions</li><li>Components with overlapping responsibilities or no ownership boundaries</li><li>No diagram of data/control flow that a reviewer can trace a request through</li><li>Decisions with no recorded alternatives or no accepted-cost line</li><li>Failure behavior absent ("we'll add retries later")</li><li>A design that contradicts the established architecture style without saying so</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] NFR constraints stated up front and referenced by the decisions they bind</li><li>[ ] Components one-responsibility each, ownership boundaries named, dependencies via interfaces</li><li>[ ] Data and control flow drawn, including failure paths</li><li>[ ] Each material decision has alternatives, deciding forces, and accepted cost</li><li>[ ] Failure behavior designed per dependency; degrade paths stated</li><li>[ ] Mapping to the architecture style declared (layer/context per component)</li><li>[ ] Artifact is small enough to review — a few pages, traceable</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

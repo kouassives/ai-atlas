@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>tst-regression · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Tester</p>
+      <h1><code>tst-regression</code></h1>
+      <p class="tagline">Designs and manages regression suites: selection and prioritization, change-linked execution, and flaky-test management. Use after changes or before releases, when a regression escapes to production, or when the suite is slow or flaky and trust is eroding.</p>
+      <p class="badges"><span class="badge">tester</span><span class="badge">operations-maintenance</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="regression-testing">Regression Testing</h2>
+<h3 id="overview">Overview</h3>
+<p>Regression testing is the net that catches what a change moved when nobody was looking. Its three problems are scale (a full suite grows past the budget), selection (which tests protect THIS change), and trust (flakes that make the net unreliable — which is worse than no net, because green lies). This skill covers suite design, change-linked execution, prioritization, and the discipline that keeps flakes from rotting the net.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>After a change or before a release: choose what regression protection runs now.</li><li>A regression escaped to production ("the tests were green").</li><li>The suite is slow, huge, or flaky and nobody trusts it.</li><li>A flaky test is being retried instead of fixed.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Writing the tests themselves (the <code>tst-*</code>/<code>be-tdd</code> skills build them). This skill SELECTS, SCHEDULES, and MAINTAINS them.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-build-the-suite-as-a-protection-map">Step 1 — Build the suite as a protection map</h4>
+<p>Each test/group carries its protection label: which behavior, which risk (<code>tst-test-strategy</code>), which criticality. The map is what selection runs on — without labels, every change runs "all the tests" (slow) or "some tests" (blind).</p>
+<h4 id="step-2-select-by-change-not-by-habit">Step 2 — Select by change, not by habit</h4>
+<ul><li>For each change, run: the <strong>directly affected</strong> tests (unit), the <strong>seams touched</strong> (integration), the <strong>journeys</strong> that cross the change (e2e), plus a <strong>safety baseline</strong> (fast smoke of the critical path).</li><li>A minimal full-suite cadence (nightly or pre-release) catches the interactions selection deliberately skips between releases.</li><li>Selection is a policy with owners — "run everything for any change" is a selection policy, it's just usually the wrong one.</li></ul>
+<h4 id="step-3-prioritize-by-risk-and-cost">Step 3 — Prioritize by risk and cost</h4>
+<ul><li>When the full suite can't run everywhere, order by: protects-a-past-incident, hits the changed code, critical-journey labeling, and suite cost. Past-incident tests outrank decorative breadth — they are the ones paid for with real outages.</li><li><strong>Every regression that escapes becomes a test</strong>: the fix for the incident includes the test that would have caught it (this is the incident-loop of <code>tst-test-strategy</code> made concrete).</li></ul>
+<h4 id="step-4-treat-flake-as-the-top-debt">Step 4 — Treat flake as the top debt</h4>
+<ul><li>Flake is a bug in the test or the infrastructure, NOT a weather event. Roll it into the team's backlog with an owner.</li><li>"Retry-till-green" is banned as a pass condition: a test that needs retries to pass is failing, and the retry hides it. Runner-level retry for genuine infra blips is a bounded exception with visibility, never a blanket.</li><li>Track the flake rate per suite; >~1% is an emergency for the release gate's credibility.</li></ul>
+<h4 id="step-5-make-the-suite-fast-enough-to-be-run">Step 5 — Make the suite fast enough to be run</h4>
+<ul><li>Slow tests migrate down a tier where possible (e2e-shaped logic → integration → unit) — the regression mapping then protects more with less time (<code>tst-e2e-testing</code> §5, <code>tst-unit-testing</code> §5).</li><li>Parallelize by isolation; keep the baseline smoke under a few minutes so the safety baseline actually runs.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"Run the whole suite on every PR"</td><td>A suite so big it can't run selectively won't stay run at all — selection is saving it, not cutting it.</td></tr><tr><td>"The test passed on retry, so it's fine"</td><td>A retried-to-green test is a lie the suite tells; flake is the debt.</td></tr><tr><td>"That test has always been flaky"</td><td>"Always flaky" = unowned debt with an incident in its future.</td></tr><tr><td>"We don't need the incident test, we fixed the cause"</td><td>The cause is today's; the test is tomorrow's survival of the next refactor.</td></tr><tr><td>"Selection is too complicated, just run all"</td><td>All-or-nothing is a selection policy with the worst cost/risk curve.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Flaky tests retried into green; flake rate unmeasured/unowned</li><li>Regression escapes with no test added from the incident</li><li>Selection absent (always "all" or always "some" with no reasoning)</li><li>Past-incident tests unprotected or removed (the expensive lessons deleted)</li><li>Snowballing suite with no tier migration (e2e-shaped tests everywhere)</li><li>Green suite that production contradicts — trust hole</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Protection map labels exist (behavior/risk/criticality) and are maintained</li><li>[ ] Selection policy: affected tests + touched seams + crossing journeys + fast baseline; full-suite cadence defined</li><li>[ ] Prioritization risk-and-cost ordered; incident regressions have their tests</li><li>[ ] Flakes owned as backlog debt, never retried-to-green blindly; rate tracked</li><li>[ ] Suite speed budgeted; slow tests migrated down tiers</li><li>[ ] Escaping regression loop: every escape becomes a test</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

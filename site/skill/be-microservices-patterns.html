@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>be-microservices-patterns · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Developer Backend</p>
+      <h1><code>be-microservices-patterns</code></h1>
+      <p class="tagline">Selects and applies distributed-system patterns for microservices: saga and outbox for data consistency, CQRS, circuit breaker, retry with backoff, idempotent consumers, and bulkhead isolation. Use when building distributed behavior, when services share data they shouldn't, when partial failures cause cascading outages, or when choosing between patterns for cross-service transactions.</p>
+      <p class="badges"><span class="badge">backend</span><span class="badge">implementation</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="microservices-patterns">Microservices Patterns</h2>
+<h3 id="overview">Overview</h3>
+<p>Distributed systems fail differently than monoliths: network partitions, partial success, retries that duplicate, cascading overload. This skill is the decision catalog for the classic response patterns — <strong>saga</strong>, <strong>outbox</strong>, <strong>CQRS</strong>, <strong>circuit breaker</strong>, <strong>retry</strong>, <strong>idempotent consumers</strong>, <strong>bulkhead</strong> — including when each is mandatory and when it is overkill. Choosing the right pattern here is an architecture decision; record it with <code>fnd-adr</code>.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>A business operation spans two or more services and must stay consistent.</li><li>Services share a database that they should not share.</li><li>Partial failures in one service pull down others (retry storms, cascades).</li><li>Events are produced or consumed across a boundary and must not be lost or doubled.</li><li>Choosing between patterns for a cross-service transaction.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>A single service with one database: sagas, outbox, and CQRS are costs, not benefits — use a local transaction.</li><li>Synchronous calls with generous budgets that are genuinely fine: a retry policy is still needed, but a saga is not.</li><li>Event-driven designs, but with no cross-service consistency requirement (see <code>be-async-messaging</code>).</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-classify-the-operation-local-vs-distributed">Step 1 — Classify the operation: local vs distributed</h4>
+<p>If the operation touches one service + one DB → local transaction, done. If it spans services or databases, you are in distributed territory: choose from Step 2–3, and never pretend a "shared database" merges the problem (it couples everything instead).</p>
+<h4 id="step-2-data-consistency-outbox-or-saga">Step 2 — Data consistency: outbox or saga</h4>
+<ul><li><strong>Transactional outbox</strong> — the command is written in the SAME local transaction as its state change; a poller/CDC relay publishes the event. Guarantees: no lost events, no distributed transaction. Use for <strong>every</strong> event that must not be lost. This is close to mandatory; its absence is a bug shape ("we publish after commit and lose events").</li><li><strong>Saga (choreography or orchestration)</strong> — a multistep operation with compensating steps for failure. Choreography = events drive the flow (loose, hard to trace); orchestration = a coordinator drives it (central, traceable). Pick orchestration when the flow is business-critical and you need a single place to observe/resume it. Compensation must be written for every step that has side effects — a saga whose compensations are "TODO" is a data-corruption plan.</li></ul>
+<h4 id="step-3-readwrite-split-cqrs-when-it-earns-it">Step 3 — Read/write split: CQRS when it earns it</h4>
+<p>CQRS is warranted when reads and writes have genuinely different shapes and scales (write model = domain rules, read model = projections/lookup). It is overkill for CRUD with one model. If you adopt it: the read model is eventually consistent; document the staleness rule.</p>
+<h4 id="step-4-failure-containment-retry-circuit-breaker-bulkhead">Step 4 — Failure containment: retry, circuit breaker, bulkhead</h4>
+<ul><li><strong>Retry</strong>: for transient failures (timeouts, 429, 503) with <strong>exponential backoff + jitter</strong>; cap attempts; must be safe to retry — which is why idempotency (Step 5) is a precondition. Never retry 4xx or business rejections.</li><li><strong>Circuit breaker</strong>: when retries keep failing, stop trying for a cooldown to protect the dependency and the client. Configure failure threshold, cooldown, half-open probes. Without a breaker, retry storms turn a flaky dependency into a site-wide outage.</li><li><strong>Bulkhead</strong>: isolated thread/semaphore pools per dependency so one slow dependency cannot exhaust the whole service. Apply to the few highest-risk dependencies, not everything.</li></ul>
+<h4 id="step-5-idempotent-consumers">Step 5 — Idempotent consumers</h4>
+<p>Every consumer must be able to receive the same message twice without corrupting state. Two enforcement layers: <strong>deduplication by message ID</strong> (store processed IDs for the retention window) AND <strong>idempotent business operations</strong> (the update is a no-op if already applied — e.g. "set status if current status is earlier in the state machine"). At-least-once delivery is the only honest assumption; exactly-once is a lie.</p>
+<h4 id="step-6-record-the-pattern-choices">Step 6 — Record the pattern choices</h4>
+<p>Write ADRs for saga/CQRS/outbox selections (<code>fnd-adr</code>): what was chosen, what was rejected, and the explicitly accepted cost (eventual consistency windows, compensation coverage). Patterns chosen silently get re-litigated at every incident.</p>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"We don't need the outbox, we'll publish after commit"</td><td>Commit-publish windows lose events on crash — the outbox is the standard fix.</td></tr><tr><td>"Exactly-once delivery is guaranteed by the broker"</td><td>Brokers give at-least-once; every consumer must be idempotent.</td></tr><tr><td>"We'll add compensation later"</td><td>Compensations written later are written from incident memory, not design.</td></tr><tr><td>"The saga is fine as choreography, it's simpler"</td><td>Traceability and resume points are the saga's real product; orchestration buys them.</td></tr><tr><td>"CQRS scales better so let's use it"</td><td>CQRS costs complexity; adopt it for shape differences, not fashion.</td></tr><tr><td>"Retrying more often fixes it"</td><td>Without a breaker and jitter, retries amplify outages.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Multiple services sharing one database schema</li><li>Publish-after-commit event production (loss window)</li><li>Sagas without compensation for side-effecting steps</li><li>Retry loops without cap, backoff, or jitter</li><li>No circuit breaker on a dependency that has already failed through several retries</li><li>Consumers that assume exactly-once delivery</li><li>CQRS with no read/write shape difference</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Operation classified: local vs distributed; shared-DB "solution" rejected</li><li>[ ] At-least-once assumptions stated; idempotency layers in place (dedup + idempotent ops)</li><li>[ ] Every event that must not be lost produced via transactional outbox or equivalent</li><li>[ ] Saga: compensations exist and are tested for every side-effecting step; orchestration considered for critical flows</li><li>[ ] Retry: capped, exponential backoff + jitter, only transient codes; breaker and bulkhead in place for hot dependencies</li><li>[ ] Pattern selections recorded in ADRs with rejected alternatives</li><li>[ ] Eventual-consistency windows documented where CQRS/projections apply</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

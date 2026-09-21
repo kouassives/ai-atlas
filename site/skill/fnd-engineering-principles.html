@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>fnd-engineering-principles · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Foundation</p>
+      <h1><code>fnd-engineering-principles</code></h1>
+      <p class="tagline">Applies the core engineering principles — SOLID, KISS, YAGNI, DRY, and composition over inheritance — to concrete design decisions. Use when designing a module or class, when code feels over-engineered or 'clever', when choosing between abstractions, when reviewing someone else's design, or when the team debates how much structure a solution needs.</p>
+      <p class="badges"><span class="badge">foundation</span><span class="badge">implementation</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="engineering-principles">Engineering Principles</h2>
+<h3 id="overview">Overview</h3>
+<p>Principles are decision rules, not laws. This skill maps each principle to the decision shapes it governs and to the smells that signal a violation, so you can apply them without ceremony. The goal is code that is <strong>simple enough to be obvious</strong> — not code that maximizes principle compliance.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Designing a new module, class, or abstraction and unsure how much structure it needs.</li><li>Code is flagged as "over-engineered", "clever", or "too abstract".</li><li>Choosing between two designs (wrapper, inheritance, interface, helper…).</li><li>Reviewing a change where the design is the question.</li><li>A team debate about how to structure a solution.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Concrete bug fixes or mechanics — this is not a style guide.</li><li>Building a new component where an established codebase pattern already exists — follow the pattern first, principles second.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-find-the-decision-shape">Step 1 — Find the decision shape</h4>
+<p>Ask: <em>what is the cheapest structure that satisfies the current requirement?</em> Write it down. This answer is the KISS baseline.</p>
+<h4 id="step-2-apply-yagni-before-designing-anything">Step 2 — Apply YAGNI before designing anything</h4>
+<p>Build for the requirement you have, not the one you predict. A speculative abstraction is untestable code you maintain for free. If the predicted need shows up a <strong>third</strong> time, generalize then (see Step 4).</p>
+<h4 id="step-3-check-dry-with-the-three-strike-rule">Step 3 — Check DRY with the three-strike rule</h4>
+<p>Duplicate once: acceptable — keep the two copies, learn the difference. Duplicate twice (three occurrences): extract. Before extracting, verify the copies are actually the same concept; accidental similarity (same shape, different meaning) must NOT be unified.</p>
+<h4 id="step-4-apply-solid-by-smell-not-by-checklist">Step 4 — Apply SOLID by smell, not by checklist</h4>
+<table><tr><th>Principle</th><th>Smell that triggers it</th><th>Action</th></tr><tr><td><strong>S</strong>ingle Responsibility</td><td>"A class with one more reason to change": the 'and' in its description ("parses AND saves")</td><td>Split by axis of change</td></tr><tr><td><strong>O</strong>pen/Closed</td><td>You are editing a class to add behavior instead of adding it</td><td>Extend by composition or interface, not by opening the body</td></tr><tr><td><strong>L</strong>iskov</td><td>A subclass breaks its parent's contract (throws where parent works, weakens postconditions)</td><td>Refactor to composition or a shared interface</td></tr><tr><td><strong>I</strong>nterface Segregation</td><td>A client depends on methods it never calls</td><td>Split the interface; pass narrow slices</td></tr><tr><td><strong>D</strong>ependency Inversion</td><td>High-level code imports a concrete low-level detail directly</td><td>Depend on an abstraction owned by the high-level policy</td></tr></table>
+<p>The checklist alone passes broken code; the smell is what earns the fix.</p>
+<h4 id="step-5-prefer-composition-over-inheritance">Step 5 — Prefer composition over inheritance</h4>
+<p>Inheritance is the tightest coupling in the language — a change to the parent ripples everywhere. Use it only for true "is-a" identity. For sharing behavior, use composition, delegation, or interfaces. If a hierarchy is more than two levels deep, treat it as a design smell.</p>
+<h4 id="step-6-before-leaving-a-change-delete">Step 6 — Before leaving a change, delete</h4>
+<p>Delete the abstraction, wrapper, or branch you no longer need; dead structure is the most common form of over-engineering. Ask: <em>does this still earn its complexity for a reader?</em></p>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"We'll need this later"</td><td>YAGNI: the later need is cheaper to build with the information you'll have then.</td></tr><tr><td>"It's just a small wrapper for now"</td><td>Wrappers dodge the existence of the concept they hide.</td></tr><tr><td>"The pattern requires an interface here"</td><td>Patterns name solutions, not obligations. Absent a second implementation, the interface is speculation.</td></tr><tr><td>"These two functions look the same"</td><td>Shape-similarity is not concept-similarity. DRY unifies meaning, not appearance.</td></tr><tr><td>"Layers will make this scale"</td><td>Every layer a reader must hold is a cost. Count concepts to test a design, not lines.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>An abstraction with exactly one implementation.</li><li>A class/method whose description contains "and".</li><li>Deep inheritance hierarchies (≥ 3 levels) built for reuse.</li><li>"Helper", "Util", "Manager" classes accumulating unrelated logic (SRP violations).</li><li>Tests that need heavy mocking to construct a simple object (over-abstraction).</li><li>A refactor that relocates complexity without reducing the number of concepts a reader must hold.</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] The KISS baseline was written before any abstraction was considered</li><li>[ ] Predicted-future needs were rejected or explicitly deferred</li><li>[ ] DRY extraction has ≥ 3 occurrences and confirmed same-concept</li><li>[ ] Every SOLID fix is justified by a named smell, not by checklist</li><li>[ ] No inheritance hierarchy deeper than 2 levels remains in the change</li><li>[ ] Dead or speculative abstractions were deleted, not preserved</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

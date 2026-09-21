@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>fnd-adr · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Foundation</p>
+      <h1><code>fnd-adr</code></h1>
+      <p class="tagline">Writes and maintains Architecture Decision Records (ADRs) with the record template and the status lifecycle (proposed, accepted, superseded). Use when a decision must be recorded or written down, when you need to write or record why a design choice was made, when the team must track decisions about technologies or structure, or when revisiting and recording a reversal of an old decision.</p>
+      <p class="badges"><span class="badge">foundation</span><span class="badge">design</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="architecture-decision-records">Architecture Decision Records</h2>
+<h3 id="overview">Overview</h3>
+<p>An ADR is a short, dated, immutable record of a decision: the context that forced it, the decision itself, and the consequences. Its purpose is to capture the <strong>why</strong> while it is still cheap to capture — so that six months later, a reader (human or agent) does not have to reverse-engineer intent from code.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>A decision changes the system structurally: technology choices, module boundaries, data ownership, protocols, library replacements, re-architectures.</li><li>Someone asks "why is it built this way?" and the answer lives only in someone's head.</li><li>Two or more options were genuinely considered — a decision by default still deserves a record.</li><li>Reversing or amending a prior decision (write a NEW ADR that supersedes the old one).</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Routine implementation choices with no lasting impact (naming, formatting, which helper to call).</li><li>Decisions that can be fully reversed in a day without cost.</li><li>Documenting state ("we use Postgres") without a decision context — that's system state, supersede it by recording the decision that produced it.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-decide-if-this-is-adr-worthy">Step 1 — Decide if this is ADR-worthy</h4>
+<p>Cost to reverse ≠ value of the record. If the question "why" would embarrass the team in three months, it's ADR-worthy. When in doubt, write it — one page is cheap insurance.</p>
+<h4 id="step-2-place-it">Step 2 — Place it</h4>
+<p>Keep ADRs in a dedicated directory: <code>docs/adr/</code>. Use the sequence-based filename pattern so ordering holds forever:</p>
+<pre><code>docs/adr/0001-modular-monolith-boundaries.md
+docs/adr/0002-event-bus-selection.md</code></pre>
+<h4 id="step-3-write-it-with-this-template-keep-under-one-page">Step 3 — Write it with this template (keep under one page)</h4>
+<pre><code class="language-markdown"># ADR-0001: &lt;Title: decision in a sentence&gt;
+
+## Status
+Proposed | Accepted | Superseded by ADR-00XX
+
+## Context
+The forces at play: what problem forced the decision, constraints,
+tensions, and alternatives considered. Facts only; no decision yet.
+
+## Decision
+One or two sentences: &quot;We will &lt;do X&gt;.&quot; State what changed, and what
+explicitly did NOT change.
+
+## Consequences
+Positive: what this decision buys. Negative: what it costs, debts it
+incurs, and what would force a revisit.</code></pre>
+<h4 id="step-4-manage-the-lifecycle-honestly">Step 4 — Manage the lifecycle honestly</h4>
+<ul><li><strong>Proposed</strong> → <strong>Accepted</strong> only after the decision is actually committed to (merged, deployed), not when it feels right.</li><li>Never edit an accepted ADR's history. A change in direction is a <strong>new ADR</strong> that supersedes the old one; the old record stays as history.</li><li>List supersessions in both records (old → "Superseded by ADR-00XX", new → "Supersedes ADR-00XX").</li></ul>
+<h4 id="step-5-reference-it-where-the-code-changes">Step 5 — Reference it where the code changes</h4>
+<p>When implementing an accepted ADR, the PR description and key comments should link the ADR number. That link is what makes an ADR findable from code.</p>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"We don't have time to document decisions"</td><td>The missing record is re-litigated at the next equivalent decision — twice the meeting, half the context.</td></tr><tr><td>"Everyone knows why we chose X"</td><td>"Everyone" changes teams. Code doesn't.</td></tr><tr><td>"I'll write it after the refactor"</td><td>After the refactor, the context that forced the decision is already half-gone.</td></tr><tr><td>"An ADR is bureaucracy"</td><td>One page, dated, immutable: it is the cheapest senior-engineering artifact that exists.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Accepted ADRs silently edited: history must stay immutable.</li><li>ADRs that describe state ("we use Kubernetes") without a decision and consequences.</li><li>A directory with only accepted decisions and no proposed or superseded ones — no one is revisiting anything, which is itself a smell.</li><li>Decisions repeated across multiple ADRs instead of one superseding chain.</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] A place for ADRs exists (<code>docs/adr/</code>) and is linked in the README</li><li>[ ] The decision is one page or less: Status, Context, Decision, Consequences</li><li>[ ] Name pattern <code>&lt;NNNN&gt;-&lt;kebab-title&gt;.md</code> and numbered sequentially</li><li>[ ] Status reflects reality (Accepted only once committed)</li><li>[ ] Supersessions are cross-linked both ways</li><li>[ ] The implementing PR references the ADR number</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

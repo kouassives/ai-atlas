@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>tst-integration-testing · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Tester</p>
+      <h1><code>tst-integration-testing</code></h1>
+      <p class="tagline">Tests components wired together: contract testing, database and service integration, and testcontainers. Use when wiring components together, when unit tests are green but the system fails at seams, when SQL, messaging, or external adapters need real verification, or when contracts between services need protection.</p>
+      <p class="badges"><span class="badge">tester</span><span class="badge">testing</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="integration-testing">Integration Testing</h2>
+<h3 id="overview">Overview</h3>
+<p>Integration tests live in the missing middle of the pyramid: they wire real collaborators at the seams — the database, the message broker, the external adapter — and verify what unit tests cannot: that the pieces agree on reality. Their discipline is <strong>realism at the seam, speed by construction</strong>: real DB behavior via lightweight real instances (testcontainers/embedded), real contracts via contract tests, and no test that needs the whole production stack to answer a seam question.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>The repository/query layer against a real database (schema, SQL, transactions, isolation).</li><li>Messaging: publish/consume against a real broker (or its real compatible container).</li><li>Service-to-service contracts that must not silently drift (<code>arch-api-contract-design</code>).</li><li>After unit tests are green, before e2e: the seam is where the wiring bugs live.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Pure logic (unit tier). Testing the entire stack end-to-end (e2e tier — usually slower and flakier than warranted).</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-give-each-seam-a-real-disposable-partner">Step 1 — Give each seam a real, disposable partner</h4>
+<ul><li><strong>Database</strong>: use testcontainers/embedded real engines (real SQL semantics, real constraints, real transaction isolation) — not your production DB, and not an in-memory fake pretending to be Postgres. The in-memory fake has different SQL and different locks; it validates a fiction.</li><li><strong>Broker/queue</strong>: real broker container; for event schemas, the same image the environment uses.</li><li><strong>HTTP adapters</strong>: loopback servers with scripted responses, or wiremock-style doubles for external APIs — the HTTP semantics stay real.</li></ul>
+<h4 id="step-2-drive-through-the-real-boundary-assert-on-observable-state">Step 2 — Drive through the real boundary, assert on observable state</h4>
+<ul><li>Call the repository/consumer/adapter exactly as production code does; assert on what the system would observe (row persisted, message consumed, parsed response), not on mock call counts.</li><li>Deterministic: fresh isolated database per run (transaction rollback or container-per-suite); no cross-test state bleed. Parallel-safe or serialized, never both at random.</li></ul>
+<h4 id="step-3-verify-contracts-as-their-own-artifact">Step 3 — Verify contracts as their own artifact</h4>
+<ul><li>Contract tests (provider/consumer style) pin the agreed payloads and semantics: the producer's tests confirm it still satisfies the contract; the consumer's tests confirm it uses only what the contract grants (<code>arch-api-contract-design</code> §6).</li><li>Contract drift is a CI failure on BOTH sides — the graceful-degradation fiction ("we'll just add a field") is how consumers break silently.</li></ul>
+<h4 id="step-4-also-test-the-failure-shapes-at-the-seam">Step 4 — Also test the failure shapes at the seam</h4>
+<p>The seam is where failures are real: DB unavailable at startup (backoff), constraint violation handling, retry-on-transient, timeout behavior. At least one negative integration test per seam (connection refused, malformed response from the double) — this is the tier where <code>be-microservices-patterns</code> failure behavior gets proven.</p>
+<h4 id="step-5-mind-the-speed-budget">Step 5 — Mind the speed budget</h4>
+<ul><li>Integration tests are the 15% of the pyramid with the 15% of the time: container startup amortized, suites grouped, and everything still under minutes.</li><li>If integration tests need the full stack, staging, live external systems — that is a design smell (the seams are not isolated enough); pull the real boundary inward.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"Our in-memory fake is basically the same DB"</td><td>Fakes have different SQL, different locks, different isolation — they pass, prod fails.</td></tr><tr><td>"Contract tests are too much ceremony"</td><td>They are the only thing that makes both teams sure the payloads still agree.</td></tr><tr><td>"We test the happy path, the DB is always up"</td><td>The DB is up until the day it is not — seam failures are integration-tier by right.</td></tr><tr><td>"One integration test that boots everything is enough"</td><td>That is an e2e test with an integration label; it is slow AND it blurs the seam.</td></tr><tr><td>"Real containers make CI slow"</td><td>Amortized container setups keep it in minutes; the alternative is "works locally" mysteries.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>In-memory fakes standing in for the real database/broker</li><li>Contract drift caught by incident instead of CI</li><li>No negative seam tests (retry, timeout, refused connection)</li><li>Integration tests sharing state, depending on order, or hitting staging</li><li>E2E-shaped tests wearing an integration tag</li><li>Seams not isolated enough to be tested independently</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Real seam partners (testcontainers/real engines); no in-memory DB fakes</li><li>[ ] Tests drive the real boundary and assert observable state</li><li>[ ] Contract tests on service boundaries; drift fails CI on both sides</li><li>[ ] Failure shapes covered per seam (retry, timeout, refused connection, constraint)</li><li>[ ] Isolation: fresh state per run, parallel-safe, deterministic</li><li>[ ] Runtime budget in minutes, amortized setup; no full-stack dependency</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

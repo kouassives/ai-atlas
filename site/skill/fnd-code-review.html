@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>fnd-code-review · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Foundation</p>
+      <h1><code>fnd-code-review</code></h1>
+      <p class="tagline">Conducts multi-axis code review: correctness, readability, architecture, security, and performance, with severity labels, change-sizing guidance, and a verdict. Use before merging any pull request or change, when reviewing code written by yourself, another agent, or a human, or when assessing whether a change is ready to enter the main branch.</p>
+      <p class="badges"><span class="badge">foundation</span><span class="badge">review</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="code-review">Code Review</h2>
+<h3 id="overview">Overview</h3>
+<p>A change is reviewed across five axes, findings are labeled by severity, and the verdict is <strong>Approve</strong> when the change clearly improves overall code health — not when it is perfect. Perfect code doesn't exist; blocking a change because it isn't how you would have written it is a review failure, not rigor.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Before merging any PR or change (non-negotiable gate).</li><li>When another agent or model produced code you must evaluate.</li><li>After a bug fix (review the fix AND the regression test).</li><li>Before a refactor is merged.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Writing or fixing code — this skill review only.</li><li>Deep security analysis or pentesting — that is <code>fnd-security-basics</code> / <code>be-security-engineering</code>.</li><li>Performance profiling itself — that is <code>be-performance</code> / <code>fe-performance</code>.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-understand-intent-before-code">Step 1 — Understand intent before code</h4>
+<p>What is the change trying to accomplish, per the spec or task? A review out of context is a checklist noise generator.</p>
+<h4 id="step-2-review-the-tests-first">Step 2 — Review the tests first</h4>
+<p>Tests reveal intent and coverage. Do tests exist? Do they test behavior rather than implementation details? Are edge cases covered? Would they catch a regression?</p>
+<h4 id="step-3-walk-the-code-on-five-axes">Step 3 — Walk the code on five axes</h4>
+<ol><li><strong>Correctness</strong> — matches the spec? edge cases (null, empty, boundary)? error paths, not just the happy path? concurrency/state issues?</li><li><strong>Readability</strong> — descriptive names, straightforward control flow, no "clever" tricks, comments only for non-obvious intent; <strong>abstractions must earn their complexity</strong> (never generalize before the third use case)</li><li><strong>Architecture</strong> — follows existing patterns (or justifies new ones), clean boundaries, dependencies flow one way (no cycles), refactor reduces complexity rather than relocating it</li><li><strong>Security</strong> — user input validated at boundaries, secrets out of code and logs, parameterized queries, output encoded (XSS), external data treated as untrusted; see <code>fnd-security-basics</code></li><li><strong>Performance</strong> — N+1 queries, unbounded loops or fetches, sync-in-async, unnecessary re-renders, missing pagination</li></ol>
+<h4 id="step-4-label-every-finding-by-severity">Step 4 — Label every finding by severity</h4>
+<table><tr><th>Prefix</th><th>Meaning</th><th>Author action</th></tr><tr><td><em>(none)</em></td><td>Required</td><td>Must address before merge</td></tr><tr><td><strong>Critical:</strong></td><td>Blocks merge</td><td>Vulnerability, data loss, broken functionality</td></tr><tr><td><strong>Nit:</strong></td><td>Minor, optional</td><td>May ignore (style, formatting)</td></tr><tr><td><strong>Optional:/Consider:</strong></td><td>Suggestion</td><td>Weigh it</td></tr><tr><td><strong>FYI</strong></td><td>Informational</td><td>No action</td></tr></table>
+<p>Order findings by leverage: correctness and security first, structural issues next, nits last. Lead with what matters — a few high-conviction comments beat a long list.</p>
+<h4 id="step-5-verify-the-verification-story">Step 5 — Verify the verification story</h4>
+<p>What tests were run? Did the build pass? Manual verification? Screenshots for UI changes? If the story is missing, request it. <strong>"LGTM" without evidence is not a review.</strong></p>
+<h4 id="step-6-size-the-change">Step 6 — Size the change</h4>
+<ul><li>~100 lines changed → reviewable in one sitting.</li><li>~300 lines → acceptable only as one logical change.</li><li>~1000 lines → too large; ask for a split (stacked, by file group, horizontal, or vertical strategies).</li><li>Separating refactoring from feature work is required — a change that refactors AND adds behavior is two changes.</li></ul>
+<h4 id="step-7-give-the-verdict">Step 7 — Give the verdict</h4>
+<p><strong>Approve</strong> when the change improves overall code health; otherwise <strong>Request changes</strong> with the specific blockers (Critical / unlabeled findings) named. Handle disagreements by the hierarchy: facts and data > style guide > software design principles > codebase consistency.</p>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"It works, that's good enough"</td><td>Working code that is unreadable, insecure, or structurally wrong compounds debt.</td></tr><tr><td>"I wrote it, so it's correct"</td><td>Authors are blind to their own assumptions.</td></tr><tr><td>"AI code is probably fine — it's tested"</td><td>AI output needs MORE scrutiny: it is confident, plausible, and wrong in invisible ways.</td></tr><tr><td>"The tests pass, so it's good"</td><td>Tests don't catch architecture, security, or readability problems.</td></tr><tr><td>"I'll clean it up later"</td><td>Deferred cleanup almost never happens — the review gate is the last chance.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Merging without review, or "LGTM" without evidence of review</li><li>Review that only checks tests pass</li><li>Comments without severity labels (everything looks mandatory)</li><li>Accepting "I'll fix it later"</li><li>A refactor that moves code around without reducing reader-held concepts</li><li>Bulk dependency bumps merged with no changelog review ("bump deps")</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Intent understood (spec/task stated)</li><li>[ ] Tests reviewed first; coverage judged, not counted</li><li>[ ] All five axes evaluated — explicitly</li><li>[ ] Findings labeled by severity; blockers named</li><li>[ ] Verification story documented (tests/build/manual)</li><li>[ ] Change size assessed; oversized changes sent back for splitting</li><li>[ ] Verdict given: Approve, or Request changes with named blockers</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

@@ -24,6 +24,19 @@ install.sh --project          # project, -> ./.opencode/agent/ (skills too)
 
 or manually: copy `agents/*.md` → `.opencode/agent/`.
 
+### Entry agents
+
+Two primary agents ship in `agents/`:
+
+- **`orchestration-engineer`** — the Spec-Driven Development entry point: processes
+  one feature end-to-end (context → proposal → plan → implement → verify → review →
+  archive) with the Openspec workflow and delegates technical work to the specialist
+  subagents with handoff contracts. Start here for any feature, change, or bugfix
+  that should begin as a specification. Workflow doc: [spec-driven-development.md](spec-driven-development.md).
+- **`orchestrator`** — routes work by SDLC stage and enforces quality gates.
+
+Both are primary agents; pick one as your session entry point per task type.
+
 ### `install.sh` fallback (no dependencies)
 
 ```bash

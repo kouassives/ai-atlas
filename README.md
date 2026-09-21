@@ -2,7 +2,7 @@
 
 Production-grade **skills** and **agents** for AI coding assistants (OpenCode-first, Agent Skills standard), covering the full software development lifecycle — organized by SDLC role.
 
-> **Status: released.** Architecture locked. All 54 skills + 8 agents published across foundation, architect, backend, frontend, ui-design, tester, and devops domains. Installer, marketplace manifests, and full quality suite live.
+> **Status: released.** Architecture locked. All 54 skills + 9 agents published across foundation, architect, backend, frontend, ui-design, tester, and devops domains. Installer, marketplace manifests, full quality suite, and a static catalog site ([GitHub Pages](https://kouassives.github.io/ai-atlas/)) live.
 
 ## Why this collection
 
@@ -57,6 +57,7 @@ Skills are instructions — treat downloaded skills like executable code. Review
 7. **L6** frontend domain (`fe-*`) — ✅ *(architecture, component-design, state-management, api-integration, accessibility, responsive-design, performance, security)* + `frontend-developer` agent
 8. **L7** ui-designer domain (`ui-*`) — ✅ *(ux-research, ux-flows, visual-design, design-systems, prototyping, usability-testing)* + `ui-designer` agent
 9. **L8** Hardening — ✅ `install.sh` (POSIX-sh, tested) + `test-install.sh`, `orchestrator.md` primary agent, marketplace manifests (`registry.yaml`, `.claude-plugin/`, `.agents/plugins/`), execution-eval coverage check, `release.yml` (tag → SHA256SUMS), docs
+10. **L9** Spec-Driven Development — ✅ `orchestration-engineer` primary agent running the Openspec workflow (context → proposal → plan → implement → verify → review → archive) with delegation to specialists via handoff contracts; `docs/spec-driven-development.md`; static catalog site (`scripts/gen-site.mjs` → `site/`, GitHub Pages via `.github/workflows/site.yml`)
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the full design.
 

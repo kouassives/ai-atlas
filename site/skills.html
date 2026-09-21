@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="./">
+<title>Skills · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html" class="active">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <h1>Skills</h1>
+      <p>54 self-contained, namespaced skills — install them side-by-side with any other collection without collisions.</p>
+    </section>
+    <section class="filter"><label for="skill-filter">Filter</label><input id="skill-filter" type="search" placeholder="filter by name or purpose…"></section>
+    <div id="skill-groups">
+      <h2 class="domain" data-domain="Foundation">Foundation <span class="count">6</span></h2>
+      <table class="skill-table">
+        <thead><tr><th>Skill</th><th>Purpose</th></tr></thead>
+        <tbody>
+        <tr data-search="fnd-adr writes and maintains architecture decision records (adrs) with the record template and the status lifecycle (proposed, accepted, superseded). use when a decision must be recorded or written down, when you need to write or record why a design choice was made, when the team must track decisions about technologies or structure, or when revisiting and recording a reversal of an old decision.">
+                 <td><a class="skill-id" href="skill/fnd-adr.html"><code>fnd-adr</code></a></td>
+                 <td class="purpose">Writes and maintains Architecture Decision Records (ADRs) with the record template and the status lifecycle (proposed, accepted, superseded)</td>
+               </tr><tr data-search="fnd-code-review conducts multi-axis code review: correctness, readability, architecture, security, and performance, with severity labels, change-sizing guidance, and a verdict. use before merging any pull request or change, when reviewing code written by yourself, another agent, or a human, or when assessing whether a change is ready to enter the main branch.">
+                 <td><a class="skill-id" href="skill/fnd-code-review.html"><code>fnd-code-review</code></a></td>
+                 <td class="purpose">Conducts multi-axis code review: correctness, readability, architecture, security, and performance, with severity labels, change-sizing guidance, and a verdict</td>
+               </tr><tr data-search="fnd-engineering-principles applies the core engineering principles — solid, kiss, yagni, dry, and composition over inheritance — to concrete design decisions. use when designing a module or class, when code feels over-engineered or 'clever', when choosing between abstractions, when reviewing someone else's design, or when the team debates how much structure a solution needs.">
+                 <td><a class="skill-id" href="skill/fnd-engineering-principles.html"><code>fnd-engineering-principles</code></a></td>
+                 <td class="purpose">Applies the core engineering principles — SOLID, KISS, YAGNI, DRY, and composition over inheritance — to concrete design decisions</td>
+               </tr><tr data-search="fnd-sdlc-overview maps the full software development lifecycle: which stage a request belongs to, which role owns it, which skills apply, and the exit criteria for handing off between stages. use when starting a new project, when a request spans multiple phases, when the team is unsure what should happen next, or when deciding which specialist agent or skill applies to a task.">
+                 <td><a class="skill-id" href="skill/fnd-sdlc-overview.html"><code>fnd-sdlc-overview</code></a></td>
+                 <td class="purpose">Maps the full software development lifecycle: which stage a request belongs to, which role owns it, which skills apply, and the exit criteria for handing off between stages</td>
+               </tr><tr data-search="fnd-security-basics applies the baseline security discipline every feature needs: drawing the trust boundary, validating all untrusted input, authenticating and authorizing every access, protecting secrets, and checking dependencies. use when a feature takes untrusted input, when handling credentials or personal data, when asked 'is this secure', when hardening an endpoint or service, or before touching anything that faces the internet.">
+                 <td><a class="skill-id" href="skill/fnd-security-basics.html"><code>fnd-security-basics</code></a></td>
+                 <td class="purpose">Applies the baseline security discipline every feature needs: drawing the trust boundary, validating all untrusted input, authenticating and authorizing every access, protecting secrets, and checking dependencies</td>
+               </tr><tr data-search="fnd-technical-writing writes technical documentation that survives: readmes, api documentation, inline comments, and changelogs — with the right structure for each and rules that keep docs from rotting. use when writing or improving a readme, documenting an api or module, reviewing documentation quality, writing a changelog, or when a teammate asks 'how do i use this?' and there is no answer written down.">
+                 <td><a class="skill-id" href="skill/fnd-technical-writing.html"><code>fnd-technical-writing</code></a></td>
+                 <td class="purpose">Writes technical documentation that survives: READMEs, API documentation, inline comments, and changelogs — with the right structure for each and rules that keep docs from rotting</td>
+               </tr>
+        </tbody>
+      </table>
+      <h2 class="domain" data-domain="Architect">Architect <span class="count">8</span></h2>
+      <table class="skill-table">
+        <thead><tr><th>Skill</th><th>Purpose</th></tr></thead>
+        <tbody>
+        <tr data-search="arch-api-contract-design defines public interfaces contract-first: openapi, versioning, error semantics, backward compatibility, and hyrum's law. use when defining public interfaces, when designing contracts before implementation, when a public api must stay backward-compatible, or when clients depend on behavior the spec never promised.">
+                 <td><a class="skill-id" href="skill/arch-api-contract-design.html"><code>arch-api-contract-design</code></a></td>
+                 <td class="purpose">Defines public interfaces contract-first: OpenAPI, versioning, error semantics, backward compatibility, and Hyrum's Law</td>
+               </tr><tr data-search="arch-clean-architecture structures an application backbone with clean architecture and hexagonal (ports &amp; adapters) style: layers, the dependency rule, use cases, and entities. use when structuring an application from scratch, when core business logic is tangled with frameworks and databases, or when the architecture needs to stay testable and replaceable at its edges.">
+                 <td><a class="skill-id" href="skill/arch-clean-architecture.html"><code>arch-clean-architecture</code></a></td>
+                 <td class="purpose">Structures an application backbone with Clean Architecture and hexagonal (ports &amp; adapters) style: layers, the dependency rule, use cases, and entities</td>
+               </tr><tr data-search="arch-ddd models business domains with domain-driven design: ubiquitous language, bounded contexts, aggregates, domain events, and anti-corruption layers. use when modeling business domains, when the codebase language doesn't match the business vocabulary, when the team cannot agree on what an entity is, or when integrating with legacy or external systems with different models.">
+                 <td><a class="skill-id" href="skill/arch-ddd.html"><code>arch-ddd</code></a></td>
+                 <td class="purpose">Models business domains with Domain-Driven Design: ubiquitous language, bounded contexts, aggregates, domain events, and anti-corruption layers</td>
+               </tr><tr data-search="arch-design-patterns chooses and applies classic gof and architectural patterns by intent: the pattern's purpose, when to apply it, and its trade-offs. use when facing a known problem shape — factories, strategies, observers, adapters, repositories, decorators — and when a pattern needs to be selected against a concrete context rather than applied by fashion.">
+                 <td><a class="skill-id" href="skill/arch-design-patterns.html"><code>arch-design-patterns</code></a></td>
+                 <td class="purpose">Chooses and applies classic GoF and architectural patterns by intent: the pattern's purpose, when to apply it, and its trade-offs</td>
+               </tr><tr data-search="arch-microservices-architecture decides service decomposition: how to split or consolidate services, bounded-context-aligned boundaries, data ownership, and when not to use microservices at all. use when splitting a monolith, when services have unclear ownership or shared databases, or when the team is considering microservices and needs an honest decomposition analysis.">
+                 <td><a class="skill-id" href="skill/arch-microservices-architecture.html"><code>arch-microservices-architecture</code></a></td>
+                 <td class="purpose">Decides service decomposition: how to split or consolidate services, bounded-context-aligned boundaries, data ownership, and when NOT to use microservices at all</td>
+               </tr><tr data-search="arch-nfrs defines measurable non-functional requirements: performance, availability, security, cost, and compliance — quantified so a system can be designed and verified against them. use when a system or feature needs concrete nfrs, when requirements say 'fast', 'reliable', or 'secure' with no numbers, or when design decisions must be judged against explicit quality targets.">
+                 <td><a class="skill-id" href="skill/arch-nfrs.html"><code>arch-nfrs</code></a></td>
+                 <td class="purpose">Defines measurable non-functional requirements: performance, availability, security, cost, and compliance — quantified so a system can be designed and verified against them</td>
+               </tr><tr data-search="arch-requirements-analysis turns vague asks into requirements: user stories, acceptance criteria, edge cases, and explicit non-goals. use when an ask is underspecified, when a feature request has no definition of done, when stakeholders disagree on scope, or before any design or implementation work begins.">
+                 <td><a class="skill-id" href="skill/arch-requirements-analysis.html"><code>arch-requirements-analysis</code></a></td>
+                 <td class="purpose">Turns vague asks into requirements: user stories, acceptance criteria, edge cases, and explicit non-goals</td>
+               </tr><tr data-search="arch-system-design produces high-level system design before implementation: components, boundaries, data flow, non-functional requirements, and explicit trade-off analysis. use when designing a system or feature, when choosing between architectures or integrations, or when a design needs to be reviewed before code is written.">
+                 <td><a class="skill-id" href="skill/arch-system-design.html"><code>arch-system-design</code></a></td>
+                 <td class="purpose">Produces high-level system design before implementation: components, boundaries, data flow, non-functional requirements, and explicit trade-off analysis</td>
+               </tr>
+        </tbody>
+      </table>
+      <h2 class="domain" data-domain="Developer Backend">Developer Backend <span class="count">9</span></h2>
+      <table class="skill-table">
+        <thead><tr><th>Skill</th><th>Purpose</th></tr></thead>
+        <tbody>
+        <tr data-search="be-api-design designs and implements apis: rest vs graphql vs grpc selection, resource modeling, status codes, validation, pagination, idempotency, and versioning. use when creating or extending an api, when choosing an api style, when endpoints lack standard status semantics, or when clients need stable contracts and retry behavior.">
+                 <td><a class="skill-id" href="skill/be-api-design.html"><code>be-api-design</code></a></td>
+                 <td class="purpose">Designs and implements APIs: REST vs GraphQL vs gRPC selection, resource modeling, status codes, validation, pagination, idempotency, and versioning</td>
+               </tr><tr data-search="be-async-messaging designs and maintains message and event flows: queues vs events, producer/consumer semantics, at-least-once reality, dead-lettering, ordering constraints, and replay. use when adding messaging or events between services, when choosing between a queue and a topic, when a consumer falls behind or loses messages, or when events need to be replayed or retro-processed.">
+                 <td><a class="skill-id" href="skill/be-async-messaging.html"><code>be-async-messaging</code></a></td>
+                 <td class="purpose">Designs and maintains message and event flows: queues vs events, producer/consumer semantics, at-least-once reality, dead-lettering, ordering constraints, and replay</td>
+               </tr><tr data-search="be-database-design design database schemas and tables: table modeling, normalization vs denormalization, the index each query needs, transactions and isolation, and safe migrations. use when designing or altering a table or schema, when choosing an index or planning a migration to add a column, when a query is slow, or before touching a data model.">
+                 <td><a class="skill-id" href="skill/be-database-design.html"><code>be-database-design</code></a></td>
+                 <td class="purpose">Design database schemas and tables: table modeling, normalization vs denormalization, the index each query needs, transactions and isolation, and safe migrations</td>
+               </tr><tr data-search="be-microservices-patterns selects and applies distributed-system patterns for microservices: saga and outbox for data consistency, cqrs, circuit breaker, retry with backoff, idempotent consumers, and bulkhead isolation. use when building distributed behavior, when services share data they shouldn't, when partial failures cause cascading outages, or when choosing between patterns for cross-service transactions.">
+                 <td><a class="skill-id" href="skill/be-microservices-patterns.html"><code>be-microservices-patterns</code></a></td>
+                 <td class="purpose">Selects and applies distributed-system patterns for microservices: saga and outbox for data consistency, CQRS, circuit breaker, retry with backoff, idempotent consumers, and bulkhead isolation</td>
+               </tr><tr data-search="be-performance diagnoses and fixes performance issues: profiling before optimizing, caching strategies, n+1 query detection, connection pooling, and latency budgets. use when performance matters or regresses, when a request or query is slow, when load tests fail, or when someone proposes a cache or a micro-optimization without measurement.">
+                 <td><a class="skill-id" href="skill/be-performance.html"><code>be-performance</code></a></td>
+                 <td class="purpose">Diagnoses and fixes performance issues: profiling before optimizing, caching strategies, N+1 query detection, connection pooling, and latency budgets</td>
+               </tr><tr data-search="be-refactoring performs safe refactoring: finding seams, preserving behavior, moving in small verified increments, and recognizing code smells from a catalogue. use when improving existing code without changing behavior, when a codebase is hard to change and needs structural cleanup, when preparing a system for a feature it cannot currently hold, or when reviewing code that 'works but hurts'.">
+                 <td><a class="skill-id" href="skill/be-refactoring.html"><code>be-refactoring</code></a></td>
+                 <td class="purpose">Performs safe refactoring: finding seams, preserving behavior, moving in small verified increments, and recognizing code smells from a catalogue</td>
+               </tr><tr data-search="be-security-engineering implements application security: owasp top 10 guidance for code, authentication and authorization flows, secrets handling, and dependency auditing. use when handling credentials or untrusted input, when building login or permission systems, when auditing dependencies or fixing vulnerabilities, or when implementing anything that faces untrusted users.">
+                 <td><a class="skill-id" href="skill/be-security-engineering.html"><code>be-security-engineering</code></a></td>
+                 <td class="purpose">Implements application security: OWASP Top 10 guidance for code, authentication and authorization flows, secrets handling, and dependency auditing</td>
+               </tr><tr data-search="be-solid-principles applies the five solid principles to class and module design with before/after examples and the smells that signal each violation. use when designing, extending, or reviewing classes and modules, when a class does too much, when abstractions feel wrong or leaky, or when dependency direction needs to be fixed.">
+                 <td><a class="skill-id" href="skill/be-solid-principles.html"><code>be-solid-principles</code></a></td>
+                 <td class="purpose">Applies the five SOLID principles to class and module design with before/after examples and the smells that signal each violation</td>
+               </tr><tr data-search="be-tdd drives implementation and bug fixes with test-driven development: red-green-refactor, the test pyramid (80/15/5), test sizes, damp over dry, and what not to mock. use when implementing logic or fixing bugs, when code has no tests, when a bug needs a regression test first, or when test suites are slow, brittle, or testing the wrong layer.">
+                 <td><a class="skill-id" href="skill/be-tdd.html"><code>be-tdd</code></a></td>
+                 <td class="purpose">Drives implementation and bug fixes with test-driven development: Red-Green-Refactor, the test pyramid (80/15/5), test sizes, DAMP over DRY, and what not to mock</td>
+               </tr>
+        </tbody>
+      </table>
+      <h2 class="domain" data-domain="Developer Frontend">Developer Frontend <span class="count">8</span></h2>
+      <table class="skill-table">
+        <thead><tr><th>Skill</th><th>Purpose</th></tr></thead>
+        <tbody>
+        <tr data-search="fe-accessibility builds accessible ui to wcag 2.1 aa: semantics, keyboard navigation, aria, focus management, and contrast. use when building or reviewing ui, when interactive components work with a mouse only, or when a screen-reader user cannot complete the task.">
+                 <td><a class="skill-id" href="skill/fe-accessibility.html"><code>fe-accessibility</code></a></td>
+                 <td class="purpose">Builds accessible UI to WCAG 2.1 AA: semantics, keyboard navigation, ARIA, focus management, and contrast</td>
+               </tr><tr data-search="fe-api-integration wires ui to apis: fetching, caching, optimistic updates, error handling, retries, and stale-while-revalidate. use when wiring ui to apis, when loading states are per-component chaos, when errors leave users stuck, or when refetches hammer the backend.">
+                 <td><a class="skill-id" href="skill/fe-api-integration.html"><code>fe-api-integration</code></a></td>
+                 <td class="purpose">Wires UI to APIs: fetching, caching, optimistic updates, error handling, retries, and stale-while-revalidate</td>
+               </tr><tr data-search="fe-architecture structures frontend codebases: feature-based modules, clean layers, module boundaries, and folder conventions. use when structuring a frontend codebase, when components and logic sprawl across folders, when scaling adds new features chaotically, or when a frontend needs architecture review.">
+                 <td><a class="skill-id" href="skill/fe-architecture.html"><code>fe-architecture</code></a></td>
+                 <td class="purpose">Structures frontend codebases: feature-based modules, clean layers, module boundaries, and folder conventions</td>
+               </tr><tr data-search="fe-component-design designs ui components: composition, presentational vs container roles, prop and event contracts, and reusability without premature abstraction. use when building ui components, when a component grows props and conditionals without bound, or when 'reusable' components are actually hard to use and change.">
+                 <td><a class="skill-id" href="skill/fe-component-design.html"><code>fe-component-design</code></a></td>
+                 <td class="purpose">Designs UI components: composition, presentational vs container roles, prop and event contracts, and reusability without premature abstraction</td>
+               </tr><tr data-search="fe-performance keeps the frontend fast: core web vitals, bundle analysis, rendering cost, memoization, and image optimization. use when the ui feels slow, when budgets regress, when bundles bloat, or when interaction feels janky.">
+                 <td><a class="skill-id" href="skill/fe-performance.html"><code>fe-performance</code></a></td>
+                 <td class="purpose">Keeps the frontend fast: Core Web Vitals, bundle analysis, rendering cost, memoization, and image optimization</td>
+               </tr><tr data-search="fe-responsive-design builds layouts that work across viewports: mobile-first, fluid layout, breakpoints, and container queries. use when styling across viewports, when a design works on desktop but breaks on mobile, or when breakpoint stacks grow unmanageable.">
+                 <td><a class="skill-id" href="skill/fe-responsive-design.html"><code>fe-responsive-design</code></a></td>
+                 <td class="purpose">Builds layouts that work across viewports: mobile-first, fluid layout, breakpoints, and container queries</td>
+               </tr><tr data-search="fe-security secures the client side: xss, csrf, sanitization, secure headers, and client-side secret hygiene. use when rendering user content, embedding third-party code, handling tokens in the browser, or when the frontend is part of the ingested untrusted-data path.">
+                 <td><a class="skill-id" href="skill/fe-security.html"><code>fe-security</code></a></td>
+                 <td class="purpose">Secures the client side: XSS, CSRF, sanitization, secure headers, and client-side secret hygiene</td>
+               </tr><tr data-search="fe-state-management chooses state architecture: local vs global vs server state; store, hook, and context patterns; and when each applies. use when choosing state architecture, when state is duplicated or prop-drilled, when global stores grow without bound, or when server data and ui state are tangled.">
+                 <td><a class="skill-id" href="skill/fe-state-management.html"><code>fe-state-management</code></a></td>
+                 <td class="purpose">Chooses state architecture: local vs global vs server state; store, hook, and context patterns; and when each applies</td>
+               </tr>
+        </tbody>
+      </table>
+      <h2 class="domain" data-domain="UI Designer">UI Designer <span class="count">6</span></h2>
+      <table class="skill-table">
+        <thead><tr><th>Skill</th><th>Purpose</th></tr></thead>
+        <tbody>
+        <tr data-search="ui-design-systems creates and extends design systems: design tokens, component libraries, theming, and documentation. use when creating or extending a design system, when buttons and colors drift between screens, or when a visual language needs codification into tokens and components.">
+                 <td><a class="skill-id" href="skill/ui-design-systems.html"><code>ui-design-systems</code></a></td>
+                 <td class="purpose">Creates and extends design systems: design tokens, component libraries, theming, and documentation</td>
+               </tr><tr data-search="ui-prototyping prototypes design ideas: fidelity levels, interactive mockups, and validation with users. use when testing design ideas cheaply, when the design is unvalidated and building the real thing is expensive, or when stakeholders need to react to something concrete.">
+                 <td><a class="skill-id" href="skill/ui-prototyping.html"><code>ui-prototyping</code></a></td>
+                 <td class="purpose">Prototypes design ideas: fidelity levels, interactive mockups, and validation with users</td>
+               </tr><tr data-search="ui-usability-testing validates designs with real users: test plans, moderation, finding synthesis, and iteration. use when validating a design with real users, when a flow fails or drops users without explanation, or before shipping changes that touch core journeys.">
+                 <td><a class="skill-id" href="skill/ui-usability-testing.html"><code>ui-usability-testing</code></a></td>
+                 <td class="purpose">Validates designs with real users: test plans, moderation, finding synthesis, and iteration</td>
+               </tr><tr data-search="ui-ux-flows maps screens to tasks: user flows, information architecture, wireframes, and journey mapping. use when mapping screens to tasks, when navigation structure is unclear, or when features exist without a path through them.">
+                 <td><a class="skill-id" href="skill/ui-ux-flows.html"><code>ui-ux-flows</code></a></td>
+                 <td class="purpose">Maps screens to tasks: user flows, information architecture, wireframes, and journey mapping</td>
+               </tr><tr data-search="ui-ux-research runs user research: interviews, personas, problem framing, and discovery. use when the target user or problem is unknown, when a feature is being invented without user contact, or when decisions rest on assumptions nobody verified.">
+                 <td><a class="skill-id" href="skill/ui-ux-research.html"><code>ui-ux-research</code></a></td>
+                 <td class="purpose">Runs user research: interviews, personas, problem framing, and discovery</td>
+               </tr><tr data-search="ui-visual-design produces deliberate visual design: typography, color, spacing, hierarchy, and composition. use when producing visual design, when the ui looks random, or when styling decisions need a system instead of preferences.">
+                 <td><a class="skill-id" href="skill/ui-visual-design.html"><code>ui-visual-design</code></a></td>
+                 <td class="purpose">Produces deliberate visual design: typography, color, spacing, hierarchy, and composition</td>
+               </tr>
+        </tbody>
+      </table>
+      <h2 class="domain" data-domain="Tester">Tester <span class="count">8</span></h2>
+      <table class="skill-table">
+        <thead><tr><th>Skill</th><th>Purpose</th></tr></thead>
+        <tbody>
+        <tr data-search="tst-api-testing tests api surfaces: schema validation, auth flows, edge cases, and contract verification. use when testing api surfaces, when schemas drift from specs, when auth flows need proof, or when an api's edge behavior needs systematic coverage beyond happy paths.">
+                 <td><a class="skill-id" href="skill/tst-api-testing.html"><code>tst-api-testing</code></a></td>
+                 <td class="purpose">Tests API surfaces: schema validation, auth flows, edge cases, and contract verification</td>
+               </tr><tr data-search="tst-e2e-testing tests critical user journeys end-to-end: playwright/cypress patterns, journey selection, and stability against flake. use when proving critical paths through the real stack, when e2e suites are flaky or huge, or when a release gate needs evidence that the core journey works.">
+                 <td><a class="skill-id" href="skill/tst-e2e-testing.html"><code>tst-e2e-testing</code></a></td>
+                 <td class="purpose">Tests critical user journeys end-to-end: Playwright/Cypress patterns, journey selection, and stability against flake</td>
+               </tr><tr data-search="tst-integration-testing tests components wired together: contract testing, database and service integration, and testcontainers. use when wiring components together, when unit tests are green but the system fails at seams, when sql, messaging, or external adapters need real verification, or when contracts between services need protection.">
+                 <td><a class="skill-id" href="skill/tst-integration-testing.html"><code>tst-integration-testing</code></a></td>
+                 <td class="purpose">Tests components wired together: contract testing, database and service integration, and testcontainers</td>
+               </tr><tr data-search="tst-performance-testing validates performance requirements: load, stress, soak tests, benchmarks, and bottleneck analysis. use when performance requirements need evidence, when a load model must be translated into tests, or when capacity limits and degradation points need to be known before they bite in production.">
+                 <td><a class="skill-id" href="skill/tst-performance-testing.html"><code>tst-performance-testing</code></a></td>
+                 <td class="purpose">Validates performance requirements: load, stress, soak tests, benchmarks, and bottleneck analysis</td>
+               </tr><tr data-search="tst-regression designs and manages regression suites: selection and prioritization, change-linked execution, and flaky-test management. use after changes or before releases, when a regression escapes to production, or when the suite is slow or flaky and trust is eroding.">
+                 <td><a class="skill-id" href="skill/tst-regression.html"><code>tst-regression</code></a></td>
+                 <td class="purpose">Designs and manages regression suites: selection and prioritization, change-linked execution, and flaky-test management</td>
+               </tr><tr data-search="tst-test-design-techniques designs test cases systematically from requirements: equivalence partitioning splits inputs into ranges, boundary value analysis probes boundaries, decision tables cover condition combinations, and state transitions test flows. use when designing a test case set, when coverage of a rule or boundary is accidental, or when a feature's input space needs structured sampling.">
+                 <td><a class="skill-id" href="skill/tst-test-design-techniques.html"><code>tst-test-design-techniques</code></a></td>
+                 <td class="purpose">Designs test cases systematically from requirements: equivalence partitioning splits inputs into ranges, boundary value analysis probes boundaries, decision tables cover condition combinations, and state transitions test flows</td>
+               </tr><tr data-search="tst-test-strategy plans a testing approach: test pyramid and quadrants, risk-based scoping, coverage goals, and what to automate versus not. use when planning the test approach for a feature or system, when test effort is scattered or reactive, or when coverage goals need to be backed by evidence, not vibes.">
+                 <td><a class="skill-id" href="skill/tst-test-strategy.html"><code>tst-test-strategy</code></a></td>
+                 <td class="purpose">Plans a testing approach: test pyramid and quadrants, risk-based scoping, coverage goals, and what to automate versus not</td>
+               </tr><tr data-search="tst-unit-testing writes unit tests that stay fast and honest: isolation, naming conventions, mocking do's and don'ts, and coverage discipline. use when writing unit tests, when unit tests are slow or over-mocked, when suites assert implementation details, or when coverage is gamed instead of meaningful.">
+                 <td><a class="skill-id" href="skill/tst-unit-testing.html"><code>tst-unit-testing</code></a></td>
+                 <td class="purpose">Writes unit tests that stay fast and honest: isolation, naming conventions, mocking do's and don'ts, and coverage discipline</td>
+               </tr>
+        </tbody>
+      </table>
+      <h2 class="domain" data-domain="DevOps">DevOps <span class="count">9</span></h2>
+      <table class="skill-table">
+        <thead><tr><th>Skill</th><th>Purpose</th></tr></thead>
+        <tbody>
+        <tr data-search="ops-ci-cd builds and improves ci/cd pipelines: stages, quality gates, artifact flow, and feedback speed. use when creating or modifying a pipeline, when ci takes too long or misses failures, or when artifacts or deploy promotion between environments feel hand-rolled.">
+                 <td><a class="skill-id" href="skill/ops-ci-cd.html"><code>ops-ci-cd</code></a></td>
+                 <td class="purpose">Builds and improves CI/CD pipelines: stages, quality gates, artifact flow, and feedback speed</td>
+               </tr><tr data-search="ops-devsecops secures the delivery pipeline: sast and sca in ci, secrets scanning, image scanning, and supply-chain defense. use when building or hardening pipelines, when the repo has no security gates, when dependencies or images ship unchecked, or when supply-chain risks (registry, actions, packages) need bounding.">
+                 <td><a class="skill-id" href="skill/ops-devsecops.html"><code>ops-devsecops</code></a></td>
+                 <td class="purpose">Secures the delivery pipeline: SAST and SCA in CI, secrets scanning, image scanning, and supply-chain defense</td>
+               </tr><tr data-search="ops-docker-containers containerizes applications well: multi-stage builds, minimal images, layer caching, security scanning, and non-root runtime. use when writing or reviewing a dockerfile, when images are huge or leak secrets, when builds are slow, or when containers run as root or with unnecessary tools.">
+                 <td><a class="skill-id" href="skill/ops-docker-containers.html"><code>ops-docker-containers</code></a></td>
+                 <td class="purpose">Containerizes applications well: multi-stage builds, minimal images, layer caching, security scanning, and non-root runtime</td>
+               </tr><tr data-search="ops-gitops runs deployments declaratively with gitops: git as the single source of truth, argocd/flux style reconciliation, and environment promotion. use when deployments are imperative scripts, when cluster state drifts from any repo, or when promoting between environments is manual and error-prone.">
+                 <td><a class="skill-id" href="skill/ops-gitops.html"><code>ops-gitops</code></a></td>
+                 <td class="purpose">Runs deployments declaratively with GitOps: Git as the single source of truth, ArgoCD/Flux style reconciliation, and environment promotion</td>
+               </tr><tr data-search="ops-iac-terraform builds infrastructure as code with terraform or opentofu: state management, modules, and drift handling. use when provisioning infrastructure, when state is shared or locked poorly, when environments drift from the code, or when infra changes are unreviewable or unrepeatable.">
+                 <td><a class="skill-id" href="skill/ops-iac-terraform.html"><code>ops-iac-terraform</code></a></td>
+                 <td class="purpose">Builds infrastructure as code with Terraform or OpenTofu: state management, modules, and drift handling</td>
+               </tr><tr data-search="ops-kubernetes deploys and operates workloads on kubernetes: manifests, health probes, resource requests and limits, networking, rolling updates, and rollbacks. use when writing or reviewing cluster manifests, when pods restart mysteriously or get scheduled badly, when a deployment has no rollback story, or when resource usage is unconstrained.">
+                 <td><a class="skill-id" href="skill/ops-kubernetes.html"><code>ops-kubernetes</code></a></td>
+                 <td class="purpose">Deploys and operates workloads on Kubernetes: manifests, health probes, resource requests and limits, networking, rolling updates, and rollbacks</td>
+               </tr><tr data-search="ops-monitoring-alerting defines slos and error budgets, burn-rate alerting, actionable alert rules, runbooks, and on-call escalation practice. use when the pager is noisy or missed, when there is no slo to alert against, when alert rules are blips instead of budgets, or when on-call cannot act from the alert text.">
+                 <td><a class="skill-id" href="skill/ops-monitoring-alerting.html"><code>ops-monitoring-alerting</code></a></td>
+                 <td class="purpose">Defines SLOs and error budgets, burn-rate alerting, actionable alert rules, runbooks, and on-call escalation practice</td>
+               </tr><tr data-search="ops-observability makes running systems observable: structured logging, red/use metrics, tracing, and dashboard layout. use when shipping anything that runs in production, when debugging needs log greps across services, when metrics lack a coherent picture, or when latency problems need correlation across hops.">
+                 <td><a class="skill-id" href="skill/ops-observability.html"><code>ops-observability</code></a></td>
+                 <td class="purpose">Makes running systems observable: structured logging, RED/USE metrics, tracing, and dashboard layout</td>
+               </tr><tr data-search="ops-release-management releases software safely: semantic versioning, feature flags, staged rollouts, and rollback procedures. use when cutting a release, when a deploy needs to reach users gradually, when features ship half-finished and hide, or when rollback means panic and prayer.">
+                 <td><a class="skill-id" href="skill/ops-release-management.html"><code>ops-release-management</code></a></td>
+                 <td class="purpose">Releases software safely: semantic versioning, feature flags, staged rollouts, and rollback procedures</td>
+               </tr>
+        </tbody>
+      </table></div>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

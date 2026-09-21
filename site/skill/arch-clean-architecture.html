@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>arch-clean-architecture · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Architect</p>
+      <h1><code>arch-clean-architecture</code></h1>
+      <p class="tagline">Structures an application backbone with Clean Architecture and hexagonal (ports &amp; adapters) style: layers, the dependency rule, use cases, and entities. Use when structuring an application from scratch, when core business logic is tangled with frameworks and databases, or when the architecture needs to stay testable and replaceable at its edges.</p>
+      <p class="badges"><span class="badge">architect</span><span class="badge">design</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="clean-architecture">Clean Architecture</h2>
+<h3 id="overview">Overview</h3>
+<p>Clean Architecture (and its hexagonal/ports-and-adapters sibling) organizes code so the <strong>business core has no dependencies</strong>, and everything that matters to the outside — frameworks, databases, HTTP, UIs — plugs in at the edges through defined interfaces. The dependency rule is the entire discipline: source-code dependencies point INWARD, toward the core; the core depends on nothing.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Structuring a new application's backbone where business rules are the real asset.</li><li>Extricating tangled core logic from framework/database coupling.</li><li>When testability without infra is a goal (core tested without DB/HTTP).</li><li>When the team needs frameworks or databases to remain swappable at the seams.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Prototypes, spikes, and short-lived tools: the layering cost buys replaceability you will never spend.</li><li>Simple CRUD wrappers with no domain logic — Rails/Django-style slices are honest there (KISS, YAGNI).</li><li>Event-sourced or CQRS-heavy systems where projections dominate — those follow their own shape (<code>be-microservices-patterns</code>, <code>arch-ddd</code>).</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-draw-the-four-rings-conceptually">Step 1 — Draw the four rings (conceptually)</h4>
+<pre><code class="language-text">[ Enterprise/Infra: DB, HTTP, queues, framework adapters ]
+[ Interface adapters: controllers, presenters, gateways     ]
+[ Use cases: application business rules, orchestration        ]
+[ Entities: core business rules, purest layer                 ]</code></pre>
+<p>Only the outer layers depend on frameworks. Arrows point inward; nothing in an inner ring imports an outer ring.</p>
+<h4 id="step-2-define-the-entities-and-use-cases-first">Step 2 — Define the entities and use cases first</h4>
+<ul><li><strong>Entities</strong>: the business objects with their own rules and invariants — no I/O, no framework types (no HTTP request, no SQL model), pure logic.</li><li><strong>Use cases</strong>: the application business rules — one use case per user-intent ("PlaceOrder", "CancelOrder"), each orchestrating entities and the <strong>ports</strong> it needs.</li></ul>
+<p>The use case never knows where data comes from or goes — it only knows the port interfaces.</p>
+<h4 id="step-3-ports-adapters-the-exchange-points">Step 3 — Ports & adapters: the exchange points</h4>
+<ul><li>A <strong>port</strong> is an interface the core defines that the outside world must satisfy: <code>OrderRepository</code>, <code>PaymentGateway</code>, <code>Clock</code>.</li><li>An <strong>adapter</strong> is the concrete implementation of a port: <code>SqlOrderRepository</code>, <code>StripePaymentGateway</code>, <code>SystemClock</code>.</li><li>Adapters live OUTSIDE the core. Swapping <code>SqlOrderRepository</code> for an in-memory or a different DB is a change of adapter, not of core.</li><li>Rule: the core owns the interfaces that point into it (driven ports) AND the interfaces it calls (driving ports). The direction of the dependency is always the core's decision.</li></ul>
+<h4 id="step-4-put-dependencies-at-the-edge-composition-root">Step 4 — Put dependencies at the edge: composition root</h4>
+<p>All wiring happens in the <strong>composition root</strong> (main, DI container setup, bootstrap): here adapters are constructed and handed to the core through ports. Nowhere else may concrete infra types be constructed. This is the single place where the shape is assembled — and the place tests also assemble from.</p>
+<h4 id="step-5-keep-the-layers-honest-under-pressure">Step 5 — Keep the layers honest under pressure</h4>
+<ul><li><strong>Entities</strong> must never know about HTTP, SQL, JSON, or ORM.</li><li><strong>Use cases</strong> may raise domain errors; they may not return transport concerns (status codes belong to adapters).</li><li>If a change to the DB causes edits inside the core, the dependency rule is violated — refactor the port boundary, not the core.</li><li>Do not confuse "clean" with "many layers": one use case + one port per boundary is normal; a layer with no delivery is not architecture, it is ceremony.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"The framework IS the architecture"</td><td>Frameworks are outer rings with opinions; the dependency rule keeps their opinions out of your core.</td></tr><tr><td>"We'll do it properly later"</td><td>Later means after the core grew framework tentacles; untangling is the expensive part.</td></tr><tr><td>"Ports for everything = indirection overload"</td><td>A port exists per replaceable/teatable boundary, not per class; unneeded ports ARE overload.</td></tr><tr><td>"Entities with no framework types is impractical"</td><td>That is precisely what makes them testable in milliseconds, forever.</td></tr><tr><td>"We can't change the architecture now"</td><td>You can always stop leaking outward; the rule is about the next line of code too.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Core imports framework/database types (HTTP request objects, ORM entities)</li><li>Use cases constructing concrete repositories/adapters inline</li><li>Multiple composition points spread across the codebase</li><li>Entities that serialize themselves or know their storage</li><li>Dependency arrows pointing outward (core → infra)</li><li>Layers that exist but deliver no behavior (empty ceremony)</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Four rings drawn; dependency rule stated and followed (arrows inward)</li><li>[ ] Entities pure business logic; no I/O, no framework types</li><li>[ ] Use cases one-per-intent, orchestrate via ports only</li><li>[ ] Ports owned by the core; adapters outside; composition root is the single assembly point</li><li>[ ] Testability demonstrated: core testable without DB/HTTP</li><li>[ ] No ceremony layers — every layer delivers behavior</li><li>[ ] Framework/database swap is an adapter change, provable by inspection</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

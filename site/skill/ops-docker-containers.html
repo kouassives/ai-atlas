@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>ops-docker-containers · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">DevOps</p>
+      <h1><code>ops-docker-containers</code></h1>
+      <p class="tagline">Containerizes applications well: multi-stage builds, minimal images, layer caching, security scanning, and non-root runtime. Use when writing or reviewing a Dockerfile, when images are huge or leak secrets, when builds are slow, or when containers run as root or with unnecessary tools.</p>
+      <p class="badges"><span class="badge">devops</span><span class="badge">build</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="docker-containers">Docker Containers</h2>
+<h3 id="overview">Overview</h3>
+<p>A container image is a deploy artifact AND an attack surface: every layer you add is something that must be maintained and could be exploited. Good containerization is minimal, reproducible, cache-friendly, and runs with the least privilege. This skill covers multi-stage builds, image minimization, cache-keying for speed, scanning, and the non-root runtime rule.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Writing or reviewing a Dockerfile (or container image definition).</li><li>Images are huge, contain build tools/credentials, or rebuild too slowly.</li><li>Containers run as root or as a user with unnecessary privileges.</li><li>Adding or bumping a base image or system dependency.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Kubernetes deployment specifics (probes, resources) — that is <code>ops-kubernetes</code>; image scanning gates in pipelines — <code>ops-devsecops</code>.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-start-from-a-trusted-minimal-base">Step 1 — Start from a trusted, minimal base</h4>
+<ul><li>Official/pinned images only (digest-pinned where stability matters), latest tags banned in favor of explicit versions.</li><li>Distroless/Alpine-class images when the runtime allows; no OS package manager in the final image unless a runtime dependency insists.</li><li>Read the changelog of the base image like a dependency (<code>be-security-engineering</code> Step 5) — base image = dependency.</li></ul>
+<h4 id="step-2-multi-stage-build-in-one-stage-ship-in-another">Step 2 — Multi-stage: build in one stage, ship in another</h4>
+<pre><code class="language-dockerfile"># stage 1: build
+FROM &lt;toolchain&gt; AS build
+COPY . .
+RUN build
+# stage 2: runtime
+FROM &lt;distroless/minimal&gt;
+COPY --from=build /app/bin /app/bin
+USER nonroot</code></pre>
+<p>The final image contains only the runtime and the artifact — no toolchain, no compilers, no package index, no source that the artifact does not execute.</p>
+<h4 id="step-3-cache-like-the-build-is-financial">Step 3 — Cache like the build is financial</h4>
+<ul><li>Order layers by volatility: dependencies (rarely change) BEFORE source (changes every commit). A source-first Dockerfile invalidates the whole cache each build.</li><li>Cache invalidation keys are checksums of the inputs (lockfiles!), not timestamps.</li><li>Build context stays small: <code>.dockerignore</code> (git, tests, node_modules, secrets) — context size is build time and secret-leak surface.</li></ul>
+<h4 id="step-4-never-leak-secrets-into-layers">Step 4 — Never leak secrets into layers</h4>
+<ul><li>No secrets in build args that land in the image: <code>ARG</code>/<code>ENV</code> values are baked into layers and inspectable. Use build secrets mounts or multi-stage <code>COPY --from</code> passing.</li><li>After build or before push, scan the image (<code>ops-devsecops</code>): vulns, secret detection, and metadata review.</li><li>Layers with credentials, even "removed later", are recoverable from history — removal in a later layer is not removal.</li></ul>
+<h4 id="step-5-run-as-non-root-read-only-where-possible">Step 5 — Run as non-root, read-only where possible</h4>
+<ul><li><code>USER &lt;nonroot&gt;</code> with a dedicated uid; capability sets trimmed (<code>--cap-drop=ALL</code> for most containers).</li><li>Filesystem read-only at runtime unless the app writes; secrets via mounts/env injection, not baked layers.</li><li>Health-check which does not require root (avoid curl-in-image; probe the app's own signal).</li></ul>
+<h4 id="step-6-verify-the-artifact-not-the-hope">Step 6 — Verify the artifact, not the hope</h4>
+<ul><li><code>docker scan</code> / CI gate on critical/high with a triage path (<code>ops-devsecops</code>).</li><li>Size budget: an image addition must justify its megabytes; the diff review of an image is a real review.</li><li>Run the image once from a clean daemon and execute the healthcheck path — the "works on my host" lie lives at the boundary.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"Alpine doesn't have the lib, use ubuntu"</td><td>Adding a distro is a maintenance and surface decision — justify it, don't default to it.</td></tr><tr><td>"We need bash for debugging in prod"</td><td>Prod containers are deploy artifacts, not debug hosts; shell = attack surface.</td></tr><tr><td>"The secret in ARG is used only at build time"</td><td>ARG values persist in image history; any image consumer can read them.</td></tr><tr><td>"Non-root breaks our scripts"</td><td>Then the fix is the scripts, not the privilege.</td></tr><tr><td>"Images are big, whatever, disk is cheap"</td><td>Size is also pull latency, cold-start time, and vulnerability surface.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Root user in runtime, bash-heavy images, package managers in final stage</li><li>Secrets in ENV/ARG/COPY layers (even "removed later")</li><li>Source copied before dependencies (cache thrash)</li><li>Unpinned <code>latest</code> base images</li><li>No <code>.dockerignore</code>, huge build context</li><li>No scan, no size review on new images</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Base image pinned and trusted; minimal for the runtime</li><li>[ ] Multi-stage: final image ships artifact only (no toolchain/package index)</li><li>[ ] Layers ordered deps-then-source; cache keys are lockfile checksums; dockerignore present</li><li>[ ] No secrets in layers; build secrets used for anything sensitive</li><li>[ ] Non-root runtime, trimmed capabilities, read-only fs where possible</li><li>[ ] Image scanned; critical/high triaged; size addition justified</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

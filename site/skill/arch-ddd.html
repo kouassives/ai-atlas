@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>arch-ddd · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Architect</p>
+      <h1><code>arch-ddd</code></h1>
+      <p class="tagline">Models business domains with Domain-Driven Design: ubiquitous language, bounded contexts, aggregates, domain events, and anti-corruption layers. Use when modeling business domains, when the codebase language doesn't match the business vocabulary, when the team cannot agree on what an entity is, or when integrating with legacy or external systems with different models.</p>
+      <p class="badges"><span class="badge">architect</span><span class="badge">design</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="domain-driven-design">Domain-Driven Design</h2>
+<h3 id="overview">Overview</h3>
+<p>DDD aligns software structure with business structure: the code's vocabulary, boundaries, and rules mirror how the business actually thinks and operates. Its core value is not tactical patterns but <strong>strategic</strong> clarity — a shared language, honestly drawn boundaries between subdomains, and explicit rules about how contexts integrate. Without strategic DDD, the tactical patterns (aggregates, events) are decoration.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>The business domain is where the real complexity lives (rules, invariants, state machines — not just CRUD on tables).</li><li>Engineers and business people use different words for the same thing, or the same word for different things.</li><li>Multiple teams/models touch the same concepts and keep overwriting each other's meaning.</li><li>Integrating with external or legacy systems whose model does not fit yours.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>CRUD-simple domains with no business rules: DDD ceremony adds cost with no payoff — a straightforward service layer suffices (YAGNI).</li><li>Greenfield "we'll do DDD because it's modern" without a named domain complexity problem.</li><li>Denormalized read-model systems built purely for reporting (those follow <code>be-database-design</code>/CQRS rules).</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-build-the-ubiquitous-language">Step 1 — Build the ubiquitous language</h4>
+<p>Collect the business vocabulary from domain experts — the actual words they use (not the DB column names). Each term gets ONE definition, written down, used everywhere: in conversations, code identifiers, tests, and docs. The glossary page is the contract; a term with two meanings is a model bug, not a dialect.</p>
+<h4 id="step-2-carve-bounded-contexts">Step 2 — Carve bounded contexts</h4>
+<ul><li>Group the ubiquitous language into <strong>bounded contexts</strong>: subdomains where a model applies consistently and unambiguously (e.g. <em>Billing</em>, <em>Fulfillment</em>, <em>Risk</em>).</li><li>Each context owns its model; the same word may legitimately differ BETWEEN contexts (<code>Customer</code> in Billing ≠ <code>Customer</code> in Fulfillment) — that is the point of the boundary.</li><li><strong>Never</strong> share a model class/table across contexts to "reuse" — shared models are how contexts bleed into a big ball of mud.</li></ul>
+<h4 id="step-3-design-aggregates-consistency-boundaries">Step 3 — Design aggregates: consistency boundaries</h4>
+<ul><li>Within a context, group entities into <strong>aggregates</strong> — a cluster with one <strong>aggregate root</strong> enforcing the cluster's invariants.</li><li>Rule of thumb: keep aggregates small; a transaction spans exactly ONE aggregate. If a business rule needs two aggregates in one transaction, the aggregate boundary is wrong.</li><li>Aggregate references go by <strong>ID, not object reference</strong> — that keeps boundaries real and plays well with <code>be-async-messaging</code>.</li></ul>
+<h4 id="step-4-publish-domain-events-for-cross-aggregate-and-cross-context-effects">Step 4 — Publish domain events for cross-aggregate and cross-context effects</h4>
+<p>When something significant happens (order placed, payment captured), the owning aggregate publishes a <strong>domain event</strong> to the surrounding integration layer. Other aggregates/contexts react via <code>be-async-messaging</code> — not by sharing state. Event names come from the ubiquitous language ("OrderPlaced", not "OrderWasChangedInDB").</p>
+<h4 id="step-5-defend-the-core-with-an-anti-corruption-layer-acl">Step 5 — Defend the core with an anti-corruption layer (ACL)</h4>
+<p>When integrating with a legacy system, external vendor, or another context whose model conflicts with yours: build an <strong>anti-corruption layer</strong> that translates between models at the boundary. Your core never learns their vocabulary; the ACL owns the translation, the mapping tests, and the drift detection. Without an ACL, their schema decisions become your domain model decisions.</p>
+<h4 id="step-6-validate-the-model-with-a-domain-expert-story">Step 6 — Validate the model with a domain expert story</h4>
+<p>Walk the design back to a domain expert as a story: "when X happens, the system does Y, then Z". If the expert winces at a word, a boundary, or a rule, the model is wrong — fix the model, not the expert.</p>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"We have one Customer table, one model, that's simpler"</td><td>One shared model across contexts is how every team's meaning elbows everyone else's.</td></tr><tr><td>"Aggregates are too hard, we'll use services"</td><td>Services without aggregates leak invariants into orchestration soup — the hard part does not disappear.</td></tr><tr><td>"The legacy system's fields are our fields"</td><td>Adopting their schema is surrendering your model; the ACL is the price of integration.</td></tr><tr><td>"DDD means repositories and entities"</td><td>The tactical shapes without the strategic contexts are paperwork, not DDD.</td></tr><tr><td>"We can't change the words now"</td><td>You can always change the code identifiers; the glossary is yours to maintain.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>No ubiquitous language glossary, or terms used with two meanings in code/tests</li><li>Contexts that share models/tables "for convenience"</li><li>Aggregates with hidden invariants enforced by external services</li><li>Transactions spanning multiple aggregates</li><li>Domain events named after implementation ("RowUpdated") instead of the language</li><li>Legacy integration with no ACL — foreign model drifting into the core</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Ubiquitous language glossary exists and code/tests use its terms</li><li>[ ] Bounded contexts drawn with explicit ownership; no model shared across them</li><li>[ ] Aggregates defined with roots, small boundaries, ID references; invariants enforced within one aggregate</li><li>[ ] Domain events named in the language and published via the integration layer</li><li>[ ] Anti-corruption layer present (with mapping tests) wherever a foreign model enters</li><li>[ ] Model validated with a domain expert story; winces result in model fixes</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

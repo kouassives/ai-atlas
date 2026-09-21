@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>be-solid-principles · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Developer Backend</p>
+      <h1><code>be-solid-principles</code></h1>
+      <p class="tagline">Applies the five SOLID principles to class and module design with before/after examples and the smells that signal each violation. Use when designing, extending, or reviewing classes and modules, when a class does too much, when abstractions feel wrong or leaky, or when dependency direction needs to be fixed.</p>
+      <p class="badges"><span class="badge">backend</span><span class="badge">implementation</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="solid-principles">SOLID Principles</h2>
+<h3 id="overview">Overview</h3>
+<p>SOLID is the vocabulary for the most common design defects in object-oriented code: god classes, broken abstractions, and dependency tangles. The five principles are not decoration — each one names a concrete smell and prescribes the shape of the fix. This skill covers all five with before/after examples and the smell that triggers each check.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Designing a new class, module, or service boundary.</li><li>A class or module "does too much" or keeps growing.</li><li>An abstraction (interface, base class, factory) feels wrong, leaky, or is fought by every new use case.</li><li>Dependency direction is tangled, circular, or causes nightly fear of touching a base class.</li><li>Reviewing another change against OO design quality.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>This is not a substitute for foundation design judgment — apply it alongside <code>fnd-engineering-principles</code> (KISS, YAGNI).</li><li>Functional/procedural codebases with no shared mutable state and no inheritance: SOLID applies lightly there; do not force class hierarchies.</li><li>Premature abstraction: never introduce an interface for a single concrete use (YAGNI beats SOLID decoration).</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-walk-the-five-checks-in-order">Step 1 — Walk the five checks in order</h4>
+<ol><li><strong>S — Single Responsibility.</strong> Does this element have more than one reason to change? A class that "parses AND validates AND persists AND emails" has four. Fix: extract each axis of change into its own unit; the orchestration stays thin.</li><li><strong>O — Open/Closed.</strong> Can behavior be extended without modifying this unit? Flag every <code>if (type == &quot;x&quot;)</code> chain over a known type family. Fix: polymorphic dispatch, strategy function/interface, or a registry — not more branches.</li><li><strong>L — Liskov Substitution.</strong> Can every subclass be swapped for its supertype without breaking callers? Smells: overriding methods that throw <code>NotSupported</code>, weaken preconditions, strengthen postconditions, or return stricter types than needed. Fix: the hierarchy is wrong — prefer composition (see Step 4) over patching.</li><li><strong>I — Interface Segregation.</strong> Are clients forced to depend on methods they never call? Smells: fat interfaces, <code>UnusedMethod</code> stubs, <code>NotImplementedException</code>. Fix: split interfaces by client role; small interfaces with one job beat one big one.</li><li><strong>D — Dependency Inversion.</strong> Do high-level policy modules depend on low-level details instead of abstractions? Smells: a business layer importing SDKs, frameworks, or infrastructure (DB, HTTP, file I/O) directly. Fix: invert — the high-level module owns the port (interface); the low-level adapter implements it. Dependency arrow points INWARD.</li></ol>
+<h4 id="step-2-apply-the-principles-to-the-concrete-shape-not-the-label">Step 2 — Apply the principles to the concrete shape, not the label</h4>
+<p>For each violation found, produce the before/after shape:</p>
+<pre><code class="language-text">BEFORE  OrderService  →  parses CSV, validates, saves (SQL), emails, logs
+AFTER   OrderImportService  (orchestrates; depends on ports)
+        CsvOrderParser       (parses → domain DTOs)
+        OrderValidator       (validates domain DTOs)
+        OrderRepository      (port) ← SqlOrderRepository (adapter)
+        EmailNotifier        (port) ← SmtpNotifier (adapter)</code></pre>
+<p>The after-shape needs no diagram to explain: each unit has one job, all arrows point inward, and any of them can be swapped or tested alone.</p>
+<h4 id="step-3-use-composition-over-inheritance-to-resolve-lsp-failures">Step 3 — Use composition over inheritance to resolve LSP failures</h4>
+<p>When three checks (L, and often O) fail on a hierarchy, the answer is almost always composition: move the varying behavior behind a strategy/port, keep one stable object that delegates. <code>extends</code> is the strongest coupling available — reach for it last.</p>
+<h4 id="step-4-verify-dependency-direction">Step 4 — Verify dependency direction</h4>
+<p>Draw the dependency graph of the module (imports/inheritance/instantiations). The "core" must depend on nothing but language primitives and other core pieces. Every arrow pointing outward (core → infrastructure) is a D violation; invert it.</p>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"It's just one big function, SOLID doesn't apply"</td><td>Extract the axes of change — a module with one job is still S, O, D.</td></tr><tr><td>"The interface has a few extras, no one implements them"</td><td>Fat interfaces rot in place; every new client pays their cost.</td></tr><tr><td>"We can't change the base class, everyone uses it"</td><td>That is the smell: a base class too many things depend on. Extract, don't edit.</td></tr><tr><td>"A base class makes this DRY"</td><td>DRY across forced inheritance is worse than mild duplication with clear ownership.</td></tr><tr><td>"We'll refactor to SOLID later"</td><td>Later is now — every new feature buoys the same god class.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Any class with three or more nouns in its name or three+ verbs in its public API</li><li><code>is-a</code> relations that fail the swapped-without-errors test</li><li>Core modules importing framework/SDK types</li><li>A base class no subclass overrides as designed (it's dead weight or a retrofit)</li><li><code>instanceof</code>/type-switch dispatch where polymorphism should carry it</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Each of the five principles checked and named, with the smells found</li><li>[ ] Every element has ONE reason to change</li><li>[ ] Extension points are polymorphic/registry-based, not branch-based</li><li>[ ] No <code>NotImplemented</code>/unsupported-override hierarchy stubs</li><li>[ ] No client depends on methods it does not use</li><li>[ ] Dependency arrows point inward; core imports no infrastructure</li><li>[ ] No forced abstraction that a single-use case would not justify (YAGNI gate)</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

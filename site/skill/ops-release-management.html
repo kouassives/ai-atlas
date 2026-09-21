@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>ops-release-management · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">DevOps</p>
+      <h1><code>ops-release-management</code></h1>
+      <p class="tagline">Releases software safely: semantic versioning, feature flags, staged rollouts, and rollback procedures. Use when cutting a release, when a deploy needs to reach users gradually, when features ship half-finished and hide, or when rollback means panic and prayer.</p>
+      <p class="badges"><span class="badge">devops</span><span class="badge">deployment</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="release-management">Release Management</h2>
+<h3 id="overview">Overview</h3>
+<p>A release is the moment all other engineering discipline is cashed in. This skill covers the mechanics that make releases boring: <strong>semantic versioning</strong> so versions mean something, <strong>feature flags</strong> so code ships before behavior is exposed, <strong>staged rollouts</strong> so damage is bounded, and <strong>rollback procedures</strong> so "undo" is a rehearsed motion, not a fire drill.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Cutting a release or defining the release process for a product.</li><li>Deploying a risky change to production.</li><li>Shipping features in progress without exposing them (or hiding a broken one).</li><li>The team has no rehearsed rollback and no rollout stages.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Versioning library/API contracts (that is <code>arch-api-contract-design</code>); deployment mechanics (that is <code>ops-kubernetes</code>/<code>ops-gitops</code>); pipeline shape (<code>ops-ci-cd</code>).</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-semantic-versioning-with-honest-meaning">Step 1 — Semantic versioning with honest meaning</h4>
+<ul><li><strong>MAJOR</strong> breaking changes, <strong>MINOR</strong> backward-compatible features, <strong>PATCH</strong> backward-compatible fixes.</li><li>Version communicates compatibility to consumers; version EVERY consumable artifact and changelog it (<code>fnd-technical-writing</code> §5).</li><li>Tag releases in git; the artifact's version is resolvable back to the exact commit (<code>ops-gitops</code> §3).</li></ul>
+<h4 id="step-2-use-feature-flags-for-safe-exposure">Step 2 — Use feature flags for safe exposure</h4>
+<ul><li><strong>Flags decouple deploy from release</strong>: code ships dark, behavior is turned on per audience.</li><li>Flag hygiene: short-lived by default (with expiry), evaluated server-side for real toggles, flag removal is part of the feature's DoD (an expired flag is dead config).</li><li>Never use flags as a versioning mechanism (flags are for behavior, versions are for compatibility).</li><li>Progressive exposure with flags = gradual rollout (Step 3) with an instant kill-switch.</li></ul>
+<h4 id="step-3-stage-the-rollout-bound-the-blast-radius">Step 3 — Stage the rollout, bound the blast radius</h4>
+<ul><li><strong>Canary/percentage rollout</strong>: 1% → 10% → 50% → 100%, gated by health signals between steps (error rate, latency percentiles — <code>ops-observability</code> RED).</li><li>Staged by populations that matter: internal first, then tenants/regions least-risky-first.</li><li>Every stage has an abort condition decided BEFORE the release (not "we'll see how it feels"): the metric that says "stop and rollback" and the owner who calls it.</li></ul>
+<h4 id="step-4-rehearse-rollback-as-a-feature">Step 4 — Rehearse rollback as a feature</h4>
+<ul><li>Rollback is a normal operation with a procedure (<code>ops-gitops</code> §3 makes it a git revert): the procedure is exercised in staging, and the rollback path for the artifact is versioned too.</li><li><strong>Rollback physical vs logical</strong>: image/version revert is fast but state may have moved; verify data-backward-compatibility (schema/migrations with the expand-contract discipline of <code>be-database-design</code>) so a revert is actually safe.</li><li>The rollback decision rule: the same abort metric that stops a rollout triggers the rollback. Deciding at incident time is deciding at the worst time.</li></ul>
+<h4 id="step-5-coordinate-the-release-itself">Step 5 — Coordinate the release itself</h4>
+<ul><li>Releases happen when the pipeline gates are green AND people are awake to watch (post-deploy observation window, not "deploy at midnight hoping").</li><li>The release note to stakeholders = changelog delta + the observability anchor ("the p95 and error-rate panels are the truth for this deploy").</li><li>Post-release: the abort metric stays watched for the observation window; the release is only "done" after the window, not after the deploy.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"We don't version, it's internal"</td><td>Internal consumers version-depend too, and the log line 'version unknown' is the worst one.</td></tr><tr><td>"Feature flags are dead config, skip them"</td><td>Flags exist to bound exposure; the hygiene problem is removal, not existence.</td></tr><tr><td>"All-or-nothing deploy is simpler"</td><td>All-or-nothing is how a 2% data issue becomes a 100% incident.</td></tr><tr><td>"Rollbacks are easy, we just redeploy old"</td><td>Only if state is backward-compatible; otherwise the 'easy' rollback corrupts data.</td></tr><tr><td>"We can decide the abort metric during the incident"</td><td>During the incident you decide under fire; define it before, when you can think.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Versions that don't follow semver or can't be traced to commits</li><li>Features shipped hard-exposed with no flag; flags with no removal plan</li><li>Deploys at 100% with no canary and no abort condition</li><li>No rehearsed rollback; rollback that would corrupt data (state moved on)</li><li>Releases cut on hopes ("should be fine") instead of green gates</li><li>Observation window ended at the deploy button</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] semver used meaningfully; consumable artifacts versioned + changelogged; version→commit resolvable</li><li>[ ] Exposure via short-lived flags with expiry and removal in DoD</li><li>[ ] Percentage/canary stages with health gates; populations ordered by risk</li><li>[ ] Abort metric + owner decided before release; rollback rehearsed and safe for state</li><li>[ ] Release on green gates during an awake window; post-deploy observation period enforced</li><li>[ ] Release declared done after the window, with metrics as the truth</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

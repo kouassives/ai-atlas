@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>fe-responsive-design · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Developer Frontend</p>
+      <h1><code>fe-responsive-design</code></h1>
+      <p class="tagline">Builds layouts that work across viewports: mobile-first, fluid layout, breakpoints, and container queries. Use when styling across viewports, when a design works on desktop but breaks on mobile, or when breakpoint stacks grow unmanageable.</p>
+      <p class="badges"><span class="badge">frontend</span><span class="badge">implementation</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="responsive-design">Responsive Design</h2>
+<h3 id="overview">Overview</h3>
+<p>Responsive design is the discipline of a layout that adapts by layout system, not by device enumeration. CSS has the tools: <strong>fluid sizing</strong> so content flows, <strong>breakpoints</strong> for the places where the layout's structure must change (not for every component width), and <strong>container queries</strong> for components that adapt to their placement, not just the viewport. The mobile-first habit keeps the base simple and the enhancement progressive.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Styling new layouts or components across viewports.</li><li>A page that works on desktop and breaks on phones (or vice versa).</li><li>Breakpoint stacks that multiply ("we added a 480px because the 500px case didn't fit") and nobody can change them.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Desktop-only admin tools with a stated and enforced desktop scope (state it; responsive is not free).</li><li>Designing the visual system itself (spacing/type scale) — that is <code>ui-visual-design</code>.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-mobile-first-base-styles-are-the-phone">Step 1 — Mobile-first, base styles are the phone</h4>
+<ul><li>Write the base (unqueried) styles for the small viewport: the essential layout, legible type, tappable targets. Media queries then ENHANCE (min-width): grids expand, panoramas unlock.</li><li>Mobile-first forces the content-first question: what does this UI look like with the least width? That is the honest base, and it keeps desktop as an enhancement rather than the source of truth.</li></ul>
+<h4 id="step-2-fluid-and-then-break-structurally">Step 2 — Fluid, and then break structurally</h4>
+<ul><li><strong>Fluid first</strong>: flexbox/grid with <code>minmax</code>, <code>fr</code>, percentage/intrinsic sizing, <code>clamp()</code> for type, and <code>auto-fit/auto-fill</code> grids let content reflow continuously — breaking the page into columns only where the layout genuinely needs a structural change.</li><li><strong>Breakpoints are structural</strong>: they change layout structure (one column → two, header collapses → navigation moves), not cosmetic spacing. If a breakpoint exists because "a card looked slightly off", that is a fluid-layout bug, not a missing breakpoint.</li><li>A short breakpoint list (2-3 structural points) that everyone trusts beats a long one nobody can edit.</li></ul>
+<h4 id="step-3-let-components-adapt-to-their-container">Step 3 — Let components adapt to their container</h4>
+<ul><li>Container queries make a component adapt to its <strong>container's</strong> width, not the viewport — reusable cards, panels, and sidebars behave correctly in any slot.</li><li>This is the difference between "I put this in the sidebar so it must fit the sidebar rules" and "this component owns its rules everywhere it lands".</li><li>When layout requires container context (grids nested in grids), CQs beat viewport guessing.</li></ul>
+<h4 id="step-4-handle-the-awkward-spaces-deliberately">Step 4 — Handle the awkward spaces deliberately</h4>
+<ul><li>Long unbreakable content (URLs, code, words) — <code>overflow-wrap</code>, <code>min-width: 0</code> on grid/flex children (the classic overflow bug: a child's intrinsic width pushes the viewport).</li><li>Images/media: <code>max-width: 100%</code> everywhere; art direction via <code>srcset/picture</code> for real performance (<code>fe-performance</code> covers the budget).</li><li>Touch targets stay ≥ tappable size at the small viewport (<code>fe-accessibility</code> target guidance).</li></ul>
+<h4 id="step-5-verify-on-the-real-spectrum">Step 5 — Verify on the real spectrum</h4>
+<ul><li>Test: small phone, large phone, tablet portrait/landscape, laptop, desktop + zoomed-in (200% zoom is a viewport of ~640px at 200% — the responsive work covers it) + landscape on small phones (height-constrained layouts).</li><li>Verify with real viewport sizes, not "tilt the DevTools window until it breaks" — the break is where structure changes, and the checks confirm the structure holds at the corners.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"We design desktop-first; mobile is a smaller desktop"</td><td>Mobile is not a smaller desktop; it is the base with fewer assumptions.</td></tr><tr><td>"One more breakpoint for this card"</td><td>Breakpoint creep is how the list becomes an unownable stack.</td></tr><tr><td>"Fixed pixel widths are fine, nothing important is on mobile"</td><td>Nothing important = assumption; check the analytics, not the feelings.</td></tr><tr><td>"Container queries are new, viewport works"</td><td>The nav works until the component lands in the sidebar. CQs are the ownership fix.</td></tr><tr><td>"It works in Chrome DevTools mobile mode"</td><td>Emulation is a hint; the real spectrum includes height, zoom, and orientation.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Desktop-first base with mobile as a "fix" media query</li><li>Breakpoints added for spacing/cosmetic deltas; long unowned stacks</li><li>Fixed-width layouts, pixels everywhere, no fluid sizing</li><li>Grid/flex children overflowing (no <code>min-width: 0</code>, intrinsic-width bugs)</li><li>Images/media without <code>max-width: 100%</code></li><li>No verification at zoom, landscape, or small-phone corners</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Base styles are mobile-first; queries enhance (min-width only)</li><li>[ ] Fluid sizing first; breakpoints structural, short, and owned</li><li>[ ] Container queries used where components must adapt to placement</li><li>[ ] Overflow handled (unbreakable content, min-width:0, media max-width:100%)</li><li>[ ] Real-spectrum verification: phones/tablet/desktop + zoom + landscape</li><li>[ ] Desktop-only scope, if claimed, is stated and enforced</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

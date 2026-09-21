@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>tst-unit-testing · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Tester</p>
+      <h1><code>tst-unit-testing</code></h1>
+      <p class="tagline">Writes unit tests that stay fast and honest: isolation, naming conventions, mocking do's and don'ts, and coverage discipline. Use when writing unit tests, when unit tests are slow or over-mocked, when suites assert implementation details, or when coverage is gamed instead of meaningful.</p>
+      <p class="badges"><span class="badge">tester</span><span class="badge">testing</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="unit-testing">Unit Testing</h2>
+<h3 id="overview">Overview</h3>
+<p>Unit tests are the pyramid's base: thousands of tests, milliseconds each, isolating one unit of logic. Their discipline is <strong>isolation and honesty</strong> — fast, deterministic, behavior-asserting, and immune to the two classic diseases: the over-mocked suite that proves a fiction, and the detail-coupled suite that breaks on every refactor.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Writing or improving unit tests for logic (domain rules, calculators, validators, reducers).</li><li>Unit tests are slow, order-dependent, or need 50 mocks per test.</li><li>A suite that was "green" broke during a rename — detail-coupled tests.</li><li>Coverage is high on paper but the tests assert nothing about behavior.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>The RED-GREEN-REFACTOR loop of writing them first — that is <code>be-tdd</code>.</li><li>Testing the wiring of components together (real collaborators) — that is <code>tst-integration-testing</code>.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-test-one-unit-one-behavior-one-assertion-family">Step 1 — Test one unit, one behavior, one assertion family</h4>
+<ul><li>The unit under test = the smallest meaningful behavior (a function, a rule, a method), driven through its public surface.</li><li>One behavior per test; assert the OUTCOME (return value, exception, state change), not the journey. A test that asserts "methodA called methodB with X" tests the plumbing, not the behavior.</li></ul>
+<h4 id="step-2-name-tests-as-specifications">Step 2 — Name tests as specifications</h4>
+<p><code>describe/it</code> (or equivalent) reads as a sentence: <code>it rejects an order with no items</code>, <code>it applies the senior discount only to members over 60</code>. Names that read like behavior survive refactors; names that read like methods die with them. The suite is the executable part of the documentation (<code>fnd-technical-writing</code>).</p>
+<h4 id="step-3-isolate-for-speed-and-determinism-not-for-comfort">Step 3 — Isolate for speed and determinism, not for comfort</h4>
+<ul><li>Stake out the REAL boundaries: time (inject clock), randomness, external I/O (HTTP, queues, files), and global state.</li><li>Prefer <strong>constructing minimal real collaborators</strong> (a real small value object, a plain function) over mocking them; mock only what you cannot construct cheaply and deterministically.</li><li>Never mock the unit itself, its language primitives, or the framework behavior (a mock that encodes "the library works" asserts nothing you own).</li><li>The golden test is dependency-light and assertion-rich; if a test needs ten mocks, the unit's seams are wrong (<code>be-solid-principles</code>, <code>be-refactoring</code>).</li></ul>
+<h4 id="step-4-coverage-with-a-conscience">Step 4 — Coverage with a conscience</h4>
+<ul><li>Coverage is a probing tool: the line you never hit is the branch you never thought about. Use the report to find untested branches, then decide deliberately.</li><li><strong>Stop gaming coverage</strong>: no coverage pragmas to silence a number, no test that calls a function just to color a line green. Coverage is the map, not the journey.</li></ul>
+<h4 id="step-5-keep-the-suite-fast-and-parallel">Step 5 — Keep the suite fast and parallel</h4>
+<ul><li>Thousands of tests in seconds is the norm: no network, no sleeps, no shared filesystem state; parallel-safe by construction (no shared mutable global).</li><li>A unit test that sleeps on a timeout is a slow integration test wearing a unit costume — fix the seam, not the setTimeout.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"Mock everything so tests are isolated"</td><td>Isolation is determinism at real seams, not a mock party; wealth of mocks = poverty of truth.</td></tr><tr><td>"We assert the internal call to be safe"</td><td>Detail-asserting tests break on every refactor and then get deleted — the net evaporates.</td></tr><tr><td>"100% coverage is the goal"</td><td>100% with no behavioral assertion is the most expensive lie a suite can tell.</td></tr><tr><td>"Sleeping 2s makes the test more realistic"</td><td>It makes it slow and flaky; realism belongs to the integration tier.</td></tr><tr><td>"One assert per test is dogmatic"</td><td>It is about one BEHAVIOR, and behavior families are fine — assert the outcome as a family, not the calls.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Tests tied to method calls/internal implementation; break on rename</li><li>Mocks for in-house code with real logic (<code>be-tdd</code> §6)</li><li>Slow unit tests: sleeps, network, shared global state</li><li>Coverage dressed up (pragmas, call-for-the-line tests)</li><li>Assertions that never check the outcome family (no throws, no state)</li><li>Tests that only pass in a specific order</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] One behavior per test; asserts outcomes through the public surface</li><li>[ ] Names read as specifications</li><li>[ ] Mocks only at real seams; minimal real collaborators preferred</li><li>[ ] No mocks of the unit itself/language/framework behavior</li><li>[ ] Coverage used to find untested branches; not gamed, no silencing pragmas</li><li>[ ] Suite fast (< seconds), deterministic, parallel-safe</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

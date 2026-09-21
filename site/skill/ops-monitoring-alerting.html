@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>ops-monitoring-alerting · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">DevOps</p>
+      <h1><code>ops-monitoring-alerting</code></h1>
+      <p class="tagline">Defines SLOs and error budgets, burn-rate alerting, actionable alert rules, runbooks, and on-call escalation practice. Use when the pager is noisy or missed, when there is no SLO to alert against, when alert rules are blips instead of budgets, or when on-call cannot act from the alert text.</p>
+      <p class="badges"><span class="badge">devops</span><span class="badge">operations-maintenance</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="monitoring-alerting">Monitoring & Alerting</h2>
+<h3 id="overview">Overview</h3>
+<p>An alert is a page to a human — the most expensive unit of attention a software system produces. Alerting design is therefore mostly <strong>elimination</strong>: pages must fire only when they require a human now, carry everything needed to act, and know which system promise they are protecting. SLOs give alerting its backbone: you alert at the rate of error-budget burn, not at the first blip.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Defining alerting for a new service or SLO.</li><li>Pages are noisy (op's sleep is destroyed, real issues get lost) or nothing pages and incidents idle.</li><li>There is no SLO, so every metric is alerting on vibes.</li><li>On-call cannot act from the alert text (no runbook, no context).</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>The signals/logging/metrics themselves — that is <code>ops-observability</code>; incident response process beyond pagers — escalation/runbook practice is downstream.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-write-the-slo-first-alert-against-it">Step 1 — Write the SLO first, alert against it</h4>
+<ul><li>An SLO is a quantified availability objective (<code>arch-nfrs</code> §2): e.g. "99.9% of requests < 300ms, monthly". It is a REAL promise with an error budget (the allowed failure window).</li><li>SLOs are chosen by what users actually feel (latency/availability of the user journey), not by "the service was up".</li><li>Without an SLO, there is no principled answer to "should this page?".</li></ul>
+<h4 id="step-2-alert-on-burn-rate-not-on-get-high-then-page">Step 2 — Alert on burn rate, not on get-high-then-page</h4>
+<ul><li><strong>Burn-rate alerting</strong>: page when the error budget is being consumed faster than planned for long enough to matter. Example: page when budget burns at 14.4× for ≥ 1h (a "violation is certain" trigger) with sensible fast/slow burn windows.</li><li>Do NOT alert "error rate > 5% for 5 minutes" — that pages on blips that the budget absorbs and misses the slow bleed that would burn the budget by month-end.</li><li>Alert level matches certainty: <strong>page</strong> only when action is required now; <strong>ticket/warn</strong> when something is trending and a human should look this shift.</li></ul>
+<h4 id="step-3-make-alerts-actionable-or-they-are-not-alerts">Step 3 — Make alerts actionable or they are not alerts</h4>
+<p>Every page must answer, in one screen, the three questions:</p>
+<ol><li><strong>What is broken</strong> (the SLO/experience it threatens)</li><li><strong>How sure/how bad</strong> (burn rate, affected scope)</li><li><strong>What to do</strong> (runbook link, first triage step, who to escalate)</li></ol>
+<p>An alert with no runbook or no owner is a notification, not an alert. Write the runbook when the alert is created, not during the incident.</p>
+<h4 id="step-4-triage-the-noise-until-the-pager-is-trusted">Step 4 — Triage the noise until the pager is trusted</h4>
+<ul><li>Track page volume and page-to-action ratio per SLO. A page sysrem that produces no action is debt.</li><li>Suppression only ever lasts until a fix lands: silenced alerts are tracked with owners and expiry — a silent pager is a schedule for failure.</li><li>After every incident: was the page RIGHT, MISSING, or WRONG? Feed the answer into the alert rules (this is the loop that makes the pager honest).</li></ul>
+<h4 id="step-5-on-call-practice-the-humans">Step 5 — On-call practice: the humans</h4>
+<ul><li>On-call engineers are protected by the alert design (no needless pages) and armed by runbooks (no guesswork pages).</li><li>Escalation is explicit: primary → secondary → manager, with timeouts; no "someone will notice".</li><li>Handover is the discipline: outstanding pages, ongoing incidents, and expiry of temporary suppressions are handed over in writing, not on vibes.</li><li>Alert routing by ownership: the alert goes to the team that can act on it — a page to an ownerless queue is a broadcast.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"Page on every 5xx spike, safety first"</td><td>Every-blip paging destroys the pager's meaning; the budget absorbs blips by design.</td></tr><tr><td>"No SLO yet, we'll alert on errors"</td><td>Without a budget, every rule is arbitrary and every debate is religious.</td></tr><tr><td>"The alert says 'errors high', the runbook is old"</td><td>Then the page is a doorbell with no door — write it at creation.</td></tr><tr><td>"Silencing this alert, it's noisy"</td><td>Silencing is only valid with an owner, an expiry, and a fix ticket.</td></tr><tr><td>"On-call means watching the dashboard"</td><td>That is what burn-rate alerting is for; watching is how you normalize failure.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Alerts not backed by SLOs/error budgets</li><li>Blip-based alert rules (pages that the budget should absorb)</li><li>Pages with no runbook, no owner, no escalation</li><li>Silences without owners/expiry; pager volume trending up with no action payoff</li><li>"5xx > 5%" style rules instead of burn rates</li><li>A pager nobody trusts — the surest signal the design is broken</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] SLOs defined for user-visible journeys with error budgets</li><li>[ ] Alerting via burn rate with page for certainty-now, ticket for trends</li><li>[ ] Every page answers what/badness/action; runbooks exist at creation</li><li>[ ] Noise triaged; suppressions owned+expiring; post-incident page review feeds rules</li><li>[ ] Escalation explicit (primary→secondary→manager with timeouts); routing by ownership</li><li>[ ] Handover discipline: pages, incidents, expirations written down</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

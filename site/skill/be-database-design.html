@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>be-database-design · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Developer Backend</p>
+      <h1><code>be-database-design</code></h1>
+      <p class="tagline">Design database schemas and tables: table modeling, normalization vs denormalization, the index each query needs, transactions and isolation, and safe migrations. Use when designing or altering a table or schema, when choosing an index or planning a migration to add a column, when a query is slow, or before touching a data model.</p>
+      <p class="badges"><span class="badge">backend</span><span class="badge">implementation</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="database-design">Database Design</h2>
+<h3 id="overview">Overview</h3>
+<p>The schema is the longest-lived contract in most systems — every service, report, and migration depends on it. This skill covers the decisions that protect that contract: modeling and keys, the normalization/denormalization trade-off, indexing for the queries that exist, transactions and isolation for the writes that happen, and migrations that can be shipped, rolled back, and reasoned about.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Creating or altering tables, entities, or models.</li><li>Designing a query, index, or access pattern.</li><li>A query regresses or a table grows and queries degrade.</li><li>Planning a migration or schema change that touches existing data.</li><li>Choosing between a normalized relational shape and a denormalized/read-optimized one.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Choosing a storage engine or managed DB product evaluation (that is <code>ops-</code> / <code>arch-</code> territory).</li><li>Event/projection stores driven by <code>be-async-messaging</code> or CQRS read models follow their own rules.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-model-the-truth-name-it-unmistakably">Step 1 — Model the truth, name it unmistakably</h4>
+<ul><li>Each entity gets a <strong>stable primary key</strong>. Prefer a surrogate key (<code>id</code> UUID/bigint) as PK; business keys are unique constraints, not PKs that get repurposed.</li><li>One concept per table; columns typed and constrained (<code>NOT NULL</code> unless genuinely optional, <code>CHECK</code> for ranges, enums for closed sets).</li><li>Foreign keys express ownership; index them. Denormalized copies of other tables' columns are flagged until justified (Step 3).</li></ul>
+<h4 id="step-2-normalize-by-default-3nf-then-decide">Step 2 — Normalize by default (3NF), then decide</h4>
+<p>Start at <strong>third normal form</strong>: no partial-key dependencies, no transitive dependencies, no duplicate column groups (repeated columns = a missing table). From there, denormalize <strong>only</strong> when a measured query or a read-heavy path demands it — and do it deliberately:</p>
+<table><tr><th>Denormalize when</th><th>Keep normalized when</th></tr><tr><td>Read-heavy aggregation/reporting path with measured latency problem</td><td>Writes dominate; update consistency matters</td></tr><tr><td>Hot read of derived data computed per request</td><td>Single source of truth must be authoritative</td></tr><tr><td>Read model / projection (CQRS)</td><td>One team, one model, writes and reads kept coherent</td></tr></table>
+<p>A denormalized column demands a <strong>write discipline</strong>: document who updates it, in which transaction, and how it is reconciled.</p>
+<h4 id="step-3-index-for-the-queries-you-run-not-the-ones-you-imagine">Step 3 — Index for the queries you run, not the ones you imagine</h4>
+<ul><li>Index columns in <code>WHERE</code>, <code>JOIN</code>, <code>ORDER BY</code>, <code>GROUP BY</code> — composite indexes ordered leftmost-by-selectivity-to-cardinality.</li><li><strong>Partial indexes</strong> and covering indexes for the hot paths; keep index count proportional to actual query load — each index taxes writes.</li><li>Explain-plan before and after. If an index has never shown up in a plan, drop it.</li><li>Beware the classic traps: index on <code>LOWER(col)</code> requires function-call duplication; leading-wildcard <code>LIKE '%x'</code> cannot use a B-tree index; OR-branches may need separate analysis.</li></ul>
+<h4 id="step-4-transactions-scope-them-know-your-isolation">Step 4 — Transactions: scope them, know your isolation</h4>
+<ul><li>Wrap a unit of work, not a request: one transaction = one business invariant, minimal duration, no external calls inside (HTTP/messaging inside a transaction = lock hoarding and deadlock breeding).</li><li>Choose isolation deliberately. Defaults exist for a reason: understand <code>READ COMMITTED</code> vs <code>REPEATABLE READ</code> vs <code>SERIALIZABLE</code> and document which level the operation needs. Optimistic locking (version/<code>updated_at</code> check) is the standard answer to lost updates — prefer it over escalating isolation.</li><li><strong>Lock ordering</strong>: acquire locks in a consistent global order to prevent deadlocks. Two services locking the same two tables in opposite orders is a scheduled outage.</li><li>Never swallow a failed transaction and "continue" — the unit of work is atomic or it is not done.</li></ul>
+<h4 id="step-5-migrations-forward-and-backward-or-not-at-all">Step 5 — Migrations: forward and backward or not at all</h4>
+<ul><li>Every migration ships with a <strong>forward</strong> path and (for the migration window) a <strong>backward/revert</strong> path, or an explicit "not reversible, requires data backfill" note reviewed by a human.</li><li><strong>Expand-contract</strong> for breaking changes: add the new column/table (expand) → dual-write/backfill → verify → stop writing old → drop old (contract). Never drop a column that live code still reads; never rename in place without a shadow period.</li><li>Migrations run in CI and against staging with a representative dataset; schema changes are reviewed like code (they inevitably gain <code>fnd-code-review</code> attention).</li></ul>
+<h4 id="step-6-prove-it-on-real-shapes">Step 6 — Prove it on real shapes</h4>
+<p>Before done: explain-plan the queries the change touches, run the migration against staging data, and (for hot paths) a load check. If a query's plan surprises you, the index or the model is wrong — fix the data shape, not the query workaround.</p>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"We'll denormalize, it's read-heavy"</td><td>Read-heavy with no measured latency problem is still premature; measure first.</td></tr><tr><td>"Add an index, that fixes it"</td><td>An index only helps the plan that can use it — prove it with the plan, not the hope.</td></tr><tr><td>"One big transaction for the whole request"</td><td>Long transactions hold locks, serialize writes, and surprise you with deadlocks.</td></tr><tr><td>"Drop the column now, nothing uses it"</td><td>"Nothing" is never verified in production; expand-contract exists for a reason.</td></tr><tr><td>"The business key is obviously unique, use it as PK"</td><td>Business keys change meaning; surrogate PKs survive meaning changes.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Repeated column groups or comma-joined values in a column (missing table)</li><li>Denormalized columns with no documented writer/reconciler</li><li>Indexes never exercised by any explain-plan</li><li>External calls (HTTP/queue) inside a transaction</li><li>ALTERs that drop/rename in one step with no expand-contract</li><li>Migrations with no revert or no staging run</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Entities keyed stably; business keys as unique constraints</li><li>[ ] Normalized by default; every denormalization justified by a measured path with a documented writer</li><li>[ ] Indexes justified by plans; no dead indexes; composite orders sane</li><li>[ ] Isolation chosen deliberately; optimistic locking preferred over escalation; lock ordering consistent</li><li>[ ] Migrations forward+revert (or explicit irreversible label), expand-contract for breaking changes, staged/data-representative</li><li>[ ] Explain-plans and staging runs performed for touched queries</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

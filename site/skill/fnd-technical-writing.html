@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>fnd-technical-writing · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Foundation</p>
+      <h1><code>fnd-technical-writing</code></h1>
+      <p class="tagline">Writes technical documentation that survives: READMEs, API documentation, inline comments, and changelogs — with the right structure for each and rules that keep docs from rotting. Use when writing or improving a README, documenting an API or module, reviewing documentation quality, writing a changelog, or when a teammate asks 'how do I use this?' and there is no answer written down.</p>
+      <p class="badges"><span class="badge">foundation</span><span class="badge">operations-maintenance</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="technical-writing">Technical Writing</h2>
+<h3 id="overview">Overview</h3>
+<p>Documentation fails in one of two ways: it doesn't exist, or it drifts from reality. Both are solved by the same rules: write for a named reader, structure each document type, and treat documentation as code — reviewed, tested, and maintained in the same change as the code it describes.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Writing or improving a README, API reference, module guide, or onboarding doc.</li><li>A "how do I use this?" question that has no written answer.</li><li>Reviewing docs as part of a change (docs should change WITH code).</li><li>Writing or maintaining a changelog.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Copywriting or marketing material.</li><li>Re-documenting obvious code ("increments the counter") — that's noise.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-name-the-reader-and-the-task">Step 1 — Name the reader and the task</h4>
+<p>Every document answers one reader's task: <em>"how do I install this?"</em>, <em>"what does this API contract guarantee?"</em>, <em>"why is the system shaped this way?"</em>. Write the task at the top of the document. If a document serves two readers, split it.</p>
+<h4 id="step-2-readme-top-down-actionable">Step 2 — README: top-down, actionable</h4>
+<p>The README is a funnel — the first 10 lines decide whether the reader stays:</p>
+<ol><li><strong>What it is</strong> (one sentence) and the problem it solves.</li><li><strong>Install</strong> in the fewest commands, copy-pasteable.</li><li><strong>Quick start</strong>: the minimal working example, runnable.</li><li><strong>Usage</strong>: common operations with examples.</li><li><strong>Config / API surface</strong>: table-form, one line per option, defaults stated.</li><li><strong>Development / contribution</strong>, <strong>license</strong>, <strong>links</strong>.</li></ol>
+<p>Never require a search for the install command. Every command in a README should be citable by a link/anchor.</p>
+<h4 id="step-3-api-docs-contract-before-prose">Step 3 — API docs: contract before prose</h4>
+<p>Document the <strong>contract</strong>: inputs with types and ranges, outputs, error semantics, and idempotency — before describing motivation. For each endpoint/function:</p>
+<pre><code class="language-markdown">### `POST /orders`
+Create an order. Idempotent via `Idempotency-Key`.
+- **Auth**: `Bearer` token, `orders:write` scope
+- **Body**: `{ &quot;items&quot;: [{ &quot;sku&quot;: string, &quot;qty&quot;: int 1..99 }] }`
+- **200**: order created (see Order object)
+- **409**: duplicate idempotency key; **422**: validation failed</code></pre>
+<p>Errors are part of the contract: document status codes, error shapes, and retry semantics.</p>
+<h4 id="step-4-comments-the-why-never-the-what">Step 4 — Comments: the why, never the what</h4>
+<p>An inline comment explains what the code cannot: <em>why</em> this branch exists, <em>which</em> invariant is being protected, <em>what</em> trap was avoided. "Increments i" is noise; "skip entries older than the retention window" is a why. When a comment describes what, the code should be rewritten to say it instead.</p>
+<h4 id="step-5-changelog-keep-a-changelog-discipline">Step 5 — Changelog: Keep a Changelog discipline</h4>
+<ul><li>One <code>Unreleased</code> section at the top; per-release sections below, dated, in reverse order.</li><li>Group by type: <strong>Added / Changed / Deprecated / Removed / Fixed / Security</strong>.</li><li>Entries are user-visible sentences ("The CLI now retries failed uploads with backoff"), not internal notes.</li><li>A changelog entry ships with the change — never batched at release time from memory.</li></ul>
+<h4 id="step-6-test-the-docs">Step 6 — Test the docs</h4>
+<p>Treat docs like code: after writing them, follow your own instructions from a clean state (fresh session, no prior context) and fix whatever fails. If a command in the docs cannot be run in CI, mark it as such or remove it.</p>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"The code is self-documenting"</td><td>Code shows the what, not the why or the contract. READMEs and API docs still die.</td></tr><tr><td>"I'll document it when it stabilizes"</td><td>"Stabilizes" never arrives; docs written later are reconstruction, not documentation.</td></tr><tr><td>"Docs are a separate PR"</td><td>Docs that land separately land late, and late docs are written from memory.</td></tr><tr><td>"A comment explains the workaround"</td><td>Good — only if it states WHY the workaround exists and the condition under which it can be removed.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>README with no install section or commands that don't run</li><li>API docs without error semantics</li><li>Comments repeating the code line they annotate</li><li>Docs describing behavior the code no longer has (drift — fix in the same change)</li><li>Changelog written from memory at release time</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] The reader and their task are stated</li><li>[ ] README follows the funnel; install commands are copy-pasteable</li><li>[ ] API contract documented: inputs, outputs, errors, idempotency</li><li>[ ] Comments explain why/invariants only; code bears the re-readability</li><li>[ ] Changelog entry added for the change, correct section and tense</li><li>[ ] The docs were executed from a clean state (or the unexecuted parts are labeled)</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

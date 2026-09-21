@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>ops-devsecops · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">DevOps</p>
+      <h1><code>ops-devsecops</code></h1>
+      <p class="tagline">Secures the delivery pipeline: SAST and SCA in CI, secrets scanning, image scanning, and supply-chain defense. Use when building or hardening pipelines, when the repo has no security gates, when dependencies or images ship unchecked, or when supply-chain risks (registry, actions, packages) need bounding.</p>
+      <p class="badges"><span class="badge">devops</span><span class="badge">build</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="devsecops">DevSecOps</h2>
+<h3 id="overview">Overview</h3>
+<p>Security in delivery is a set of gates that run with every change — not a review that happens at release time. This skill covers the pipeline-layer controls: <strong>SAST</strong> (static analysis of your code), <strong>SCA</strong> (your dependencies), <strong>secrets scanning</strong> (your git history and configs), <strong>image scanning</strong> (your artifacts), and the <strong>supply-chain</strong> discipline (the tools that build your tools). The goal: vulnerabilities fail in CI, where a fix is cheap, not after merge where they are incidents.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Building or hardening a pipeline with security gates.</li><li>The repo ships with no SAST/SCA/secrets scanning and no one knows the exposure.</li><li>Adding dependencies, base images, or third-party build tools/actions.</li><li>Responding to a scan finding and needing the triage-and-fix loop.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Application-layer security in product code (<code>be-security-engineering</code>); container image craft itself (<code>ops-docker-containers</code>) — this skill gates them, it does not redo them.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-fail-fast-with-sast-and-sca-in-ci">Step 1 — Fail fast with SAST and SCA in CI</h4>
+<ul><li><strong>SAST</strong> (semgrep, CodeQL, gosec/bandit/spotbugs…) runs on the diff or full tree per push; rules scoped to real risk (injection, authz, secrets, unsafe deserialization).</li><li><strong>SCA</strong> (OSV, npm audit, pip-audit, Trivy…) checks the locked dependency graph against vulnerability databases.</li><li>Gate policy: <strong>fail on high/critical</strong> (with a triage path for confirmed-not-exploitable in context); warn on medium with noise controls.</li><li>Both feed the same loop: finding → ticket → fix → the fixing PR must be the thing that closes the finding.</li></ul>
+<h4 id="step-2-scan-for-secrets-and-kill-the-leak-path">Step 2 — Scan for secrets and kill the leak path</h4>
+<ul><li>Secrets scanning (gitleaks, trufflehog) in CI over commits and PRs — AND a <strong>one-time history sweep</strong> of the repo (git-history scan) on adoption: a secret in an old commit is a compromise, not a formatting issue.</li><li>On a hit: treat as compromised (<code>be-security-engineering</code> §4) — rotate, do not "uncommit". The repo history has already shipped the credential to every clone.</li></ul>
+<h4 id="step-3-scan-images-before-they-become-artifacts">Step 3 — Scan images before they become artifacts</h4>
+<ul><li>Image scan (Trivy, Grype, docker scan) after build, before push/promotion: OS and app-layer CVEs.</li><li>Gate on critical/high; distinguish "fixable by rebuild" from "needs base image change" (<code>ops-docker-containers</code>).</li><li>Image provenance: digest-pinned bases (reproducibility IS security), signed images where the registry supports it.</li></ul>
+<h4 id="step-4-bound-the-supply-chain-of-your-toolchain">Step 4 — Bound the supply chain of your toolchain</h4>
+<ul><li>CI actions/workflows: pin to <strong>tagged/digest</strong> versions of trusted publishers; audit third-party actions — a build tool is code you run with your credentials.</li><li>Package registries: trusted, scoped proxies (or at least lockfiles + audits); private packages from a provenance-backed feed.</li><li>Registry/base-image pulls go through a vetted proxy; update cadence for base images and CI tooling is a scheduled task, not a fire drill.</li></ul>
+<h4 id="step-5-make-the-gates-reviewable-and-owned">Step 5 — Make the gates reviewable and owned</h4>
+<ul><li>Security gate results are visible in the PR (blocking status checks), not buried in a nightly report.</li><li>Each gate has an owner who can override with a ticket (never a silence); overrides are listed and reviewed.</li><li>Metrics that matter: findings-per-merge, days-to-fix, secrets-leaked-per-quarter. A devsecops program that does not measure itself is a tool install, not a program.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"SAST gives false positives, we skip it"</td><td>Unscoped noise is a rule-config problem; skipping the gate deletes the whole signal.</td></tr><tr><td>"The dependency is used internally, low risk"</td><td>Internal exposure + one compromised path is how the migration is questioned later.</td></tr><tr><td>"That secret is old, we'll rotate next sprint"</td><td>Old + exposed = compromised NOW; rotate.</td></tr><tr><td>"Third-party actions are by a big org, fine"</td><td>Big orgs get breached too; pin + audit is the only policy for code you run with CI credentials.</td></tr><tr><td>"Security checks slow the pipeline"</td><td>They run in parallel with the build; the cost is seconds, the alternative is incidents.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>No SAST/SCA in CI; findings only in nightly reports nobody reads</li><li>Secrets in git history un-swept; secret removals without rotation</li><li>Images pushed without scanning; unpinned base images</li><li>Third-party actions/registries unpinned and unaudited</li><li>Gate overrides with no ticket, no owner, no review</li><li>No measurement of findings, fix times, or leaks</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] SAST + SCA gate CI on high/critical with a triage path; noise scoped</li><li>[ ] Secrets scanning in CI + history sweep done; hits rotated, not uncommitted</li><li>[ ] Image scanning pre-promotion; bases digest-pinned; provenance where supported</li><li>[ ] Actions/tooling pinned+audited; registries scoped; update cadence scheduled</li><li>[ ] Gate results visible in PRs; overrides ticketed and reviewed</li><li>[ ] Program metrics tracked (findings/merge, days-to-fix, leaks)</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

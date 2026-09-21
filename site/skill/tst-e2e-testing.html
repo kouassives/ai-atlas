@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>tst-e2e-testing · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Tester</p>
+      <h1><code>tst-e2e-testing</code></h1>
+      <p class="tagline">Tests critical user journeys end-to-end: Playwright/Cypress patterns, journey selection, and stability against flake. Use when proving critical paths through the real stack, when e2e suites are flaky or huge, or when a release gate needs evidence that the core journey works.</p>
+      <p class="badges"><span class="badge">tester</span><span class="badge">testing</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="e2e-testing">E2E Testing</h2>
+<h3 id="overview">Overview</h3>
+<p>E2E tests prove the critical journey through the real stack — browser through API to database. They are the pyramid's thin, precious tip: most valuable per test, most expensive per test, and most prone to rot (flakiness, travel time, brittle selectors). Their discipline is <strong>few, journey-shaped, and boring</strong>: a tiny fleet of tests that are so stable and fast the team trusts them as the final gate.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Proving the 1-3 journeys that make or break the product (signup→pay, cart→checkout, login→admin).</li><li>A release gate needs evidence that the core journey works in the real shape.</li><li>E2E suites grew to hundreds and now flake cost more than they catch.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Covering every page's variations (integration/unit territory — see <code>tst-integration-testing</code>).</li><li>Testing what lower tiers already price — e2e is for the LAST mile of wiring, not for re-testing rules.</li><li>First proof of logic — that is <code>be-tdd</code>; e2e is evidence, not development loop.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-choose-journeys-not-pages">Step 1 — Choose journeys, not pages</h4>
+<p>A journey is a user's whole trip (browse → add → checkout → order confirmation), not a page. Select by value and risk (<code>tst-test-strategy</code>): the journeys whose failure means the product is failing. The whole e2e fleet should fit in a handful of journeys; if it doesn't, page-level coverage is leaking in from the wrong tier.</p>
+<h4 id="step-2-write-journeys-as-user-stories-with-explicit-setup">Step 2 — Write journeys as user stories with explicit setup</h4>
+<ul><li>Arrange: deterministic seed data (the journey's fixture — created via the app's APIs, not by clicking through the UI to get there).</li><li>Act: the user's real actions (real selectors from user-visible roles/text, not brittle CSS paths frozen from an old build).</li><li>Assert: the observable outcome (confirmation screen, DB row, email for critical paths).</li><li>The journey is told in <code>tst-test-design-techniques</code> shape (Given/When/Then) — same discipline, real stack.</li></ul>
+<h4 id="step-3-control-the-environment-like-a-laboratory">Step 3 — Control the environment like a laboratory</h4>
+<ul><li>Dedicated environment (or isolated container) with <strong>known seed state</strong>; never run e2e against shared prod-like data or live third-party services (stub the external payments in AND note the seam, <code>tst-integration-testing</code>).</li><li>Deterministic clock/data wherever the journey displays time or relative dates — flake loves "today" and random.</li></ul>
+<h4 id="step-4-engineer-out-the-flake">Step 4 — Engineer out the flake</h4>
+<p>Flake is the #1 killer of e2e trust — treat it as a bug (<code>tst-regression</code>), never mask it:</p>
+<ul><li><strong>Wait on conditions, not on sleeps</strong>: wait for the UI state the journey needs (element/network idle), never <code>setTimeout</code> rituals.</li><li><strong>Retry policy</strong>: built-in test-runner retries ONLY for infrastructure flake, never to paper over a real bug; a consistently retried test is a failing test in disguise.</li><li><strong>Selectors</strong>: by role/text/label (user-visible contract identifiers), not by capture-once CSS. A test that breaks on every restyle was testing the restyle.</li><li><strong>Isolation</strong>: each journey independent — a failing journey must not poison the next (fresh state per test).</li></ul>
+<h4 id="step-5-keep-the-fleet-tiny-and-the-gate-meaningful">Step 5 — Keep the fleet tiny and the gate meaningful</h4>
+<ul><li>E2E in CI on the release gate (or nightly + pre-release), not on every commit; the dialect is "few + trusted", the enemy is "many + flaky".</li><li>Track the fleet's flake rate; flake above ~1% is a debt emergency, not a nuisance.</li><li>The gate's evidence is the output: which journey ran, which step failed, with the trace/artifact — a journey failure with no artifact failed the tooling, not the product.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"E2E everything — it's the real test"</td><td>An e2e-everything suite is slow, flaky, and late; it re-tests what lower tiers priced.</td></tr><tr><td>"setTimeout(2000) and hope"</td><td>Sleeps are flake factories; wait on conditions.</td></tr><tr><td>"Selector copied from DevTools"</td><td>Copies from DevTools break on the first restyle; user-visible identity survives.</td></tr><tr><td>"One flaky test, just retry it"</td><td>A retried test is a lie the suite tells the release gate.</td></tr><tr><td>"Run e2e against staging/prod data"</td><td>Shared data = shared flake; the laboratory has its own seeds.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Hundreds of e2e tests covering pages, not journeys</li><li>Sleeps, capture-once selectors, tests that retry to pass</li><li>E2E against live third parties or shared staging data</li><li>Flake rate trending up, unowned</li><li>Journey fixtures built by clicking through the UI</li><li>Failures with no artifacts</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Fleet = few critical journeys (handful max), value+risk selected</li><li>[ ] Given/When/Then journeys with deterministic seed state</li><li>[ ] Laboratory environment: dedicated, seeded, external seams stubbed deliberately</li><li>[ ] Condition waits, no sleeps; selectors user-visible; journeys isolated</li><li>[ ] Gate placement right (release/nightly); flake tracked, debt owned</li><li>[ ] Failure artifacts complete; flaky tests treated as bugs, not retried</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

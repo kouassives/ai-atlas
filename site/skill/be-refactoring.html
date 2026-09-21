@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>be-refactoring · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Developer Backend</p>
+      <h1><code>be-refactoring</code></h1>
+      <p class="tagline">Performs safe refactoring: finding seams, preserving behavior, moving in small verified increments, and recognizing code smells from a catalogue. Use when improving existing code without changing behavior, when a codebase is hard to change and needs structural cleanup, when preparing a system for a feature it cannot currently hold, or when reviewing code that 'works but hurts'.</p>
+      <p class="badges"><span class="badge">backend</span><span class="badge">operations-maintenance</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="refactoring">Refactoring</h2>
+<h3 id="overview">Overview</h3>
+<p>Refactoring is behavior-preserving restructuring: the program's observable behavior does not change, while its structure improves so the next change is cheaper. The discipline is what separates refactoring from "rewriting it the way I like." This skill covers the safety machinery (seams, verification, small steps) and the smell catalogue that tells you WHAT to restructure.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Improving code that works but is hard to change, test, or extend.</li><li>Preparing a system for a feature: the shape resists the change, so restructure first.</li><li>Extracting logic from a god function/class into testable units.</li><li>Renaming, re-moduling, or de-duplicating across the codebase.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>When behavior MUST change — that is a feature change (<code>be-tdd</code> applies, refactor separately with different commits).</li><li>When the code should be thrown away rather than restructured (tiny, dead, or unreadable-with-no-tests codebases may cost less to rewrite — say it explicitly).</li><li>Cosmetic churn with no structural gain ("refactoring" as a rename party): every step must be justified by a smell.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-find-the-seams">Step 1 — Find the seams</h4>
+<p>A seam is a place where you can alter behavior without editing the code's dependencies: an interface, a function boundary, a module edge, an indirection point. If there is no seam, create one <strong>without changing behavior</strong> first (extract function with identical logic), then proceed. Seams-first is the difference between safe moves and a big-bang edit.</p>
+<h4 id="step-2-lock-behavior-with-a-characterization-net">Step 2 — Lock behavior with a characterization net</h4>
+<p>Before the first structural move: if tests exist, run them green. If not, write <strong>characterization tests</strong> — tests that pin current behavior (including its oddities) without judging it. The net is the refactor's permission slip; without it, every move is archaeology with a lighter.</p>
+<h4 id="step-3-refactor-in-small-verified-increments">Step 3 — Refactor in small verified increments</h4>
+<ul><li>One smell, one step: extract → run net → commit → next.</li><li><strong>Never mix refactoring and feature work in one commit.</strong> A commit that both moves code and adds behavior is unsafe to review and unsafely revertable.</li><li>Each increment leaves the suite green; if a step breaks the net, the step was too big — bisect it, don't push through.</li><li>Use the language's tooling (linters, type checker, compiler) as an additional net: types make renames and moves provable.</li></ul>
+<h4 id="step-4-consult-the-smell-catalogue">Step 4 — Consult the smell catalogue</h4>
+<table><tr><th>Smell</th><th>Fix shape</th></tr><tr><td>Duplicated code</td><td>Extract; if three copies, the abstraction earns itself</td></tr><tr><td>Long method / god class</td><td>Extract until each element has one reason to change (<code>be-solid-principles</code>)</td></tr><tr><td>Feature envy</td><td>Move the method to the data it envies</td></tr><tr><td>Shotgun surgery</td><td>One change touches many units → consolidate ownership</td></tr><tr><td>Primitive obsession</td><td>Introduce a small type/value object (money, dates, ids)</td></tr><tr><td>Switch statements over types</td><td>Polymorphism/registry (<code>be-solid-principles</code>)</td></tr><tr><td>Data clumps</td><td>Extract the clump into a value object</td></tr><tr><td>Divergent change</td><td>Separate the axes of change into their own units</td></tr><tr><td>Message chains / middle man</td><td>Collapse the chain or inline the middleman</td></tr><tr><td>Dead code</td><td>Delete it — reverting is what git is for</td></tr></table>
+<p>Every extraction must <strong>reduce total reasoning load</strong>, not relabel it: a new abstraction with a worse name than the code it hides is a net loss.</p>
+<h4 id="step-5-verify-behavior-preservation-honestly">Step 5 — Verify behavior preservation honestly</h4>
+<ul><li>The net (characterization + existing suite) green after every increment.</li><li>For subtle behavior (ordering, null handling, error paths): characterization tests should specifically pin those — refactors love to break the boundary cases first.</li><li>After the full refactor: suite green, diff reviewable as "moves only," and a quick smoke run of the real system. No new bugs introduced and no behavior "improved silently" — silent behavior changes during a refactor are bugs in progress.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"It works, don't touch it"</td><td>That is precisely the moment before it stops working when you NEED to change it — refactor when the shape hurts to change.</td></tr><tr><td>"I'll refactor while I add the feature"</td><td>Mixed commits are review-proof and bug-rich; separate the concerns.</td></tr><tr><td>"The tests don't exist, but I'm just moving code"</td><td>Moving behavior without a net is a roulette wheel; characterization tests cost an hour and buy every later step.</td></tr><tr><td>"Big-bang is faster than many small steps"</td><td>Big-bang is the failure mode with the longest rollback story.</td></tr><tr><td>"It's cleaner now, I'll trust it"</td><td>Clean is only worth something if the net proves behavior survived.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Refactoring commits that also change behavior (or tests asserting new behavior)</li><li>Steps too large to bisect; suites red between increments</li><li>No test/type net at the start of the refactor</li><li>Extractions that rename without simplifying, or abstractions hiding worse names</li><li>Structural churn touching code unrelated to the target smell</li><li>"It should behave the same" as the only verification story</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Seams identified or created with zero behavior change</li><li>[ ] Characterization net in place (or existing suite green) before structural moves</li><li>[ ] One smell per increment; suite green after each; commits refactor-only</li><li>[ ] No feature work mixed into refactoring commits</li><li>[ ] Boundary behaviors (ordering, nulls, errors) pinned by tests</li><li>[ ] Refactor verified: suite green, diff is moves-only, real-system smoke ok</li><li>[ ] Every change justified by a named smell — no churn</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

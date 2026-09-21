@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>be-api-design · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Developer Backend</p>
+      <h1><code>be-api-design</code></h1>
+      <p class="tagline">Designs and implements APIs: REST vs GraphQL vs gRPC selection, resource modeling, status codes, validation, pagination, idempotency, and versioning. Use when creating or extending an API, when choosing an API style, when endpoints lack standard status semantics, or when clients need stable contracts and retry behavior.</p>
+      <p class="badges"><span class="badge">backend</span><span class="badge">implementation</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="api-design">API Design</h2>
+<h3 id="overview">Overview</h3>
+<p>An API is a contract your organization ships — every client is a stakeholder you cannot call a meeting with. This skill covers the decisions that make or break that contract: transport style, naming and resource modeling, status and error semantics, pagination, idempotency, and versioning. The goal is APIs that clients can consume safely, retry blindly, and upgrade without breakage.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Designing a new endpoint, resource, or API surface.</li><li>Extending an existing API (adding fields, endpoints, or behaviors).</li><li>Choosing between REST, GraphQL, or gRPC for a service-to-service or public interface.</li><li>Reviewing an API for contract quality (status codes, errors, idempotency).</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Internal function/method interfaces (that's class design — see <code>be-solid-principles</code>).</li><li>Event/message contracts (that's <code>be-async-messaging</code>).</li><li>Designing the transport of the stack itself (pick a standard, don't invent).</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-choose-the-style-by-consumption-pattern">Step 1 — Choose the style by consumption pattern</h4>
+<table><tr><th>Pattern</th><th>Prefer</th></tr><tr><td>Public web/CRUD, diverse clients, caching, browser reach</td><td><strong>REST</strong> (JSON)</td></tr><tr><td>Client-controlled shapes, mobile apps, product data graphs fans</td><td><strong>GraphQL</strong></td></tr><tr><td>Polyglot service-to-service, streaming, strict schemas, high throughput</td><td><strong>gRPC</strong></td></tr><tr><td>Internal team, few clients, simplest possible</td><td>REST</td></tr></table>
+<p>Don't layer a second style until the first has a demonstrated failure, not a hypothetical one.</p>
+<h4 id="step-2-model-resources-then-verbs">Step 2 — Model resources, then verbs</h4>
+<ul><li>Resources are <strong>nouns, plural</strong>: <code>/orders</code>, <code>/users/{id}</code>. Actions that are not CRUD either become sub-resources (<code>/orders/{id}/cancel</code>) or custom verbs only where resource semantics force it.</li><li>Deep nesting >2 levels is a design smell (<code>/companies/{c}/departments/{d}/employees/{e}</code>) — flatten with references.</li><li>Field and resource names: kebab-case URLs, snake_case JSON (or your org's stored convention — pick one, document it, be consistent); naming is part of the contract.</li></ul>
+<h4 id="step-3-status-codes-are-semantics-not-decoration">Step 3 — Status codes are semantics, not decoration</h4>
+<ul><li><code>201</code> for creation (with <code>Location</code>), <code>200</code> for reads/updates, <code>204</code> for deletions.</li><li><code>400</code> malformed syntax <strong>vs</strong> <code>422</code> semantically invalid — pick per operation and document which.</li><li><code>401</code> unauthenticated, <code>403</code> authenticated-but-forbidden, <code>404</code> absent (never leak "exists but no access" unless intentional).</li><li><code>409</code> conflict (idempotency key reuse with different payload, optimistic locking), <code>429</code> rate-limited (with <code>Retry-After</code>).</li><li><strong>Never</strong> return <code>200</code> with an error body, and never map application logic onto <code>5xx</code>. 5xx means "the server broke", not "the business case failed".</li></ul>
+<h4 id="step-4-errors-are-a-contract-too">Step 4 — Errors are a contract too</h4>
+<pre><code class="language-json">{
+  &quot;error&quot;: {
+    &quot;code&quot;: &quot;order_id_required&quot;,
+    &quot;message&quot;: &quot;order_id is required and must be a UUID&quot;,
+    &quot;field&quot;: &quot;order_id&quot;,
+    &quot;request_id&quot;: &quot;req_9f2c...&quot;
+  }
+}</code></pre>
+<p>Stable machine-readable <code>code</code>, human <code>message</code>, offending <code>field</code>, and a <code>request_id</code> for support. Document per endpoint: codes, statuses, retry semantics.</p>
+<h4 id="step-5-pagination-filtering-idempotency-versioning">Step 5 — Pagination, filtering, idempotency, versioning</h4>
+<ul><li><strong>Pagination</strong>: cursor-based for dynamic data (<code>?cursor=</code> → <code>next_cursor</code>), page/offset fine for static lists; always cap page size and return the cap in the payload.</li><li><strong>Filtering</strong>: query params with explicit allowed fields (<code>?status=paid&amp;from=2026-01-01</code>), never open-ended arbitrary expressions.</li><li><strong>Idempotency</strong>: on state-mutating ops, accept a client <code>Idempotency-Key</code>; store key+response; replay returns the stored response (<code>200</code>/<code>201</code> as first sent); <code>409</code> on key reuse with a different payload. Document that retries are safe — this is what makes blind retries possible.</li><li><strong>Versioning</strong>: URL <code>v1</code> for breaking public contracts; additive changes (new fields/endpoints) never bump the version. Deprecate with a documented sunset date; never break silently.</li></ul>
+<h4 id="step-6-validate-at-the-boundary">Step 6 — Validate at the boundary</h4>
+<p>Types, formats, ranges, required-ness enforced at the API boundary per <code>fnd-security-basics</code>, before any business logic. Validation errors are <code>400/422</code> with field-level detail, not exceptions.</p>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"200 with an error field is easier for clients"</td><td>Clients must then inspect bodies on every success — the contract is two contracts.</td></tr><tr><td>"We'll version when we break"</td><td>Versioning added at breakage time is a migration crisis; version cheaply at day one.</td></tr><tr><td>"REST is overkill, one mega-endpoint is fine"</td><td>A mega-endpoint serializes clients and kills independent evolution.</td></tr><tr><td>"gRPC is faster so we use it everywhere"</td><td>Adoption cost exists for every client; choose by consumption pattern, not microbenchmarks.</td></tr><tr><td>"We return 500 for validation, the client should just retry"</td><td>The client can't fix a request the server calls a crash — they get stuck.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Endpoints returning 200-with-error-body or 500-on-business-case</li><li>No idempotency on retry-sensitive mutations (payments, orders, intents)</li><li>Versionless public APIs, or version bumped for additive changes</li><li>Unbounded list endpoints returning everything with no cursor/cap</li><li>Error responses without stable codes or request_id</li><li>Deep nesting or verb-named resources (<code>/getOrderData</code>)</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Style chosen by consumption pattern with rationale</li><li>[ ] Resources noun-plural; nesting ≤2; naming convention documented</li><li>[ ] Status codes mapped per semantics; no 200-error or 500-business</li><li>[ ] Error contract documented: code/message/field/request_id per endpoint</li><li>[ ] Pagination capped and cursor/paging consistent</li><li>[ ] Mutations accept and honor <code>Idempotency-Key</code></li><li>[ ] Versioning present for breaking contracts; additive changes don't bump</li><li>[ ] Input validated at the boundary with field-level errors</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

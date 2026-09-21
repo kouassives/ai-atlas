@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>Per-tool install · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html" class="active">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="readme"><h2 id="per-tool-install">Per-tool install</h2>
+<p><code>ai-atlas</code> ships <code>skills/</code> in the standard Agent Skills layout (<code>skills/&lt;name&gt;/SKILL.md</code>) plus an <code>agents/</code> core for OpenCode.</p>
+<h3 id="opencode">OpenCode</h3>
+<h4 id="npx-skills-add-recommended-once-published"><code>npx skills add</code> (recommended, once published)</h4>
+<pre><code class="language-bash">npx skills add kouassives/ai-atlas                  # all skills
+npx skills add kouassives/ai-atlas --skill fe-security
+npx skills add kouassives/ai-atlas --list</code></pre>
+<p>The skills CLI discovers the flat <code>skills/</code> layout directly and writes each tool's native directory. Agents are <strong>not</strong> installed by the CLI — add them with <code>install.sh</code> or manually:</p>
+<pre><code class="language-bash">install.sh --agent opencode   # global, -&gt; ~/.config/opencode/agent/
+install.sh --project          # project, -&gt; ./.opencode/agent/ (skills too)</code></pre>
+<p>or manually: copy <code>agents/*.md</code> → <code>.opencode/agent/</code>.</p>
+<h4 id="entry-agents">Entry agents</h4>
+<p>Two primary agents ship in <code>agents/</code>:</p>
+<ul><li><strong><code>orchestration-engineer</code></strong> — the Spec-Driven Development entry point: processes one feature end-to-end (context → proposal → plan → implement → verify → review → archive) with the Openspec workflow and delegates technical work to the specialist subagents with handoff contracts. Start here for any feature, change, or bugfix that should begin as a specification. Workflow doc: <a href="https://github.com/kouassives/ai-atlas/blob/main/spec-driven-development.md">spec-driven-development.md</a>.</li><li><strong><code>orchestrator</code></strong> — routes work by SDLC stage and enforces quality gates.</li></ul>
+<p>Both are primary agents; pick one as your session entry point per task type.</p>
+<h4 id="installsh-fallback-no-dependencies"><code>install.sh</code> fallback (no dependencies)</h4>
+<pre><code class="language-bash">./install.sh                      # global → ~/.config/opencode/
+./install.sh --project            # project → ./.opencode/
+./install.sh --agent claude-code  # other tools
+./install.sh --list | --dry-run   # preview
+./install.sh --force              # overwrite differing files</code></pre>
+<p>Idempotent; never deletes unknown files; each run prints the manifest.</p>
+<h3 id="claude-code">Claude Code</h3>
+<p>Skills are compatible: Claude Code auto-loads <code>skills/**/SKILL.md</code> (<code>~/.claude/skills/</code> global, <code>.claude/skills/</code> project).</p>
+<pre><code class="language-bash">./install.sh --agent claude-code            # global → ~/.claude/skills/
+./install.sh --agent claude-code --project  # → ./.claude/skills/ + ./claude/agents/</code></pre>
+<p>Agents are copied to <code>~/.claude/agents/</code> (Claude Code subagents) — verify your Claude Code version reads that folder.</p>
+<h3 id="codex-cursor">Codex / Cursor</h3>
+<pre><code class="language-bash">./install.sh --agent codex    # → ~/.codex/skills/
+./install.sh --agent cursor   # → ~/.cursor/skills/</code></pre>
+<h3 id="marketplace-manifests-phase-2">Marketplace manifests (phase 2)</h3>
+<p><code>scripts/emit-marketplace.mjs</code> regenerates from the filesystem — single source of truth:</p>
+<ul><li><code>registry.yaml</code> — the full skill + agent inventory (skills with domain, agents with mode).</li><li><code>.claude-plugin/marketplace.json</code> — Claude Code plugin marketplace (<code>/plugin marketplace add &lt;repo-url&gt;</code>), one plugin per skill.</li><li><code>.agents/plugins/marketplace.json</code> — Codex marketplace manifest.</li></ul>
+<blockquote><p>Status: emitted and CI-fresh, but path layouts are finalized per tool's</p></blockquote>
+<blockquote><p>plugin scanner at first tagged release. For reliable installs today use</p></blockquote>
+<blockquote><p><code>npx skills add</code> (published) or <code>install.sh</code>/manual copy. Review each</p></blockquote>
+<blockquote><p>manifest with the tool's docs before advertising <code>/plugin marketplace add</code>.</p></blockquote>
+<h3 id="verification-after-any-install">Verification after any install</h3>
+<p>Open a session in a project with the skills configured and ask a question that names one skill verbatim (e.g. "Apply the fe-security skill checklist to this component"). If the agent loads the skill and follows its process, discovery works. <code>scripts/test-install.sh</code> automates this check for the file layout.</p></section>
+    <p class="back"><a href="docs/usage.html">← back to documentation</a></p>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

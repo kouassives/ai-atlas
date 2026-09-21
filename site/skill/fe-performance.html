@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>fe-performance · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Developer Frontend</p>
+      <h1><code>fe-performance</code></h1>
+      <p class="tagline">Keeps the frontend fast: Core Web Vitals, bundle analysis, rendering cost, memoization, and image optimization. Use when the UI feels slow, when budgets regress, when bundles bloat, or when interaction feels janky.</p>
+      <p class="badges"><span class="badge">frontend</span><span class="badge">implementation</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="frontend-performance">Frontend Performance</h2>
+<h3 id="overview">Overview</h3>
+<p>Frontend performance is user experience measured: how fast content appears, how fast it responds, and how much it costs to download. The evidence loop from <code>be-performance</code> applies — budget → baseline → profile → fix → verify — with the frontend's own metric set: <strong>Core Web Vitals</strong> for the user contract, <strong>bundle size</strong> for the download cost, and <strong>rendering cost</strong> for interaction smoothness.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>The UI feels slow, janky, or budgets regress.</li><li>Bundle analysis shows bloat or a dependency is drag racing the first load.</li><li>Lists/dashboards re-render wastefully; interactions stutter.</li><li>A performance regression needs a root cause, not a guess.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Server-side latency diagnosis (that is <code>be-performance</code>); validating load targets with test programs (<code>tst-performance-testing</code>).</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-budget-and-baseline-the-web-vitals">Step 1 — Budget and baseline the Web Vitals</h4>
+<ul><li>Set budgets per Core Web Vital: <strong>LCP</strong> (largest content, ≤ 2.5s), <strong>INP</strong> (interaction, ≤ 200ms), <strong>CLS</strong> (layout shift, ≤ 0.1) on a representative device/network (mid-range phone, throttled — not the dev-machine hero numbers).</li><li>Baseline with real field data (RUM) where available + lab (Lighthouse) for the controlled number. No budget, no baseline = optimizations are decoration.</li></ul>
+<h4 id="step-2-profile-before-optimizing-the-loop-works-here-too">Step 2 — Profile before optimizing (the loop works here too)</h4>
+<ul><li>Measure WHERE the time goes before touching anything: LCP breakdown (server response? render-blocking? image? font?), INP breakdown (long tasks? layout thrash?), bundle breakdown (who is big and why).</li><li>Never "add memoization everywhere" because it feels right — memoization has a cost and its absence may not be the problem.</li></ul>
+<h4 id="step-3-own-the-bundle">Step 3 — Own the bundle</h4>
+<ul><li>Analyze (bundle analyzer/import graphs); the top offenders are usually one big dependency and a barrel importing everything.</li><li>Cut: replace heavy deps, import-on-demand, code-split at route/feature boundaries (<code>fe-architecture</code> §4), drop dead exports. A dependency that costs bundle must earn its bytes (per <code>be-security-engineering</code> dependency hygiene, with a size lens).</li><li>Track total JS shipped per route with a budget; bundle size is a CI checkable metric.</li></ul>
+<h4 id="step-4-reduce-rendering-cost-deliberately">Step 4 — Reduce rendering cost deliberately</h4>
+<ul><li><strong>Memoize by shape</strong>: memoize components/hooks whose props change identity but not content (lists, derived data), not "everything" (over-optimization doubles bookkeeping).</li><li>Virtualize long lists; paginate or window rather than rendering 10k rows.</li><li>Avoid layout thrash: batch reads/writes, use transforms for animations (compositor-friendly), keep DOM breadth sane.</li><li>Long tasks are the INP enemy: chunk heavy work, defer non-critical work, yield to the main thread (<code>fe-api-integration</code> background patterns support this).</li></ul>
+<h4 id="step-5-optimize-images-and-media-the-lcp-budgets-biggest-line">Step 5 — Optimize images and media (the LCP budget's biggest line)</h4>
+<ul><li>Modern formats (AVIF/WebP with fallbacks), <code>srcset/picture</code> with the right sizes per viewport, <code>loading=&quot;lazy&quot;</code> for below-fold, <code>fetchpriority=&quot;high&quot;</code> only for the real LCP element.</li><li>Preload the LCP resource (hero image, key font) with <code>rel=&quot;preload&quot;</code>; avoid preloading everything.</li><li><strong>CLS</strong>: reserve space (aspect-ratio, width/height) for images/ads/embeds — layout shift is a styling bug with a metric.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"The dev machine is fast"</td><td>The user's phone is not your machine; budget on the representative device.</td></tr><tr><td>"Memoize everything, it's free"</td><td>Memoization has bookkeeping cost and hides the real render culprit.</td></tr><tr><td>"One more JS library is fine"</td><td>One more library is one more slice of every user's first-load budget.</td></tr><tr><td>"Images load fine"</td><td>Images are usually the LCP and the bandwidth bill; measure their slice.</td></tr><tr><td>"We'll optimize when it's slow"</td><td>Slow is shipped first — the users you have evidence about, after the fact.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>No Web Vitals budget or baseline; optimizing without measurement</li><li>Unanalyzed bundle; barrel imports; heavy dep with no byte-earned justification</li><li>Memoization blanket-applied; unvirtualized huge lists</li><li>Layout thrash under animation; no space reserved (CLS)</li><li>Unoptimized hero images; no preload on the LCP element</li><li>"Fast in devtools" as the only evidence</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Web Vitals budgets set; lab + field baseline taken on representative device</li><li>[ ] Profile identified the dominant cost; optimization targeted at it</li><li>[ ] Bundle owned: analyzer run, heavy deps justified, route-level splitting, size budget in CI</li><li>[ ] Memoization/rendering tuned to shape; lists virtualized; long tasks yielded</li><li>[ ] Images/media: formats, srcset, lazy/fetchpriority correct; LCP preloaded; CLS space-reserved</li><li>[ ] Before/after verified on the SAME metrics and device profile</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

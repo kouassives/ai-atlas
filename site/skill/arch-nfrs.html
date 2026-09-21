@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>arch-nfrs · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Architect</p>
+      <h1><code>arch-nfrs</code></h1>
+      <p class="tagline">Defines measurable non-functional requirements: performance, availability, security, cost, and compliance — quantified so a system can be designed and verified against them. Use when a system or feature needs concrete NFRs, when requirements say 'fast', 'reliable', or 'secure' with no numbers, or when design decisions must be judged against explicit quality targets.</p>
+      <p class="badges"><span class="badge">architect</span><span class="badge">design</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="non-functional-requirements">Non-Functional Requirements</h2>
+<h3 id="overview">Overview</h3>
+<p>"Fast", "reliable", "secure", "cheap" are feelings, not requirements. An NFR catalog turns each into a <strong>quantified, measurable, acceptable-cost</strong> statement a design can target and verification can check. This skill is the catalogue of NFR categories with quantification techniques, the art of picking which ones actually bind, and the discipline of recording them with owners and verification methods.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>A requirement says "fast/reliable/secure/scalable" with no number attached.</li><li>Designing a system or feature that must be judged against explicit quality targets (feed <code>arch-system-design</code>).</li><li>Choosing between designs and needing an objective basis for the decision.</li><li>Defining SLOs / budgets that operations will later carry (<code>fnd-adr</code> for the commitments).</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Diagnosing a live performance/security issue — that is <code>be-performance</code> / <code>be-security-engineering</code>.</li><li>Setting on-call alerting thresholds (that is <code>ops-monitoring-alerting</code>).</li><li>Inventing NFRs no stakeholder cares about — every NFR is a cost to test and maintain.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-elicit-the-loading-question-first">Step 1 — Elicit the loading question first</h4>
+<p>Before ANY number: what is the <strong>expected load and growth</strong> (users, requests/sec, data volume, burst behavior)? An NFR without a load assumption is a slogan. If the team cannot estimate load, the first NFR is a measurement program, not a target.</p>
+<h4 id="step-2-quantify-each-category-that-binds">Step 2 — Quantify each category that binds</h4>
+<table><tr><th>Category</th><th>Quantify as</th></tr><tr><td><strong>Performance</strong></td><td>Latency budget with percentiles (p50/p95/p99) and a load assumption; throughput (req/s); response-size upper bounds</td></tr><tr><td><strong>Availability</strong></td><td>A target expressed as SLO, e.g. 99.9%/month with a documented error budget; define what counts as an outage (not just uptime)</td></tr><tr><td><strong>Security</strong></td><td>Data handling classes (PII, PCI, credentials); compliance list; ratified controls for each (<code>be-security-engineering</code>)</td></tr><tr><td><strong>Cost</strong></td><td>A budget ceiling: infra cost per unit (per 1k requests, per 100k events), with the growth slope it allows</td></tr><tr><td><strong>Compliance</strong></td><td>The specific regulations/SOC/GDPR/HIPAA items that apply, per data class, with audit evidence required</td></tr><tr><td><strong>Scalability</strong></td><td>The load point beyond which the design must change (scale target), and the mechanism for it</td></tr><tr><td><strong>Recoverability</strong></td><td>RTO/RPO for each data-critical flow: how fast restored, how much loss allowed</td></tr><tr><td><strong>Maintainability</strong></td><td>Mean-time-to-change for a standard change (a development-team NFR, as honest as the rest)</td></tr></table>
+<p>Every NFR needs: the <strong>target</strong>, the <strong>load/context assumption</strong>, the <strong>measurement method</strong>, and (wherever possible) an <strong>owner</strong>.</p>
+<h4 id="step-3-pick-the-binding-few">Step 3 — Pick the binding few</h4>
+<p>Most systems have 2–4 NFRs that genuinely bind; the rest follow from the design once the binding ones are met. For each candidate: "if we missed this by 10x, would the product fail?" — NO → drop or soften it. A catalog of twelve equally-weighted slogans designs nothing and reviews nothing.</p>
+<h4 id="step-4-make-them-design-native-and-conflict-explicit">Step 4 — Make them design-native and conflict-explicit</h4>
+<ul><li>Hand the binding NFRs to design explicitly: latency budget → profile/design path (<code>be-performance</code>); availability → redundancy and failure behavior (<code>be-microservices-patterns</code>); cost → storage/instance shape.</li><li><strong>Conflicts are the design work</strong>: lower cost vs higher availability, faster vs cheaper. Do not hide them — record the chosen trade-off per conflict in the ADR (<code>fnd-adr</code>), with the deciding force named.</li></ul>
+<h4 id="step-5-specify-the-verification-method-per-nfr">Step 5 — Specify the verification method per NFR</h4>
+<p>Each NFR ships with how it will be proven: load test with the load model (<code>tst-performance-testing</code>), chaos/failure drill for recoverability, cost review per release for the budget, compliance evidence list for audit. An NFR with no verification method cannot be accepted, and cannot be regressed — it is a wish.</p>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"Just make it fast; the users will tell us"</td><td>Users tell you in the press and in churn after the outage; numbers are cheaper.</td></tr><tr><td>"99.99% — we're ambitious"</td><td>Ambition without mechanisms is a paper SLO; design the redundancy that earns it.</td></tr><tr><td>"Cost is trivial at our scale"</td><td>Then quantify the triviality: a per-unit budget that is genuinely cheap shows it.</td></tr><tr><td>"Security: we follow best practices"</td><td>An unbounded list of practices is unverifiable; bind the data classes and the controls.</td></tr><tr><td>"We'll test performance after launch"</td><td>Post-launch is a customer outage; the load model exists at design time.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>"Fast/reliable/secure" with no number, load assumption, or owner</li><li>NFRs with no verification method attached</li><li>Ten NFRs all marked critical (the binding few were not selected)</li><li>Availability targets with no failure-behavior design to back them</li><li>Cost/availability conflicts resolved silently instead of recorded</li><li>RTO/RPO absent for data-critical flows</li><li>No load/scale assumption anywhere in the record</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Load assumption stated (users, req/s, data volume, burst) before targets</li><li>[ ] Binding NFRs quantified: target + context + measurement + owner</li><li>[ ] Binding few selected; non-binding ones explicitly deprioritized</li><li>[ ] NFRs handed to design; conflicts recorded with deciding forces (ADR)</li><li>[ ] Verification method per NFR (load test, drill, cost review, evidence list)</li><li>[ ] All claims on the "rationalizations" side converted into records, not vibes</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>tst-api-testing · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">Tester</p>
+      <h1><code>tst-api-testing</code></h1>
+      <p class="tagline">Tests API surfaces: schema validation, auth flows, edge cases, and contract verification. Use when testing API surfaces, when schemas drift from specs, when auth flows need proof, or when an API's edge behavior needs systematic coverage beyond happy paths.</p>
+      <p class="badges"><span class="badge">tester</span><span class="badge">testing</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="api-testing">API Testing</h2>
+<h3 id="overview">Overview</h3>
+<p>API tests are the contract's referee: they prove the running surface still matches the promise (<code>arch-api-contract-design</code>) — schemas, status semantics, error shapes, auth behavior, and edge cases. Where lower tiers test components and e2e tests journeys, API testing tests the <strong>surface as users' code sees it</strong>: fast, isolated, and ruthless about the contract.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Testing a REST/GraphQL/gRPC surface (new endpoints or whole suites).</li><li>Schema drift between spec and implementation must be caught in CI.</li><li>Auth flows (login, tokens, permissions, ownership) need systematic proof.</li><li>Edge behavior (validation, conflicts, idempotency, pagination) needs coverage beyond the happy path.</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Implementation logic inside the service (unit tier), component wiring (integration tier), or UI re-testing of what the API already asserts.</li><li>Designing the API contract itself — that is <code>arch-api-contract-design</code>; this skill VERIFIES it.</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-assert-the-contract-not-just-the-status">Step 1 — Assert the contract, not just the status</h4>
+<p>For every case, verify the promise: <strong>status code, response schema (against the spec/OpenAPI), error shape (code/message/field), and headers</strong> (content-type, idempotency, rate-limit). "200" alone is a screenshot; the schema assertion is the contract check. Schema-first suites run the response through the spec validator — drift fails here, before a client discovers it.</p>
+<h4 id="step-2-cover-the-auth-surface-systematically">Step 2 — Cover the auth surface systematically</h4>
+<ul><li>AuthN: valid credentials, invalid credentials, expired/revoked tokens, malformed tokens, missing auth.</li><li>AuthZ per resource: role present vs absent, and the object-level check — user A requesting user B's resource must be asserted (deny), not assumed (per <code>be-security-engineering</code>).</li><li>Token/session lifecycle: refresh, rotation, invalidation on privilege change (where the API promises it).</li></ul>
+<h4 id="step-3-edge-cases-from-the-design-toolbox">Step 3 — Edge cases from the design toolbox</h4>
+<p>Apply <code>tst-test-design-techniques</code> to the surface: valid/invalid partitions per field, boundary values (page sizes, string length caps, number ranges), decision tables for filter combinations, and state-transition walks for stateful endpoints (cancel after ship = 409/422, not 200). The API tier is where "what does the contract say for THIS input" gets pinned.</p>
+<h4 id="step-4-include-the-negative-and-failure-shapes">Step 4 — Include the negative and failure shapes</h4>
+<ul><li>Validation: malformed payload, unknown fields (if the API promises strictness), oversized bodies.</li><li>Conflict/concurrency: duplicate idempotency key, optimistic-lock mismatches.</li><li>Dependencies: the API's behavior when its downstream fails (5xx from the adapter, timeout) — the surface must return its CONTRACTED error, not a naked 500 (via mocks of the seam, per <code>tst-integration-testing</code>).</li></ul>
+<h4 id="step-5-run-them-as-a-fast-isolated-suite">Step 5 — Run them as a fast, isolated suite</h4>
+<ul><li>API tests hit a real or full-fidelity loopback of the service (testcontainers for its dependencies), with seeded data; suite in seconds-to-minutes.</li><li>Deterministic seeds and isolated DB state per run (<code>tst-integration-testing</code> §2) — the surface tests must not depend on each other.</li><li>Wire into CI as a contract/API gate (pre-merge); drill the auth and schema checks on the release gate too.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"Status 200 is enough for the test"</td><td>The schema is the contract; without schema assertion, drift ships silently.</td></tr><tr><td>"Auth is tested once in login"</td><td>AuthZ-per-resource is where the exposure lives; one login test covers none of it.</td></tr><tr><td>"We don't test validation in DevQA, the client handles it"</td><td>The client handling it is exactly the contract the server must still enforce.</td></tr><tr><td>"Mocking the downstream hides real behavior"</td><td>The surface's job is to return ITS contract error when downstream fails — mock the seam, assert the surface.</td></tr><tr><td>"Postman collections are enough"</td><td>Collections are documentation, not assertions; CI-wired schema+behavior suites are tests.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Assertions without schema validation (drift-friendly)</li><li>No authZ-per-resource cases (only happy-path auth)</li><li>Boundary/combination coverage missing on validation-heavy endpoints</li><li>Downstream failures surfacing as naked 500s with no contracted error</li><li>Suites depending on each other or on shared mutable state</li><li>Contract gate not wired into CI</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Every case asserts status + schema (+ error shape where relevant)</li><li>[ ] AuthN variants and authZ action+resource checks systematically covered</li><li>[ ] Partitions, boundaries, decision tables, state transitions applied to the surface</li><li>[ ] Negative/failure shapes: validation, conflict, downstream-failure contracted responses</li><li>[ ] Fast isolated loopback suite with deterministic seeds; CI contract gate wired pre-merge</li><li>[ ] No "200-only" tests; no client-assumes-validation rationalization</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

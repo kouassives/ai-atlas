@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<base href="../">
+<title>ops-ci-cd · ai-atlas</title>
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<header><nav class="site-nav"><a class="brand" href="index.html">ai-atlas</a><ul><li><a href="index.html">Home</a></li><li><a href="skills.html">Skills</a></li><li><a href="agents.html">Agents</a></li><li><a href="install.html">Install</a></li><li><a href="docs/usage.html">Docs</a></li></ul></nav></header>
+<main class="content">
+
+    <section class="hero sub">
+      <p class="kicker">DevOps</p>
+      <h1><code>ops-ci-cd</code></h1>
+      <p class="tagline">Builds and improves CI/CD pipelines: stages, quality gates, artifact flow, and feedback speed. Use when creating or modifying a pipeline, when CI takes too long or misses failures, or when artifacts or deploy promotion between environments feel hand-rolled.</p>
+      <p class="badges"><span class="badge">devops</span><span class="badge">build</span><span class="badge">opencode, claude-code, codex</span><span class="badge">MIT</span></p>
+      <p class="back"><a href="skills.html">← all skills</a></p>
+    </section>
+    <section class="readme"><h2 id="cicd">CI/CD</h2>
+<h3 id="overview">Overview</h3>
+<p>CI/CD is a feedback system: the pipeline's job is to catch problems at the cheapest moment (on push, not in production) and to make delivery boring. Every pipeline decision — stage order, gate placement, artifact shape, caching — is a trade between speed and safety. This skill covers pipeline structure, quality gates, artifact promotion, and the feedback-speed discipline.</p>
+<h3 id="when-to-use">When to Use</h3>
+<ul><li>Creating a new pipeline or restructuring a slow one.</li><li>CI misses failures that then surface in staging/production.</li><li>Artifacts are rebuilt per environment or deployed from git checkouts.</li><li>Feedback speed regresses (builds that take an hour are not "CI").</li></ul>
+<p><strong>When NOT to use:</strong></p>
+<ul><li>Deployment to Kubernetes specifics (<code>ops-kubernetes</code>), Terraform provisioning (<code>ops-iac-terraform</code>), or pipeline security (<code>ops-devsecops</code>).</li></ul>
+<h3 id="process">Process</h3>
+<h4 id="step-1-design-the-stage-order-by-failure-cost">Step 1 — Design the stage order by failure cost</h4>
+<p>Cheapest failures first: lint/type/unit → build → test tiers that need the build (per <code>be-tdd</code> pyramid) → integration → static security checks → package/artifact. Every stage fails as early as it can. A failure found at stage 3 costs more than the same failure at stage 1 — the pipeline should always escalate cost deliberately, never by accident.</p>
+<h4 id="step-2-make-gates-explicit-not-incidental">Step 2 — Make gates explicit, not incidental</h4>
+<ul><li><strong>Quality gates</strong> (lint, coverage threshold, security scans, contract tests) are named pipeline steps with pass/fail — not "someone should check the logs".</li><li>Gate placement matches the risk: security scan before merge, contract tests before publish, smoke test before promotion to prod.</li><li>A gate that never fails is noise; a gate that fails on flake is worse — maintain the signal (see <code>tst-regression</code> for flake discipline).</li></ul>
+<h4 id="step-3-treat-artifacts-as-the-flows-unit-not-the-repo">Step 3 — Treat artifacts as the flow's unit, not the repo</h4>
+<ul><li><strong>Build once, promote the artifact</strong>: one build produces the artifact; environments consume copies of the SAME artifact (checksum-verified). Never rebuild from source per environment.</li><li>Version artifacts (semver or commit-derived) so a deployed artifact is identifiable after the fact.</li><li>Promotion moves the artifact (registered + approved), often via GitOps (<code>ops-gitops</code>), not "re-deploy from main".</li></ul>
+<h4 id="step-4-optimize-feedback-speed-without-cutting-safety">Step 4 — Optimize feedback speed without cutting safety</h4>
+<ul><li>Cache dependencies and build layers (deterministic caches, checksum-keyed — see <code>ops-docker-containers</code> for cache discipline).</li><li>Parallelize independent stages; fail-fast on the critical path.</li><li>The rule: <strong>developer wait time is the budget</strong>. If the inner loop (lint→unit→build) exceeds ~10 minutes, the pipeline is in the way, not helping — split or shard it.</li><li>CI changes ARE product changes: merge fast, small, and under the same review rules.</li></ul>
+<h4 id="step-5-fail-honestly">Step 5 — Fail honestly</h4>
+<ul><li>A red pipeline is the team's property, not the author's shame: fix-forward or revert; neither is a trick to make it green.</li><li>Never silently skip/disable a failing gate without a follow-up issue and an owner. Silent green is the most dangerous pipeline state.</li><li>Post-merge: the same pipeline (or its release slice) must be reproducible — the "works on CI" lie starts when environments diverge.</li></ul>
+<h3 id="common-rationalizations">Common Rationalizations</h3>
+<table><tr><th>Rationalization</th><th>Reality</th></tr><tr><td>"It works locally, CI is just slow"</td><td>Local ≠ CI; the pipeline is the only environment the team shares.</td></tr><tr><td>"We rebuild per environment to be safe"</td><td>Rebuilding per environment means each env ran different code. Promote artifacts.</td></tr><tr><td>"This gate is flaky, let's disable it"</td><td>A flaky gate is a test debt (<code>tst-regression</code>), not an excuse to delete the guard.</td></tr><tr><td>"The build takes 40 minutes but it's fine"</td><td>40-minute cycles push developers to batch changes — the compounding cost is invisible.</td></tr><tr><td>"Skipping the gate this once is fine"</td><td>Every "this once" is how the pipeline's guarantees rot.</td></tr></table>
+<h3 id="red-flags">Red Flags</h3>
+<ul><li>Stages ordered so expensive failures happen before cheap ones</li><li>Artifacts rebuilt per environment; deployments from source checkouts</li><li>Gates that fail-but-merge, are disabled, or have no owner</li><li>No caching with checksum-keyed invalidation</li><li>Inner loop beyond ~10 minutes with no sharding plan</li><li>CI environment that cannot be reproduced locally</li></ul>
+<h3 id="verification">Verification</h3>
+<ul><li>[ ] Stages ordered by failure cost; early-fail discipline in place</li><li>[ ] Quality gates explicit steps with pass/fail; flaky gates tracked as debt</li><li>[ ] Build-once artifact flow; promotion via artifact registry with checksums</li><li>[ ] Caches checksum-keyed; parallel where independent; wait time measured</li><li>[ ] Failing pipeline policy: fix-forward or revert, never silent-skip</li><li>[ ] CI reproducible locally; team waits documented and budgeted</li></ul></section>
+</main>
+<footer class="site-footer">
+  <p>ai-atlas — MIT licensed. <a href="https://github.com/kouassives/ai-atlas">Source on GitHub</a>.</p>
+</footer>
+<script src="assets/site.js"></script>
+</body>
+</html>
