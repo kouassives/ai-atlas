@@ -227,7 +227,7 @@ Target: **≤ 200 lines** per SKILL.md. If a section would exceed this, move det
 
 | Agent file | Purpose | mode |
 |---|---|---|
-| `orchestration-engineer.md` | Primary agent: one feature end-to-end as Spec-Driven Development — Openspec workflow (context → proposal → plan → implement → verify → review → archive), delegates technical work to specialists with handoff contracts | primary |
+| `orchestration-engineer.md` | Primary agent: one feature end-to-end as Spec-Driven Development — loads the Openspec skills by name and follows their workflow (never restating it), delegates technical work to specialists with handoff contracts | primary |
 | `orchestrator.md` | Primary agent: routes work by SDLC stage, spawns specialists, enforces quality gates | primary |
 | `arch-specialist.md` | Requirements→design, ADRs, architecture review | subagent |
 | `backend-developer.md` | Backend implementation per `be-*`/`arch-*` skills | subagent |
@@ -351,7 +351,7 @@ release (tag v*) → gen-index → SHA256SUMS → GitHub release asset
 | **L6** | frontend (8 `fe-*` skills) + `frontend-developer.md` | L1 | Tier1+Tier2 green |
 | **L7** | ui-designer (6 `ui-*` skills) + `ui-designer.md` | L1 | Tier1+Tier2 green |
 | **L8** | Hardening: `install.sh`, `orchestrator.md`, marketplace manifests (phase 2), execution evals sweep, docs | L2–L7 | Full suite + release |
-| **L9** | Spec-Driven Development: `orchestration-engineer.md` primary agent (Openspec workflow), `docs/spec-driven-development.md`, static catalog site (`scripts/gen-site.mjs` → `site/`, Pages deploy via `site.yml`) | L8 | Site link-check + freshness green |
+| **L9** | Spec-Driven Development: `orchestration-engineer.md` primary agent (loads Openspec skills by name, never restates them), `docs/spec-driven-development.md`, static catalog site (`scripts/gen-site.mjs` → `site/`, Pages deploy via `site.yml`) | L8 | Site link-check + freshness green |
 
 Lots L3–L7 are **parallelizable** after L1 (single pilot domain L2 validates conventions first, per the validated orchestration decision).
 

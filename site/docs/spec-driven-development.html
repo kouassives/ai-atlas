@@ -12,35 +12,18 @@
 <main class="content">
 
     <section class="readme"><h2 id="spec-driven-development-in-ai-atlas">Spec-Driven Development in ai-atlas</h2>
-<p>This document defines the SDD workflow executed by the <code>orchestration-engineer</code> primary agent. The workflow is owned by the <strong>agent</strong> (persona + routing + gates) and the <strong>skills are referenced by name, never copied</strong> — the Openspec skills are installed globally by the user, and the technical depth comes from the ai-atlas catalog skills.</p>
+<p>This document describes what the <code>orchestration-engineer</code> primary agent adds around the Openspec workflow. <strong>The workflow itself is owned by the Openspec skills — referenced by name, never copied, never restated.</strong></p>
 <h3 id="prerequisites">Prerequisites</h3>
 <p>The four Openspec skills must be installed on the machine running the agent:</p>
 <ul><li><code>openspec-context-loading</code></li><li><code>openspec-proposal-creation</code></li><li><code>openspec-implementation</code></li><li><code>openspec-archiving</code></li></ul>
-<p>They live outside this repository (<code>~/.config/opencode/skills/openspec-*</code>). The agent references them by name; ai-atlas does not vendor them.</p>
-<h3 id="workflow">Workflow</h3>
-<pre><code>        ┌────────────────────────────────────────────────────────────┐
-        │  orchestration-engineer  (one feature, end to end)          │
-        └────────────────────────────────────────────────────────────┘
-
- 1. CONTEXT   openspec-context-loading  + fnd-sdlc-overview
- 2. PROPOSAL  openspec-proposal-creation + arch-requirements-analysis
-            │  (sharpening: arch-system-design, arch-nfrs,
-            │   arch-api-contract-design, be-api-design,
-            │   be-database-design as needed)
-            ▼  user approval gate — no implementation before approval
- 3. PLAN      tasks extracted from the proposal, one handoff contract each
- 4. IMPLEMENT openspec-implementation + delegation to specialists
-            │  arch-specialist / backend-developer / frontend-developer /
-            │  ui-designer / devops-engineer — each with a handoff contract
-            ▼  per-task done criteria verified
- 5. VERIFY    tester (tst-*) — evidence over promises
- 6. REVIEW    code-reviewer (fnd-code-review) — APPROVED or targeted loops
- 7. ARCHIVE   openspec-archiving — merge spec delta into living spec</code></pre>
-<h3 id="phase-exit-criteria">Phase exit criteria</h3>
-<table><tr><th>Phase</th><th>Entry</th><th>Exit criteria</th></tr><tr><td><strong>1. Context</strong></td><td>Feature request</td><td>Agent can answer: what exists, what must change, which spec/capability files are in play (<code>openspec-context-loading</code> checklist done)</td></tr><tr><td><strong>2. Proposal</strong></td><td>Context complete</td><td>Spec delta written in <code>spec/changes/&lt;change&gt;/proposal.md</code> with context, forces, constraints, capability deltas; acceptance criteria explicit; <strong>user approved</strong></td></tr><tr><td><strong>3. Plan</strong></td><td>Approved proposal</td><td>One task per work item; every task carries a filled Handoff Contract (scope, out-of-scope, done criteria, depends-on)</td></tr><tr><td><strong>4. Implement</strong></td><td>Plan complete</td><td>Every specialist returned <code>DONE</code> with evidence (tests run, commands executed) for every task</td></tr><tr><td><strong>5. Verify</strong></td><td>All tasks DONE</td><td><code>tester</code> returned PASS against the proposal's acceptance criteria</td></tr><tr><td><strong>6. Review</strong></td><td>Verify PASS</td><td><code>code-reviewer</code> returned APPROVED; max 2 loops per specialist, then escalate</td></tr><tr><td><strong>7. Archive</strong></td><td>Review APPROVED</td><td><code>openspec-archiving</code> completed: delta merged into living spec, change closed</td></tr></table>
-<h3 id="delegation-rules">Delegation rules</h3>
+<p>They live outside this repository (<code>~/.config/opencode/skills/openspec-*</code>). The agent references them by name; ai-atlas does not vendor them and does not redefine their content.</p>
+<h3 id="division-of-ownership">Division of ownership</h3>
+<table><tr><th>What</th><th>Owned by</th></tr><tr><td>SDD workflow (phases, artifacts, exit criteria)</td><td>the Openspec skills — follow them as the source of truth</td></tr><tr><td>Persona, routing, gates</td><td>the <code>orchestration-engineer</code> agent</td></tr><tr><td>Technical depth</td><td>the catalog skills (<code>arch-<em></code>, <code>be-</em></code>, <code>fe-<em></code>, <code>ui-</em></code>, <code>tst-<em></code>, <code>ops-</em></code>, <code>fnd-*</code>)</td></tr></table>
+<p>ai-atlas therefore never describes the Openspec phases. If the Openspec workflow changes, this document stays valid — the agents keep loading the skills by name and the skills carry the update.</p>
+<blockquote><p><strong>Rule:</strong> the agent states <em>which</em> Openspec skill it is following and <em>who</em></p></blockquote>
+<blockquote><p>receives the handoff. It never restates what the skill says.</p></blockquote>
+<h3 id="delegation-rules-ai-atlas-additions">Delegation rules (ai-atlas additions)</h3>
 <ul><li>Architecture / structural work → <code>arch-specialist</code> (<code>arch-*</code> skills)</li><li>Backend implementation → <code>backend-developer</code> (<code>be-*</code> skills)</li><li>Frontend implementation → <code>frontend-developer</code> (<code>fe-*</code> skills) — any UI design decision passes through <code>ui-designer</code> (<code>ui-*</code> skills) <strong>before</strong> implementation</li><li>Test suites / test strategy → <code>tester</code> (<code>tst-*</code> skills)</li><li>CI/CD, infra, deployment → <code>devops-engineer</code> (<code>ops-*</code> skills)</li><li>Review → <code>code-reviewer</code> (<code>fnd-code-review</code>)</li></ul>
-<p>The agent never restates skill content. It states <em>which</em> skill owns which phase and <em>who</em> receives the handoff.</p>
 <h3 id="handoff-contract-template-mandatory-per-delegation">Handoff Contract template (mandatory per delegation)</h3>
 <pre><code>## Handoff Contract
 - **Task ID**        : &lt;short unique label&gt;
@@ -53,9 +36,9 @@
 - **Depends on**     : prior Task IDs whose output this task uses</code></pre>
 <p>A delegation without a complete Handoff Contract is invalid.</p>
 <h3 id="operating-rules">Operating rules</h3>
-<ol><li><strong>Gates in order</strong> — clarity → architecture → UI → implementation → integration → testing → review → archive. State the gate before delegating.</li><li><strong>Loop with precision</strong> — a failed gate returns to the specialist with the exact diff of what must change. Max 2 loops per specialist; then escalate to the user with the two failure reports.</li><li><strong>Proof over promises</strong> — every specialist reports what was run and what was verified. A "done" without evidence returns to the specialist.</li><li><strong>Security is non-negotiable</strong> — any security concern found at any phase goes straight to <code>code-reviewer</code> (<code>fnd-security-basics</code> is the floor).</li><li><strong>Stop on scope creep</strong> — flag undeclared scope to the user before continuing; never implement beyond the approved proposal.</li><li><strong>Integrate, never silo</strong> — when multiple specialists touch one shared contract, the interface is agreed before parallel work starts.</li><li><strong>Spec is the source of truth</strong> — code must satisfy the proposal; if code contradicts the spec, either the code or the proposal must change — never silently both.</li></ol>
+<ol><li><strong>Skills win</strong> — when the agent file and a loaded Openspec skill disagree, the skill wins. State which skill is being followed.</li><li><strong>Proposal approval is a hard gate</strong> — no implementation before the user approves the proposal.</li><li><strong>Loop with precision</strong> — a failed gate returns to the specialist with the exact diff of what must change. Max 2 loops per specialist; then escalate to the user with the two failure reports.</li><li><strong>Proof over promises</strong> — every specialist reports what was run and what was verified. A "done" without evidence returns to the specialist.</li><li><strong>Security is non-negotiable</strong> — any security concern found at any phase goes straight to <code>code-reviewer</code> (<code>fnd-security-basics</code> is the floor).</li><li><strong>Stop on scope creep</strong> — flag undeclared scope to the user before continuing; never implement beyond the approved proposal.</li><li><strong>Integrate, never silo</strong> — when multiple specialists touch one shared contract, the interface is agreed before parallel work starts.</li><li><strong>Spec is the source of truth</strong> — code must satisfy the proposal; if code contradicts the spec, either the code or the proposal must change — never silently both.</li></ol>
 <h3 id="evaluation">Evaluation</h3>
-<p>Execution eval case: <code>evals/cases/orchestration-engineer.md</code> (Tier 3, manual release gate). The scenario drives one feature through the full workflow and grades the trace against the phase exit criteria above.</p></section>
+<p>Execution eval case: <code>evals/cases/orchestration-engineer.md</code> (Tier 3, manual release gate). The scenario drives one feature through the Openspec workflow and grades the trace against the division of ownership above.</p></section>
     <p class="back"><a href="docs/usage.html">← back to documentation</a></p>
 </main>
 <footer class="site-footer">

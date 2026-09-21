@@ -389,9 +389,8 @@ function landingPage() {
   </section>
   <section class="sdd-panel">
     <p class="kicker">Spec-Driven Development</p>
-    <h2>Every change starts as a proposal — following the Openspec workflow</h2>
-    <p>The <a href="agent/orchestration-engineer.html"><code>orchestration-engineer</code></a> agent processes one feature end-to-end: it loads the <a href="docs/spec-driven-development.html">Openspec skills by name</a> (<code>openspec-context-loading</code> → <code>openspec-proposal-creation</code> → <code>openspec-implementation</code> → <code>openspec-archiving</code>), writes a spec delta, and delegates technical work to the specialist agents under handoff contracts. No implementation before user approval.</p>
-    <div class="steps">${["Context", "Proposal", "Plan", "Implement", "Verify", "Review", "Archive"].map((s) => `<span class="step">${s}</span>`).join("")}</div>
+    <h2>Every change starts as a proposal — driven by the Openspec workflow</h2>
+    <p>The <a href="agent/orchestration-engineer.html"><code>orchestration-engineer</code></a> agent loads the Openspec skills by name and follows their workflow as the source of truth: <code>openspec-context-loading</code>, <code>openspec-proposal-creation</code>, <code>openspec-implementation</code>, <code>openspec-archiving</code>. It then delegates technical work to the specialist agents under handoff contracts. See <a href="docs/spec-driven-development.html">what ai-atlas adds around Openspec</a> — it never redefines it.</p>
   </section>`;
   const body = readme.replace(/^#\s+.*\n/m, ""); // drop the README h1 (hero has it)
   const content = `${stats}\n<section class="readme">${mdToHtml(body)}</section>`;
@@ -558,8 +557,6 @@ pre code{background:none;border:0;padding:0}
 .sdd-panel .kicker{margin-bottom:.35rem}
 .sdd-panel h2{margin:.1rem 0 .4rem;font-size:1.15rem}
 .sdd-panel p{margin:.3rem 0;color:var(--muted)}
-.sdd-panel .steps{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.7rem}
-.sdd-panel .step{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:.15rem .7rem;font-size:.78rem;color:var(--fg)}
 .agent-grid{list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
 .agent-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem}
 .agent-link{font-size:1.05rem}
