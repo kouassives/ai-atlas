@@ -45,7 +45,7 @@ skills:
     description: "Performs safe refactoring: finding seams, preserving behavior, moving in small verified increments, and recognizing code smells from a catalogue. Use when improving existing code without changing behavior, when a codebase is hard to change and needs structural cleanup, when preparing a system for a feature it cannot currently hold, or when reviewing code that 'works but hurts'."
   - id: be-security-engineering
     domain: backend
-    description: "Implements application security: OWASP Top 10 guidance for code, authentication and authorization flows, secrets handling, and dependency auditing. Use when handling credentials or untrusted input, when building login or permission systems, when auditing dependencies or fixing vulnerabilities, or when implementing anything that faces untrusted users."
+    description: "Implements application security: OWASP Top 10 (2025) guidance for code, authentication and authorization flows, secrets handling, and dependency auditing. Use when handling credentials or untrusted input, when building login or permission systems, when auditing dependencies or fixing vulnerabilities, or when implementing anything that faces untrusted users."
   - id: be-solid-principles
     domain: backend
     description: "Applies the five SOLID principles to class and module design with before/after examples and the smells that signal each violation. Use when designing, extending, or reviewing classes and modules, when a class does too much, when abstractions feel wrong or leaky, or when dependency direction needs to be fixed."

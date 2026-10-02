@@ -75,7 +75,7 @@
     },
     {
       "name": "be-security-engineering",
-      "description": "Implements application security: OWASP Top 10 guidance for code, authentication and authorization flows, secrets handling, and dependency auditing. Use when handling credentials or untrusted input, when building login or permission systems, when auditing dependencies or fixing vulnerabilities, or when implementing anything that faces untrusted users.",
+      "description": "Implements application security: OWASP Top 10 (2025) guidance for code, authentication and authorization flows, secrets handling, and dependency auditing. Use when handling credentials or untrusted input, when building login or permission systems, when auditing dependencies or fixing vulnerabilities, or when implementing anything that faces untrusted users.",
       "path": "skills/be-security-engineering"
     },
     {

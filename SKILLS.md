@@ -43,7 +43,7 @@ node scripts/gen-index.mjs
 | `be-microservices-patterns` | Selects and applies distributed-system patterns for microservices: saga and outbox for data consistency, CQRS, circuit b | implementation |
 | `be-performance` | Diagnoses and fixes performance issues: profiling before optimizing, caching strategies, N+1 query detection, connection | implementation |
 | `be-refactoring` | Performs safe refactoring: finding seams, preserving behavior, moving in small verified increments, and recognizing code | operations maintenance |
-| `be-security-engineering` | Implements application security: OWASP Top 10 guidance for code, authentication and authorization flows, secrets handlin | implementation |
+| `be-security-engineering` | Implements application security: OWASP Top 10 (2025) guidance for code, authentication and authorization flows, secrets  | implementation |
 | `be-solid-principles` | Applies the five SOLID principles to class and module design with before/after examples and the smells that signal each  | implementation |
 | `be-tdd` | Drives implementation and bug fixes with test-driven development: Red-Green-Refactor, the test pyramid (80/15/5), test s | testing |
 
