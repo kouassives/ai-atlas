@@ -53,6 +53,9 @@ ai-atlas/
 │   ├── eval-routing.mjs      # Tier 2 routing evals
 │   ├── test-install.sh       # installs into a temp OpenCode layout and checks discovery
 │   └── gen-index.mjs         # regenerates SKILLS.md and README tables
+├── .githooks/
+│   └── pre-commit            # versioned hook: CI gates + auto-regen of derived files
+│                              # (enable: git config core.hooksPath .githooks)
 ├── .github/workflows/
 │   ├── ci.yml                # lint + routing evals on PR
 │   └── release.yml           # tag → SHA256SUMS artifact

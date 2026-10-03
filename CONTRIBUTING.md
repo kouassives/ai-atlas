@@ -20,14 +20,24 @@ Thanks for helping build a solid, honest skills collection. The bar is high on p
 ## Process
 
 1. **Fork + branch.** One skill = one PR (plus its routing prompt and eval case).
-2. **Verify locally** — the same gates CI runs:
+2. **Enable the git hook (once per clone).** The repo ships a versioned
+   pre-commit hook that runs the CI gates and regenerates the derived files,
+   so a stale `SKILLS.md` / `registry.yaml` / `site/` can never reach main:
+   ```bash
+   git config core.hooksPath .githooks
+   ```
+   It is deliberately not a [pre-commit.com](https://pre-commit.com) config:
+   this repo is zero-dependency (Node stdlib + POSIX sh only — see
+   [ARCHITECTURE.md](ARCHITECTURE.md) §"zero-dependency tooling").
+3. **Verify locally** — the same gates CI runs:
    ```bash
    node scripts/lint-skills.mjs      # Tier 1 — structural
    node scripts/eval-routing.mjs     # Tier 2 — routing, no collisions
    node scripts/gen-index.mjs        # regenerate SKILLS.md (commit it)
    ```
-3. **Write the eval case** (`evals/cases/<skill-name>.md`) and, for the release gate, run it once in a real OpenCode session.
-4. **Open the PR.** CI runs the same three commands. A reviewer must pass the security lint before merge.
+   With the hook enabled, steps 2–3 happen automatically on commit.
+4. **Write the eval case** (`evals/cases/<skill-name>.md`) and, for the release gate, run it once in a real OpenCode session.
+5. **Open the PR.** CI runs the same commands. A reviewer must pass the security lint before merge.
 
 ## Review standards (applies to maintainers)
 

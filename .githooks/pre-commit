@@ -1,0 +1,110 @@
+#!/bin/sh
+# ai-atlas — versioned pre-commit hook
+#
+# Mirrors the CI checks in .github/workflows/ci.yml so a stale generated
+# artifact can never reach main. Zero dependencies (POSIX sh + Node stdlib),
+# consistent with ARCHITECTURE.md §"zero-dependency tooling".
+#
+# Enable once per clone:
+#     git config core.hooksPath .githooks
+#
+# Tiers:
+#   1. VALIDATE  — fast, no side effects; blocks the commit on failure.
+#   2. FRESHNESS — regenerates artifacts and stages them (auto-fix).
+#   3. SMOKE     — opt-in via AI_ATLAS_FULL=1 (install.sh, ~4s).
+#
+# Bypass with:  git commit --no-verify
+
+set -u
+
+ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+cd "$ROOT" || exit 1
+
+RED=''; GRN=''; YLW=''; RST=''
+if [ -t 1 ]; then
+  RED=$(printf '\033[31m'); GRN=$(printf '\033[32m')
+  YLW=$(printf '\033[33m'); RST=$(printf '\033[0m')
+fi
+
+note() { printf '%s==>%s %s\n' "$GRN" "$RST" "$*"; }
+warn() { printf '%s[warn]%s %s\n' "$YLW" "$RST" "$*"; }
+fail() { printf '%s[FAIL]%s %s\n' "$RED" "$RST" "$*" >&2; exit 1; }
+
+# staged_match <regex> — echoes the currently staged paths matching <regex>.
+# Recomputed per call: tier 2 stages generated files, so a snapshot taken once
+# at startup would go stale before tier 3 reads it.
+staged_match() {
+  git diff --cached --name-only --diff-filter=ACMR | grep -E "$1" 2>/dev/null || true
+}
+
+# ---------------------------------------------------------------- 1. VALIDATE
+# validate <label> <script> — runs a check and shows its output only on failure.
+validate() {
+  _v_label=$1
+  _v_script=$2
+  if node "scripts/$_v_script" >/dev/null 2>&1; then
+    return 0
+  fi
+  node "scripts/$_v_script"
+  fail "$_v_label failed — fix the above, or inspect: node scripts/$_v_script"
+}
+
+if [ -n "$(staged_match '^(skills/|agents/)')" ]; then
+  note "Tier 1 — structural lint"
+  validate "structural lint" lint-skills.mjs
+  note "Tier 1 — routing evals"
+  validate "routing evals" eval-routing.mjs
+  note "Tier 1 — eval case sweep"
+  validate "eval case sweep" check-eval-cases.mjs
+fi
+
+# -------------------------------------------------------------- 2. FRESHNESS
+# Runs unconditionally (<1s for all three, measured) rather than being gated on
+# which sources are staged: a stale artifact can come from a file that was
+# edited, staged in an earlier commit, or reverted since — a trigger regex
+# silently skips those, and CI (which is unconditional) then fails.
+#
+# refresh <label> <generator> <generated paths>
+# Generators are deterministic, so any resulting diff means a committed
+# artifact is stale — regenerate and stage it rather than letting CI fail.
+refresh() {
+  _r_label=$1; _r_gen=$2; _r_paths=$3
+
+  note "Freshness — $_r_label"
+  node "scripts/$_r_gen" >/dev/null || fail "$_r_label generator errored: node scripts/$_r_gen"
+
+  _r_dirty=0
+  for _r_p in $_r_paths; do
+    git diff --quiet -- "$_r_p" 2>/dev/null || _r_dirty=1
+  done
+
+  if [ "$_r_dirty" -eq 1 ]; then
+    # Stage exactly the generated paths — never `git add -A`.
+    # shellcheck disable=SC2086
+    git add -- $_r_paths
+    warn "$_r_label: artifact(s) were stale, regenerated and staged:"
+    for _r_p in $_r_paths; do
+      git diff --cached --name-only -- "$_r_p"
+    done | sed 's/^/         + /'
+  fi
+}
+
+refresh "SKILLS.md index" gen-index.mjs \
+  "SKILLS.md README.md"
+
+refresh "marketplace manifests" emit-marketplace.mjs \
+  "registry.yaml .claude-plugin/marketplace.json .agents/plugins/marketplace.json"
+
+refresh "static site" gen-site.mjs \
+  "site"
+
+# ------------------------------------------------------------------ 3. SMOKE
+if [ "${AI_ATLAS_FULL:-0}" = "1" ]; then
+  if [ -n "$(staged_match '^(install\.sh|scripts/test-install\.sh)$')" ]; then
+    note "Smoke — install script"
+    sh scripts/test-install.sh >/dev/null ||
+      fail "install.sh smoke test failed (run: sh scripts/test-install.sh)"
+  fi
+fi
+
+exit 0
