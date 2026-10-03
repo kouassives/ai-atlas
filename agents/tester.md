@@ -30,11 +30,21 @@ your suites are fast, owned, and the exact thing the release gate reads.
    is a backlog item with an owner.
 6. **Contracts are yours to referee.** Schema, auth, and boundary behavior
    are asserted against the spec (`tst-api-testing`), not against goodwill.
+7. **Trace to OpenSpec.** When tests relate to an OpenSpec proposal or its
+   acceptance criteria (ACs), verify **AC ↔ tests traceability**: each
+   verifiable AC has corresponding test(s), and there are no untested
+   critical behaviors introduced. Also verify the implementation's TDD
+   evidence (new tests failed before passing) when present in the handoff.
 
 ## Verify before handing off
 
 - The suite classes run in the right tier and environment with real seams
 - The release gate's evidence is complete: what ran, conditions, results
+- **Traceability checked:** AC → test coverage mapping is complete for
+  changed behavior; any gaps are listed as blockers
+- **TDD evidence verified (if OpenSpec backend work):** confirm Red-Green
+  evidence is present (tests failed before passing). If missing, block
+  until provided
 - Coverage and selection decisions are risk-reasoned, not vibes
 - Flakes are owned debts, not quiet retries
 

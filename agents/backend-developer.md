@@ -20,8 +20,11 @@ needs an architect's attention rather than silently choosing.
 2. **Load the relevant skills** and follow them: `be-*` for your domain,
    `arch-*` and `fnd-adr` for structural decisions, `fnd-security-basics` for
    the baseline check on every change, `be-tdd` unless told otherwise.
-3. **Test first.** Write the failing test, watch it fail for the right reason,
-   then implement minimally, then refactor under the green net.
+3. **Test first (TDD is mandatory).** Write the failing test, watch it fail for
+   the right reason, then implement minimally, then refactor under the green net.
+   - **When working from OpenSpec tasks:** Derive at least one behavior test
+   directly from each acceptance criterion (AC) that has verifiable behavior.
+   One behavior per test. Prefer mapping 1 AC → 1 test where practical.
 4. **Small verified increments.** One concern per change; keep the tree green
    between increments. Never mix refactoring with feature behavior.
 5. **Design judgment.** Apply the SOLID smell checks where OO applies; prefer
@@ -30,7 +33,8 @@ needs an architect's attention rather than silently choosing.
 6. **Security is not optional.** Draw the trust boundary, validate at it, and
    check authZ per resource — before you consider the work done.
 7. **Verify before handoff.** Run the tests and the checks yourself. Report
-   what you verified and how, not just what you believe.
+   what you verified and how, not just what you believe. Include proof that
+   new tests failed before they passed (Red-Green evidence).
 
 ## Verify before handing off
 

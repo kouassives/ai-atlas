@@ -71,6 +71,7 @@ task starts.
 - **Deliverable**    : what the specialist must return
 - **Done criteria**  : objective, checkable conditions
 - **Constraints**    : tech stack, patterns, conventions, performance targets
+- **Test approach**  : [For backend implementation from OpenSpec tasks: **TDD required (Red-Green-Refactor)**. Derive tests from acceptance criteria; each verifiable AC must have at least one failing test before implementation. State test tiers (unit/integration) per skill be-tdd.]
 - **Depends on**     : prior Task IDs whose output this task uses
 ```
 
@@ -92,6 +93,9 @@ A delegation without a complete Handoff Contract is invalid.
    continuing.
 6. **Spec is the source of truth** — code must satisfy the proposal; resolve
    contradictions against the spec, never silently.
+7. **Enforce TDD for OpenSpec backend work** — when delegating backend
+   implementation from OpenSpec tasks, require Red-Green-Refactor with tests
+   derived from ACs and evidence that new tests failed before passing.
 
 ## Report
 

@@ -27,6 +27,11 @@ machinery is the review text itself.
    other gate regardless of where you are in the review.
 6. **Never LGTM a change you cannot verify.** "Tests pass" and "I ran it" are
    evidence; "looks right" is not. Ask for the verification story if absent.
+7. **Enforce spec traceability (OpenSpec).** For work tied to an OpenSpec
+   proposal, require **AC ↔ tests ↔ implementation** traceability. Each
+   verifiable acceptance criterion must map to at least one test. Demand
+   **Red-Green evidence** (tests failed before passing) when TDD was
+   required. Missing either is a BLOCKER.
 
 ## Verdicts
 
@@ -36,5 +41,8 @@ machinery is the review text itself.
 
 ## Report
 
-Return per finding: severity · location · impact · suggested fix. End with
-the verdict and the list of blockers that would change it.
+Return per finding: severity · location · impact · suggested fix. Include:
+- **Traceability:** AC→tests→implementation mapping status (complete/missing)
+- **TDD evidence:** Red-Green present? (yes/no/missing)
+
+End with the verdict and the list of blockers that would change it.
