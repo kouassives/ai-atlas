@@ -123,7 +123,7 @@ skills:
     description: "Releases software safely: semantic versioning, feature flags, staged rollouts, and rollback procedures. Use when cutting a release, when a deploy needs to reach users gradually, when features ship half-finished and hide, or when rollback means panic and prayer."
   - id: tst-api-testing
     domain: tester
-    description: "Tests API surfaces: schema validation, auth flows, edge cases, and contract verification. Use when testing API surfaces, when schemas drift from specs, when auth flows need proof, or when an API's edge behavior needs systematic coverage beyond happy paths."
+    description: "Tests API surfaces with effort proportional to risk: schema validation, auth flows, edge cases, and contract verification. Use when testing API surfaces, when schemas drift from specs, when auth flows need proof, or when deciding how many tests an endpoint actually needs."
   - id: tst-e2e-testing
     domain: tester
     description: "Tests critical user journeys end-to-end: Playwright/Cypress patterns, journey selection, and stability against flake. Use when proving critical paths through the real stack, when e2e suites are flaky or huge, or when a release gate needs evidence that the core journey works."
@@ -138,13 +138,16 @@ skills:
     description: "Designs and manages regression suites: selection and prioritization, change-linked execution, and flaky-test management. Use after changes or before releases, when a regression escapes to production, or when the suite is slow or flaky and trust is eroding."
   - id: tst-test-design-techniques
     domain: tester
-    description: "Designs test cases systematically from requirements: equivalence partitioning splits inputs into ranges, boundary value analysis probes boundaries, decision tables cover condition combinations, and state transitions test flows. Use when designing a test case set, when coverage of a rule or boundary is accidental, or when a feature's input space needs structured sampling."
+    description: "Designs test cases systematically from requirements: equivalence partitioning splits inputs into ranges, boundary value analysis probes boundaries, decision tables cover condition combinations, and state transitions test flows — then trims the candidates down to the smallest group that still discriminates. Use when designing a test case set, when coverage of a rule or boundary is accidental, when a feature's input space needs structured sampling, or when deciding which cases can be dropped."
+  - id: tst-test-minimization
+    domain: tester
+    description: "Prunes a test suite to the smallest set that still fails when the code is broken: inventory every test, judge each by the oracle it actually asserts, and confirm with per-file mutation testing. Use when there are too many tests, when a suite is bloated or slow because of its size, when tests look redundant or one behavior is asserted in three places, when tests assert nothing, or when someone asks which tests can be deleted."
   - id: tst-test-strategy
     domain: tester
-    description: "Plans a testing approach: test pyramid and quadrants, risk-based scoping, coverage goals, and what to automate versus not. Use when planning the test approach for a feature or system, when test effort is scattered or reactive, or when coverage goals need to be backed by evidence, not vibes."
+    description: "Plans a testing approach: test pyramid and quadrants, risk-based scoping, a test budget sized by blast radius, and what to automate versus not. Use when planning the test approach for a feature or system, when test effort is scattered or reactive, or when someone asks how many tests a feature needs."
   - id: tst-unit-testing
     domain: tester
-    description: "Writes unit tests that stay fast and honest: isolation, naming conventions, mocking do's and don'ts, and coverage discipline. Use when writing unit tests, when unit tests are slow or over-mocked, when suites assert implementation details, or when coverage is gamed instead of meaningful."
+    description: "Writes unit tests that stay fast and honest: isolation, naming, mocking discipline, one owner per behavior, and a kill-a-mutant oracle. Use when writing unit tests, when unit tests are slow or over-mocked, when suites assert implementation details, when coverage is gamed instead of meaningful, or when deciding whether a given class deserves a test at all."
   - id: ui-design-systems
     domain: ui-designer
     description: "Creates and extends design systems: design tokens, component libraries, theming, and documentation. Use when creating or extending a design system, when buttons and colors drift between screens, or when a visual language needs codification into tokens and components."
@@ -187,7 +190,7 @@ agents:
     description: "Primary agent: routes work by SDLC stage, spawns the specialist subagents, and enforces quality gates before delivering. Use as the entry agent for any feature, fix, or architecture task on a codebase."
   - id: tester
     mode: subagent
-    description: "Senior tester: designs and runs the test approach per the tst-* skills — strategy, techniques, unit/integration/e2e/API/performance/regression testing — and reports evidence, not opinions. Works with the code, never just reviews it."
+    description: "Senior tester: designs, prunes and runs the test approach per the tst-* skills — strategy, techniques, unit/integration/e2e/API/performance/regression/minimization — and reports evidence, not opinions. Every test must earn its place. Works with the code, never just reviews it."
   - id: ui-designer
     mode: subagent
     description: "UI/UX designer: runs research, flows, and visual design per the ui-* skills; produces wireframes/mockups; validates designs with real users before implementation is handed to the frontend developer."

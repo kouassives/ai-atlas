@@ -142,10 +142,11 @@ SDLC stages: **D**iscovery · **A**nalysis · **DE**sign/Architecture · **UI** 
 | `ui-prototyping` | Fidelity levels, interactive mockups, validation with users. Use when testing design ideas cheaply. | UI |
 | `ui-usability-testing` | Test plans, moderation, finding synthesis, iteration. Use when validating a design with real users. | UI/T |
 
-### tester (8)
+### tester (9)
 
 | Skill | 1-line description (triggers) | Stage |
 |---|---|---|
+| `tst-test-minimization` | Audit an overgrown suite: per-test inventory, oracle/kill-a-mutant filter, skip-then-delete, quarantine. Use when there are too many tests. | T/O |
 | `tst-test-strategy` | Test pyramid/quadrants, risk-based scoping, coverage goals, what to automate vs not. Use when planning a test approach. | T |
 | `tst-test-design-techniques` | Equivalence partitioning, boundary value analysis, decision tables, state transitions. Use when designing test cases. | T |
 | `tst-unit-testing` | Isolation, naming conventions, mocking do's and don'ts, coverage discipline. Use when writing unit tests. | I/T |
@@ -350,7 +351,7 @@ release (tag v*) → gen-index → SHA256SUMS → GitHub release asset
 | **L2** | **Pilot domain:** developer-backend (9 `be-*` skills) + `backend-developer.md` + `code-reviewer.md` agents + shared `references/definition-of-done.md` | L1 | Tier1+Tier2 green + 1 execution eval |
 | **L3** | architect (8 `arch-*` skills) + `arch-specialist.md` | L1 | Tier1+Tier2 green |
 | **L4** | devops (9 `ops-*` skills) + `devops-engineer.md` | L1 | Tier1+Tier2 green |
-| **L5** | tester (8 `tst-*` skills) + `tester.md` | L1 | Tier1+Tier2 green |
+ | **L5** | tester (9 `tst-*` skills) + `tester.md` | L1 | Tier1+Tier2 green |
 | **L6** | frontend (8 `fe-*` skills) + `frontend-developer.md` | L1 | Tier1+Tier2 green |
 | **L7** | ui-designer (6 `ui-*` skills) + `ui-designer.md` | L1 | Tier1+Tier2 green |
 | **L8** | Hardening: `install.sh`, `orchestrator.md`, marketplace manifests (phase 2), execution evals sweep, docs | L2–L7 | Full suite + release |

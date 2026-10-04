@@ -7,7 +7,7 @@
 node scripts/gen-index.mjs
 ```
 
-**54 skills published.**
+**55 skills published.**
 
 ## Foundation
 
@@ -75,14 +75,15 @@ node scripts/gen-index.mjs
 
 | Skill | Purpose | SDLC stage |
 |---|---|---|
-| `tst-api-testing` | Tests API surfaces: schema validation, auth flows, edge cases, and contract verification | testing |
+| `tst-api-testing` | Tests API surfaces with effort proportional to risk: schema validation, auth flows, edge cases, and contract verificatio | testing |
 | `tst-e2e-testing` | Tests critical user journeys end-to-end: Playwright/Cypress patterns, journey selection, and stability against flake | testing |
 | `tst-integration-testing` | Tests components wired together: contract testing, database and service integration, and testcontainers | testing |
 | `tst-performance-testing` | Validates performance requirements: load, stress, soak tests, benchmarks, and bottleneck analysis | testing |
 | `tst-regression` | Designs and manages regression suites: selection and prioritization, change-linked execution, and flaky-test management | operations maintenance |
 | `tst-test-design-techniques` | Designs test cases systematically from requirements: equivalence partitioning splits inputs into ranges, boundary value  | testing |
-| `tst-test-strategy` | Plans a testing approach: test pyramid and quadrants, risk-based scoping, coverage goals, and what to automate versus no | testing |
-| `tst-unit-testing` | Writes unit tests that stay fast and honest: isolation, naming conventions, mocking do's and don'ts, and coverage discip | testing |
+| `tst-test-minimization` | Prunes a test suite to the smallest set that still fails when the code is broken: inventory every test, judge each by th | testing |
+| `tst-test-strategy` | Plans a testing approach: test pyramid and quadrants, risk-based scoping, a test budget sized by blast radius, and what  | testing |
+| `tst-unit-testing` | Writes unit tests that stay fast and honest: isolation, naming, mocking discipline, one owner per behavior, and a kill-a | testing |
 
 ## DevOps
 

@@ -195,6 +195,16 @@
     "expect": ["tst-regression"]
   },
   {
+    "id": "tst-routing-09",
+    "prompt": "We have too many tests. Some are duplicated and some never fail. Audit the suite and tell us which ones to delete.",
+    "expect": ["tst-test-minimization"]
+  },
+  {
+    "id": "tst-routing-10",
+    "prompt": "There are too many unit tests for our domain layer. Which ones should we delete?",
+    "expect": ["tst-test-minimization"]
+  },
+  {
     "id": "fe-routing-01",
     "prompt": "The frontend is one big components folder plus a hooks folder and every feature is tangled in both. Restructure the frontend codebase into feature-based modules with clean layers and folder conventions for module boundaries.",
     "expect": ["fe-architecture"]

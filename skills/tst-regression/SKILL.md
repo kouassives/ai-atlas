@@ -51,7 +51,8 @@ Each test/group carries its protection label: which behavior, which risk (`tst-t
 
 ### Step 5 — Make the suite fast enough to be run
 
-- Slow tests migrate down a tier where possible (e2e-shaped logic → integration → unit) — the regression mapping then protects more with less time (`tst-e2e-testing` §5, `tst-unit-testing` §5).
+- Slow tests migrate down a tier where possible (e2e-shaped logic → integration → unit) — the regression mapping then protects more with less time (`tst-e2e-testing` §5, `tst-unit-testing` §6).
+- When the regression set itself is the thing that got too big, the audit is `tst-test-minimization` — a selection strategy cannot make an overgrown suite cheap.
 - Parallelize by isolation; keep the baseline smoke under a few minutes so the safety baseline actually runs.
 
 ## Common Rationalizations
